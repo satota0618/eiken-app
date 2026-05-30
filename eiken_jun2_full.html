@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>英検準2級 単語アプリ</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#F7F5F0;--text:#1a1a1a;--muted:#888;--green:#2D7A4F;--gl:#E8F5EE;--red:#C0392B;--rl:#FDECEA;--amber:#D4860A;--al:#FEF3DC;--border:#E5E2DA;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);min-height:100vh;color:var(--text)}
+.app{max-width:420px;margin:0 auto;padding:0 0 80px}
+.tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:420px;background:#fff;border-top:1px solid var(--border);display:flex;z-index:100}
+.tab{flex:1;padding:10px 0 12px;text-align:center;font-size:11px;color:var(--muted);cursor:pointer;border:none;background:none;font-family:inherit}
+.tab.active{color:var(--green)}
+.tab-icon{font-size:20px;display:block;margin-bottom:2px}
+.page{display:none;padding:1.25rem}
+.page.active{display:block}
+.page-title{font-size:20px;font-weight:700;padding-top:1rem}
+.page-sub{font-size:13px;color:var(--muted);margin-top:2px;margin-bottom:1.25rem}
+.today-card{background:var(--green);color:#fff;border-radius:16px;padding:1.25rem;margin-bottom:1rem}
+.today-label{font-size:12px;opacity:.8;margin-bottom:4px}
+.today-title{font-size:18px;font-weight:700;margin-bottom:12px}
+.today-stats{display:flex;gap:12px}
+.today-stat{background:rgba(255,255,255,.2);border-radius:10px;padding:8px 12px;text-align:center;flex:1}
+.today-stat-num{font-size:22px;font-weight:700}
+.today-stat-label{font-size:11px;opacity:.8}
+.streak-row{display:flex;gap:8px;margin-bottom:1rem}
+.streak-card{flex:1;background:#fff;border-radius:12px;padding:.875rem;text-align:center;border:1px solid var(--border)}
+.streak-num{font-size:24px;font-weight:700}
+.streak-label{font-size:11px;color:var(--muted);margin-top:2px}
+.section-title{font-size:13px;font-weight:700;color:var(--muted);margin-bottom:8px;letter-spacing:.05em}
+.round-list{display:flex;flex-direction:column;gap:8px;margin-bottom:1rem}
+.round-item{background:#fff;border-radius:12px;padding:.875rem 1rem;border:1px solid var(--border);display:flex;align-items:center;gap:12px}
+.round-badge{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.round-badge.done{background:var(--green);color:#fff}
+.round-badge.current{background:var(--al);color:var(--amber);border:2px solid var(--amber)}
+.round-badge.locked{background:#f0f0ec;color:var(--muted)}
+.round-info{flex:1}
+.round-name{font-size:14px;font-weight:500}
+.round-detail{font-size:12px;color:var(--muted);margin-top:2px}
+.round-status{font-size:13px;font-weight:700}
+.btn-start{width:100%;padding:1rem;background:var(--green);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit}
+.btn-start:active{opacity:.85}
+.filter-row{display:flex;gap:8px;margin-bottom:1rem}
+.filter-btn{flex:1;padding:.5rem;border-radius:8px;border:1px solid var(--border);background:#fff;font-size:12px;cursor:pointer;font-family:inherit;color:var(--text)}
+.filter-btn.active{background:var(--green);color:#fff;border-color:var(--green)}
+.fc-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.fc-round-badge{font-size:12px;padding:4px 10px;background:var(--al);color:var(--amber);border-radius:20px;font-weight:500}
+.fc-progress{height:4px;background:var(--border);border-radius:2px;margin-bottom:1.25rem}
+.fc-progress-fill{height:100%;background:var(--green);border-radius:2px;transition:width .3s}
+.fc-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1.25rem}
+.fc-stat{background:#fff;border:1px solid var(--border);border-radius:10px;padding:.625rem;text-align:center}
+.fc-stat-num{font-size:18px;font-weight:700}
+.fc-stat-num.g{color:var(--green)}
+.fc-stat-num.r{color:var(--red)}
+.fc-stat-label{font-size:11px;color:var(--muted)}
+.flashcard{background:#fff;border-radius:16px;border:1px solid var(--border);padding:2.5rem 1.5rem;min-height:200px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;margin-bottom:1.25rem;position:relative}
+.fc-tag{position:absolute;top:14px;left:14px;font-size:10px;padding:2px 8px;border-radius:20px}
+.fc-tag.imp{background:var(--rl);color:var(--red)}
+.fc-tag.rev{background:var(--al);color:var(--amber)}
+.fc-word{font-size:28px;font-weight:700;margin-bottom:6px;font-family:'DM Mono',monospace}
+.fc-phonetic{font-size:13px;color:var(--muted);margin-bottom:1rem}
+.fc-answer{font-size:20px;font-weight:500;color:var(--green)}
+.fc-example{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.6}
+.btn-reveal{width:100%;padding:.875rem;background:#f0f0ec;border:none;border-radius:12px;font-size:15px;cursor:pointer;font-family:inherit;color:var(--text);margin-bottom:.75rem}
+.judge-row{display:flex;gap:10px}
+.btn-judge{flex:1;padding:.875rem;border-radius:12px;border:none;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit}
+.btn-mada{background:var(--rl);color:var(--red)}
+.btn-ok{background:var(--gl);color:var(--green)}
+.weak-list{display:flex;flex-direction:column;gap:8px}
+.weak-item{background:#fff;border-radius:12px;border:1px solid var(--border);padding:.875rem 1rem;display:flex;align-items:center;gap:12px}
+.weak-left{flex:1}
+.weak-word{font-size:16px;font-weight:700;font-family:'DM Mono',monospace}
+.weak-meaning{font-size:13px;color:var(--muted);margin-top:2px}
+.weak-count{font-size:11px;padding:3px 8px;background:var(--rl);color:var(--red);border-radius:20px;font-weight:500;white-space:nowrap}
+.empty-state{text-align:center;padding:3rem 1rem;color:var(--muted);font-size:14px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:1rem}
+.cal-day-label{text-align:center;font-size:11px;color:var(--muted);padding:4px 0}
+.cal-day{aspect-ratio:1;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--muted)}
+.cal-day.done{background:var(--green);color:#fff;font-weight:700}
+.cal-day.today{border:2px solid var(--green);color:var(--green);font-weight:700}
+.month-label{font-size:15px;font-weight:700;text-align:center;margin-bottom:.875rem}
+.complete{text-align:center;padding:3rem 1rem}
+.complete-emoji{font-size:56px;margin-bottom:1rem}
+.complete-title{font-size:22px;font-weight:700;margin-bottom:.5rem}
+.complete-sub{font-size:14px;color:var(--muted);margin-bottom:2rem}
+.progress-ring{margin:1rem auto;width:120px;height:120px;position:relative}
+.progress-ring-num{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:24px;font-weight:700;color:var(--green)}
+</style>
+</head>
+<body>
+<div class="app">
+
+<div class="page active" id="page-home">
+  <div class="page-title">英検準2級 単語</div>
+  <div class="page-sub" id="home-sub">でる順パス単 全単語</div>
+  <div class="today-card">
+    <div class="today-label">📅 学習状況</div>
+    <div class="today-title" id="home-round-title">1周目 · 全単語</div>
+    <div class="today-stats">
+      <div class="today-stat"><div class="today-stat-num" id="home-total">-</div><div class="today-stat-label">総単語数</div></div>
+      <div class="today-stat"><div class="today-stat-num" id="home-ok">0</div><div class="today-stat-label">覚えた</div></div>
+      <div class="today-stat"><div class="today-stat-num" id="home-ng">0</div><div class="today-stat-label">苦手</div></div>
+    </div>
+  </div>
+  <div class="streak-row">
+    <div class="streak-card"><div class="streak-num" id="home-streak">🔥 0</div><div class="streak-label">連続学習日数</div></div>
+    <div class="streak-card"><div class="streak-num" id="home-pct">0%</div><div class="streak-label">今周の進捗</div></div>
+  </div>
+  <div class="section-title">周回状況</div>
+  <div class="round-list">
+    <div class="round-item">
+      <div class="round-badge current" id="round-badge-1">1</div>
+      <div class="round-info"><div class="round-name">1周目</div><div class="round-detail">全単語を一通り学習</div></div>
+      <div class="round-status" id="round-status-1" style="color:var(--amber)">進行中</div>
+    </div>
+    <div class="round-item">
+      <div class="round-badge locked" id="round-badge-2">2</div>
+      <div class="round-info"><div class="round-name">2周目</div><div class="round-detail">間違えた単語を集中特訓</div></div>
+      <div class="round-status" id="round-status-2" style="color:var(--muted)">ロック中</div>
+    </div>
+    <div class="round-item">
+      <div class="round-badge locked" id="round-badge-3">3</div>
+      <div class="round-info"><div class="round-name">3周目</div><div class="round-detail">定着確認・完全マスター</div></div>
+      <div class="round-status" id="round-status-3" style="color:var(--muted)">ロック中</div>
+    </div>
+  </div>
+  <button class="btn-start" onclick="startStudy()">学習をはじめる →</button>
+</div>
+
+<div class="page" id="page-study">
+  <div id="study-main">
+    <div class="fc-header">
+      <div style="font-size:15px;font-weight:700">学習中</div>
+      <div class="fc-round-badge" id="fc-round-label">1周目</div>
+    </div>
+    <div class="fc-progress"><div class="fc-progress-fill" id="fc-prog" style="width:0%"></div></div>
+    <div class="fc-stats">
+      <div class="fc-stat"><div class="fc-stat-num" id="fc-total">-</div><div class="fc-stat-label">問題数</div></div>
+      <div class="fc-stat"><div class="fc-stat-num g" id="fc-ok">0</div><div class="fc-stat-label">覚えた</div></div>
+      <div class="fc-stat"><div class="fc-stat-num r" id="fc-ng">0</div><div class="fc-stat-label">まだ</div></div>
+    </div>
+    <div class="flashcard">
+      <div class="fc-tag imp" id="fc-tag">単語</div>
+      <div class="fc-word" id="fc-word"></div>
+      <div class="fc-phonetic" id="fc-phonetic"></div>
+      <div class="fc-answer" id="fc-answer" style="display:none"></div>
+      <div class="fc-example" id="fc-example" style="display:none"></div>
+    </div>
+    <button class="btn-reveal" id="btn-reveal" onclick="revealAnswer()">答えを見る 👁</button>
+    <div class="judge-row" id="judge-row" style="display:none">
+      <button class="btn-judge btn-mada" onclick="judge(false)">✗ まだ</button>
+      <button class="btn-judge btn-ok" onclick="judge(true)">✓ 覚えた</button>
+    </div>
+  </div>
+  <div class="complete" id="fc-complete" style="display:none">
+    <div class="complete-emoji" id="complete-emoji">🎉</div>
+    <div class="complete-title" id="complete-title">完了！</div>
+    <div class="complete-sub" id="complete-sub"></div>
+    <button class="btn-start" onclick="goHome()" style="max-width:220px;margin:0 auto;display:block">ホームに戻る</button>
+  </div>
+</div>
+
+<div class="page" id="page-weak">
+  <div class="page-title">苦手単語</div>
+  <div class="page-sub">間違えた回数が多い順</div>
+  <div id="weak-list-container"></div>
+</div>
+
+<div class="page" id="page-cal">
+  <div class="page-title">学習カレンダー</div>
+  <div class="page-sub">継続は力なり 🔥</div>
+  <div class="month-label" id="cal-month"></div>
+  <div class="cal-grid" id="cal-grid"></div>
+  <div class="streak-row">
+    <div class="streak-card"><div class="streak-num" id="cal-streak">🔥 0</div><div class="streak-label">連続日数</div></div>
+    <div class="streak-card"><div class="streak-num" id="cal-days">0</div><div class="streak-label">今月の学習日数</div></div>
+  </div>
+</div>
+
+<div class="tabbar">
+  <button class="tab active" onclick="showPage('home',0)"><span class="tab-icon">🏠</span>ホーム</button>
+  <button class="tab" onclick="showPage('study',1)"><span class="tab-icon">📚</span>学習</button>
+  <button class="tab" onclick="showPage('weak',2)"><span class="tab-icon">⚡</span>苦手</button>
+  <button class="tab" onclick="showPage('cal',3)"><span class="tab-icon">📅</span>記録</button>
+</div>
+</div>
+
+<script>
+var WORDS = [
+  ["ability","/əbɪlɪti/","能力","She has the ability to lead."],
+  ["abroad","/əbrɔːd/","海外に","He studied abroad for a year."],
+  ["accept","/əksɛpt/","受け入れる","Please accept my apology."],
+  ["access","/ǽksɛs/","アクセス、利用する","We need access to clean water."],
+  ["accident","/ǽksɪdənt/","事故","There was a car accident."],
+  ["achieve","/ətʃíːv/","達成する","She achieved her goal."],
+  ["act","/ækt/","行動する、演じる","We must act quickly."],
+  ["active","/ǽktɪv/","活発な","He is very active in sports."],
+  ["activity","/æktɪvɪti/","活動","Physical activity is important."],
+  ["actor","/ǽktər/","俳優","He became a famous actor."],
+  ["actually","/ǽktʃuəli/","実際には","Actually, I disagree."],
+  ["add","/æd/","加える","Add some salt to the soup."],
+  ["additional","/ədɪʃənəl/","追加の","We need additional time."],
+  ["address","/ǽdrɛs/","住所、演説","Please write your address here."],
+  ["admit","/ədmɪt/","認める","He admitted his mistake."],
+  ["adult","/ǽdʌlt/","大人","This movie is for adults only."],
+  ["advanced","/ədvǽnst/","上級の","She is in an advanced class."],
+  ["adventure","/ədvɛntʃər/","冒険","The trip was a great adventure."],
+  ["advertise","/ǽdvərtaɪz/","広告する","They advertised on TV."],
+  ["advice","/ədváɪs/","アドバイス","He gave me good advice."],
+  ["advise","/ədváɪz/","助言する","She advised me to rest."],
+  ["afraid","/əfréɪd/","怖がって","Are you afraid of dogs?"],
+  ["afterward","/ǽftərwərd/","その後","We talked afterward."],
+  ["against","/əgɛnst/","〜に反対して","She voted against the plan."],
+  ["agency","/éɪdʒənsi/","代理店、機関","He works at a travel agency."],
+  ["agree","/əgríː/","同意する","I agree with your opinion."],
+  ["ahead","/əhɛd/","前方に","Go straight ahead."],
+  ["aisle","/aɪl/","通路","The seat is in the aisle."],
+  ["alike","/əláɪk/","似ている","The twins look alike."],
+  ["airline","/ɛərlaɪn/","航空会社","Which airline do you prefer?"],
+  ["alive","/əláɪv/","生きている","The fish is still alive."],
+  ["allow","/əláʊ/","許可する","Smoking is not allowed here."],
+  ["almost","/ɔːlmoʊst/","ほとんど","I almost missed the bus."],
+  ["alone","/əlóʊn/","一人で","She lives alone."],
+  ["although","/ɔːlðóʊ/","〜にもかかわらず","Although it rained, we went out."],
+  ["amazing","/əméɪzɪŋ/","驚くべき","The view was amazing."],
+  ["amount","/əmáʊnt/","量","A large amount of water was used."],
+  ["amusement","/əmjúːzmənt/","娯楽","The amusement park was fun."],
+  ["ancestor","/ǽnsɛstər/","先祖","My ancestors came from China."],
+  ["ancient","/éɪnʃənt/","古代の","They visited ancient ruins."],
+  ["angle","/ǽŋgəl/","角度","The angle is 90 degrees."],
+  ["announce","/ənáʊns/","発表する","He announced the news."],
+  ["anniversary","/ǽnɪvɜːrsəri/","記念日","Today is our anniversary."],
+  ["announcement","/ənáʊnsmənt/","発表、アナウンス","An announcement was made."],
+  ["another","/ənʌðər/","もう一つの","Can I have another cup?"],
+  ["ant","/ænt/","アリ","There are ants in the kitchen."],
+  ["anymore","/ɛnɪmɔːr/","もはや","I don\'t eat meat anymore."],
+  ["anytime","/ɛnitaɪm/","いつでも","Call me anytime."],
+  ["anywhere","/ɛnɪwɛər/","どこでも","I can\'t find it anywhere."],
+  ["apartment","/əpɑːrtmənt/","アパート","She lives in an apartment."],
+  ["apologize","/əpɑlədʒaɪz/","謝る","He apologized for being late."],
+  ["appear","/əpɪər/","現れる","A star appeared in the sky."],
+  ["appreciate","/əpríːʃiéɪt/","感謝する","I appreciate your help."],
+  ["approach","/əpróʊtʃ/","近づく、アプローチ","A dog approached me."],
+  ["aquarium","/əkwɛəriəm/","水族館","We visited the aquarium."],
+  ["area","/ɛəriə/","地域、面積","This is a quiet area."],
+  ["argue","/ɑːrgjuː/","口論する","They often argue."],
+  ["arrange","/əréɪndʒ/","手配する","Please arrange a meeting."],
+  ["arrest","/ərɛst/","逮捕する","The police arrested him."],
+  ["arrive","/əráɪv/","到着する","We arrived at noon."],
+  ["article","/ɑːrtɪkəl/","記事、品物","I read an interesting article."],
+  ["asleep","/əslíːp/","眠って","The baby fell asleep."],
+  ["assistant","/əsɪstənt/","助手","She is my assistant."],
+  ["astronaut","/ǽstrənɔːt/","宇宙飛行士","He dreams of becoming an astronaut."],
+  ["athlete","/ǽθliːt/","スポーツ選手","She is a professional athlete."],
+  ["Atlantic","/ətlǽntɪk/","大西洋","They crossed the Atlantic."],
+  ["atmosphere","/ǽtməsfɪər/","大気、雰囲気","The atmosphere was tense."],
+  ["attack","/ətǽk/","攻撃する","The dog attacked him."],
+  ["attend","/ətɛnd/","出席する","I will attend the meeting."],
+  ["attention","/ətɛnʃən/","注意","Pay attention in class."],
+  ["attitude","/ǽtɪtjuːd/","態度","She has a positive attitude."],
+  ["attract","/ətrǽkt/","引き付ける","The event attracted many people."],
+  ["audience","/ɔːdiəns/","観客、聴衆","The audience clapped loudly."],
+  ["audio","/ɔːdiəʊ/","音声の","The audio quality is good."],
+  ["author","/ɔːθər/","著者","She is a famous author."],
+  ["available","/əvéɪləbəl/","利用できる","Is this seat available?"],
+  ["avenue","/ǽvənjuː/","大通り","The hotel is on Fifth Avenue."],
+  ["average","/ǽvərɪdʒ/","平均の","The average temperature is 20°C."],
+  ["avocado","/ǽvəkɑːdoʊ/","アボカド","She put avocado on her toast."],
+  ["avoid","/əvɔɪd/","避ける","Avoid eating too much sugar."],
+  ["award","/əwɔːrd/","賞、授与する","She won an award."],
+  ["awake","/əwéɪk/","目が覚めている","I was awake all night."],
+  ["awful","/ɔːfəl/","ひどい","The weather was awful."],
+  ["babysit","/béɪbisɪt/","子守をする","She babysits on weekends."],
+  ["backyard","/bǽkjɑːrd/","裏庭","The kids played in the backyard."],
+  ["bake","/beɪk/","焼く","She baked a cake."],
+  ["bakery","/béɪkəri/","パン屋","I bought bread at the bakery."],
+  ["balance","/bǽləns/","バランス","Keep your balance."],
+  ["balanced","/bǽlənst/","バランスのとれた","Eat a balanced diet."],
+  ["ballet","/bǽleɪ/","バレエ","She has been doing ballet since age 5."],
+  ["bar","/bɑːr/","棒、バー","He grabbed the bar."],
+  ["bark","/bɑːrk/","吠える、樹皮","The dog barked loudly."],
+  ["basic","/béɪsɪk/","基本的な","These are basic skills."],
+  ["battery","/bǽtəri/","電池","The battery is dead."],
+  ["bear","/bɛər/","熊、耐える","A bear appeared in the forest."],
+  ["beat","/biːt/","打つ、勝つ","Our team beat them."],
+  ["beauty","/bjúːti/","美しさ","The beauty of nature is amazing."],
+  ["beetle","/biːtəl/","カブトムシ","He found a beetle in the garden."],
+  ["beginner","/bɪgɪnər/","初心者","This class is for beginners."],
+  ["behavior","/bɪhéɪvjər/","行動","His behavior was strange."],
+  ["behind","/bɪháɪnd/","後ろに","She hid behind the door."],
+  ["believe","/bɪlíːv/","信じる","I believe in you."],
+  ["belong","/bɪlɔŋ/","〜に属する","This book belongs to me."],
+  ["below","/bɪlóʊ/","〜の下に","The temperature is below zero."],
+  ["besides","/bɪsáɪdz/","その上、〜以外に","Besides English, she speaks French."],
+  ["beyond","/bɪjɔnd/","〜を超えて","The mountains are beyond the river."],
+  ["bill","/bɪl/","請求書、紙幣","Can I have the bill please?"],
+  ["billion","/bɪljən/","10億","The world population is 8 billion."],
+  ["biology","/baɪɔlədʒi/","生物学","She studies biology at university."],
+  ["bite","/baɪt/","噛む","The dog bit my hand."],
+  ["blanket","/blǽŋkɪt/","毛布","She wrapped herself in a blanket."],
+  ["block","/blɔk/","ブロック、遮る","The road is blocked."],
+  ["blow","/bloʊ/","吹く","The wind is blowing hard."],
+  ["boarding","/bɔːrdɪŋ/","搭乗","Boarding starts at 9 am."],
+  ["bonus","/bóʊnəs/","ボーナス","He received a year-end bonus."],
+  ["bookshelf","/bʊkʃɛlf/","本棚","The bookshelf is full of books."],
+  ["boring","/bɔːrɪŋ/","退屈な","The lecture was boring."],
+  ["borrow","/bɔroʊ/","借りる","Can I borrow your pen?"],
+  ["boss","/bɔs/","上司","My boss is very strict."],
+  ["bother","/bɔðər/","悩ます、気にする","Don\'t bother me now."],
+  ["bottle","/bɔtəl/","瓶","She drank a bottle of water."],
+  ["bottom","/bɔtəm/","底","The key was at the bottom of the bag."],
+  ["boyfriend","/bɔɪfrɛnd/","彼氏","She introduced her boyfriend."],
+  ["branch","/brǽntʃ/","枝、支店","The branch fell in the storm."],
+  ["brand","/brænd/","ブランド","This is a famous brand."],
+  ["brand-new","/brǽnd njuː/","真新しい","She bought a brand-new car."],
+  ["brave","/breɪv/","勇敢な","He was very brave."],
+  ["breathe","/briːð/","呼吸する","Breathe in slowly."],
+  ["bright","/braɪt/","明るい","The future looks bright."],
+  ["British","/brɪtɪʃ/","イギリスの","She has a British accent."],
+  ["broadcast","/brɔːdkæst/","放送する","The game was broadcast live."],
+  ["build","/bɪld/","建てる","They built a new school."],
+  ["burn","/bɜːrn/","燃やす、やけどする","Don\'t burn yourself."],
+  ["business","/bɪznɪs/","ビジネス、商売","She runs her own business."],
+  ["button","/bʌtən/","ボタン","Press the button to start."],
+  ["calculator","/kǽlkjəleɪtər/","電卓","Use a calculator for math."],
+  ["calm","/kɑːm/","穏やかな、落ち着く","Stay calm in an emergency."],
+  ["campaign","/kæmpéɪn/","キャンペーン","They launched a new campaign."],
+  ["cancel","/kǽnsəl/","取り消す","The event was canceled."],
+  ["capital","/kǽpɪtəl/","首都、資本","Tokyo is the capital of Japan."],
+  ["care","/kɛər/","気にする、世話","Take care of your health."],
+  ["career","/kərɪər/","キャリア、職業","She has a great career."],
+  ["careful","/kɛərfəl/","注意深い","Be careful on the stairs."],
+  ["carefully","/kɛərfəli/","注意深く","Read the instructions carefully."],
+  ["careless","/kɛərlɪs/","不注意な","Don\'t be careless."],
+  ["carry","/kǽri/","運ぶ","Can you carry this bag?"],
+  ["cart","/kɑːrt/","カート","Put the items in the cart."],
+  ["cash","/kæʃ/","現金","Do you pay by cash or card?"],
+  ["castle","/kɑːsəl/","城","We visited an old castle."],
+  ["cause","/kɔːz/","原因、引き起こす","What caused the accident?"],
+  ["celebrate","/séləbreɪt/","祝う","We celebrated her birthday."],
+  ["center","/sɛntər/","中心","The library is in the center."],
+  ["central","/sɛntrəl/","中心の","It is in a central location."],
+  ["century","/sɛntʃəri/","世紀","We live in the 21st century."],
+  ["ceremony","/sɛrəmoʊni/","式典","The graduation ceremony was held."],
+  ["certain","/sɜːrtən/","確かな","Are you certain about that?"],
+  ["certainly","/sɜːrtənli/","確かに","I will certainly help you."],
+  ["challenge","/tʃǽlɪndʒ/","挑戦","This is a big challenge."],
+  ["championship","/tʃǽmpiənʃɪp/","選手権","They won the championship."],
+  ["chance","/tʃæns/","チャンス","Don\'t miss this chance."],
+  ["change","/tʃeɪndʒ/","変える、お釣り","Change is necessary."],
+  ["channel","/tʃǽnəl/","チャンネル","Change the channel please."],
+  ["character","/kǽrɪktər/","性格、登場人物","She has a strong character."],
+  ["charity","/tʃǽrɪti/","慈善","He donates to charity."],
+  ["chat","/tʃæt/","おしゃべり","We had a long chat."],
+  ["cheap","/tʃiːp/","安い","This restaurant is cheap."],
+  ["check","/tʃɛk/","確認する","Please check your email."],
+  ["cheer","/tʃɪər/","応援する","Cheer up!"],
+  ["chef","/ʃɛf/","シェフ","He is a professional chef."],
+  ["chemical","/kɛmɪkəl/","化学物質","Handle chemicals carefully."],
+  ["chemistry","/kɛmɪstri/","化学","She loves chemistry class."],
+  ["childhood","/tʃaɪldhʊd/","子供時代","She had a happy childhood."],
+  ["choice","/tʃɔɪs/","選択","It was a difficult choice."],
+  ["choose","/tʃuːz/","選ぶ","Choose the best answer."],
+  ["Christian","/krɪstʃən/","キリスト教の","Christmas is a Christian holiday."],
+  ["citizen","/sɪtɪzən/","市民","He is a Japanese citizen."],
+  ["classical","/klǽsɪkəl/","古典の","She enjoys classical music."],
+  ["cleaner","/kliːnər/","掃除人、クリーナー","The cleaner comes every week."],
+  ["clear","/klɪər/","はっきりした、晴れた","The sky is clear today."],
+  ["clearly","/klɪərli/","はっきりと","Please speak clearly."],
+  ["clerk","/klɜːrk/","店員","The clerk helped me find it."],
+  ["climate","/kláɪmɪt/","気候","The climate here is mild."],
+  ["climb","/klaɪm/","登る","They climbed the mountain."],
+  ["clinic","/klɪnɪk/","診療所","She went to the clinic."],
+  ["close","/kloʊz/","閉める、近い","Please close the door."],
+  ["closet","/klɔzɪt/","クローゼット","The closet is full of clothes."],
+  ["clothes","/kloʊðz/","衣服","She bought new clothes."],
+  ["clothing","/kloʊðɪŋ/","衣料品","This store sells clothing."],
+  ["coach","/koʊtʃ/","コーチ","He is a great soccer coach."],
+  ["coast","/koʊst/","海岸","We drove along the coast."],
+  ["collect","/kəlɛkt/","集める","He collects stamps."],
+  ["colorful","/kʌlərfəl/","カラフルな","The garden is colorful."],
+  ["combine","/kəmbáɪn/","組み合わせる","Combine the ingredients."],
+  ["comment","/kɔmɛnt/","コメント","She made a helpful comment."],
+  ["commercial","/kəmɜːrʃəl/","商業の、コマーシャル","I saw a commercial on TV."],
+  ["common","/kɔmən/","一般的な","It is a common mistake."],
+  ["communicate","/kəmjúːnɪkeɪt/","伝える","It is important to communicate."],
+  ["community","/kəmjúːnɪti/","地域社会","She helps the community."],
+  ["compete","/kəmpíːt/","競争する","They compete in swimming."],
+  ["complete","/kəmplíːt/","完成する、完全な","Complete the form."],
+  ["completely","/kəmplíːtli/","完全に","I completely forgot."],
+  ["concentrate","/kɔnsəntrèɪt/","集中する","Concentrate on the task."],
+  ["concern","/kənsɜːrn/","心配、関係する","I have some concerns."],
+  ["condition","/kəndɪʃən/","状態、条件","The car is in good condition."],
+  ["confident","/kɔnfɪdənt/","自信のある","She is confident in her skills."],
+  ["confuse","/kənfjúːz/","混乱させる","The instructions confused me."],
+  ["congratulation","/kəŋgrætʃəléɪʃən/","おめでとう","Congratulations on your graduation!"],
+  ["connect","/kənɛkt/","つなぐ","Connect the cable to the TV."],
+  ["consist","/kənsɪst/","構成される","The team consists of 10 players."],
+  ["contact","/kɔntækt/","連絡する、接触","Please contact me by email."],
+  ["contain","/kənteɪn/","含む","This drink contains sugar."],
+  ["continue","/kəntɪnjuː/","続ける","Please continue your work."],
+  ["control","/kəntróʊl/","制御する","He lost control of the car."],
+  ["convenience","/kənvíːniəns/","便利さ","A convenience store is nearby."],
+  ["conversation","/kɔnvərséɪʃən/","会話","We had a long conversation."],
+  ["copy","/kɔpi/","コピーする、コピー","Please copy this document."],
+  ["corner","/kɔːrnər/","角","Turn left at the corner."],
+  ["correct","/kərɛkt/","正しい、訂正する","Your answer is correct."],
+  ["cost","/kɔst/","費用がかかる、費用","How much does it cost?"],
+  ["cough","/kɔf/","咳をする","She coughed all night."],
+  ["count","/kaʊnt/","数える","Count to ten slowly."],
+  ["counter","/kaʊntər/","カウンター","Pay at the counter."],
+  ["countryside","/kʌntrisaɪd/","田舎","They live in the countryside."],
+  ["couple","/kʌpəl/","2〜3の、カップル","A couple of days later."],
+  ["coupon","/kuːpɔn/","クーポン","Use this coupon for a discount."],
+  ["co-worker","/koʊwɜːrkər/","同僚","My co-worker is very helpful."],
+  ["crash","/kræʃ/","衝突する","The car crashed into a wall."],
+  ["create","/krieɪt/","創る","She created a beautiful painting."],
+  ["credit","/krɛdɪt/","クレジット、信用","He paid by credit card."],
+  ["crime","/kraɪm/","犯罪","Crime has increased recently."],
+  ["crowd","/kraʊd/","群衆","A large crowd gathered."],
+  ["crowded","/kraʊdɪd/","混んでいる","The train was crowded."],
+  ["curious","/kjʊəriəs/","好奇心旺盛な","Children are naturally curious."],
+  ["custom","/kʌstəm/","習慣","It is a local custom."],
+  ["customer","/kʌstəmər/","客","The customer is always right."],
+  ["cute","/kjuːt/","かわいい","The puppy is very cute."],
+  ["cycle","/saɪkəl/","サイクル","The water cycle is important."],
+  ["daily","/déɪli/","毎日の","Exercise is part of my daily routine."],
+  ["damage","/dǽmɪdʒ/","損害","The storm caused damage."],
+  ["danger","/déɪndʒər/","危険","He was in danger."],
+  ["dangerous","/déɪndʒərəs/","危険な","The road is dangerous."],
+  ["date","/deɪt/","日付、デート","What is today\'s date?"],
+  ["dead","/dɛd/","死んでいる","The plant is dead."],
+  ["debate","/dɪbéɪt/","討論する","They debated the issue."],
+  ["decide","/dɪsáɪd/","決める","Have you decided yet?"],
+  ["decorate","/dɛkəreɪt/","飾る","She decorated the room."],
+  ["decrease","/diːkríːs/","減少する","Sales have decreased."],
+  ["deeply","/díːpli/","深く","She breathed deeply."],
+  ["degree","/dɪgríː/","度、学位","It is 30 degrees today."],
+  ["delay","/dɪléɪ/","遅らせる","The flight was delayed."],
+  ["delicate","/dɛlɪkɪt/","繊細な","Handle with care; it is delicate."],
+  ["delicious","/dɪlɪʃəs/","おいしい","The food was delicious."],
+  ["deliver","/dɪlɪvər/","配達する","The package was delivered."],
+  ["dental","/dɛntəl/","歯の","She has a dental appointment."],
+  ["dentist","/dɛntɪst/","歯科医","I went to the dentist."],
+  ["department","/dɪpɑːrtmənt/","部門","She works in the sales department."],
+  ["depend","/dɪpɛnd/","依存する","It depends on the weather."],
+  ["describe","/dɪskráɪb/","説明する","Describe what you saw."],
+  ["desert","/dɛzərt/","砂漠","The Sahara is a large desert."],
+  ["design","/dɪzáɪn/","デザインする","She designed the logo."],
+  ["designer","/dɪzáɪnər/","デザイナー","He is a famous designer."],
+  ["dessert","/dɪzɜːrt/","デザート","What would you like for dessert?"],
+  ["destroy","/dɪstrɔɪ/","破壊する","The fire destroyed the building."],
+  ["detail","/díːteɪl/","詳細","Please give me more details."],
+  ["develop","/dɪvɛləp/","発展させる","They developed a new app."],
+  ["diamond","/dáɪəmənd/","ダイヤモンド","She wore a diamond ring."],
+  ["die","/daɪ/","死ぬ","The plant died without water."],
+  ["diet","/dáɪɪt/","食事、ダイエット","She is on a healthy diet."],
+  ["different","/dɪfrənt/","異なる","We have different opinions."],
+  ["difficult","/dɪfɪkəlt/","難しい","The test was very difficult."],
+  ["dig","/dɪg/","掘る","They dug a hole."],
+  ["direct","/dɪrɛkt/","直接の、指示する","Take the direct route."],
+  ["direction","/dɪrɛkʃən/","方向、指示","Follow the directions."],
+  ["director","/dɪrɛktər/","監督、部長","She is the director of the film."],
+  ["disappear","/dɪsəpɪər/","消える","The magician disappeared."],
+  ["disappoint","/dɪsəpɔɪnt/","がっかりさせる","Don\'t disappoint me."],
+  ["disaster","/dɪzæstər/","災害","The earthquake was a disaster."],
+  ["discount","/dɪskaʊnt/","割引","I got a 10% discount."],
+  ["discover","/dɪskʌvər/","発見する","He discovered a new method."],
+  ["discovery","/dɪskʌvəri/","発見","It was an important discovery."],
+  ["discuss","/dɪskʌs/","議論する","Let us discuss the plan."],
+  ["discussion","/dɪskʌʃən/","討論","We had a long discussion."],
+  ["dislike","/dɪsláɪk/","嫌う","She dislikes spicy food."],
+  ["display","/dɪspléɪ/","展示する","The artwork is on display."],
+  ["distance","/dɪstəns/","距離","The distance is 10 km."],
+  ["disturb","/dɪstɜːrb/","邪魔する","Please do not disturb."],
+  ["diver","/dáɪvər/","ダイバー","He is a professional diver."],
+  ["divide","/dɪváɪd/","分ける","Divide the class into groups."],
+  ["document","/dɔkjəmənt/","書類","Please sign the document."],
+  ["double","/dʌbəl/","2倍の","I need a double room."],
+  ["download","/daʊnloʊd/","ダウンロードする","Download the app for free."],
+  ["downtown","/daʊntaʊn/","繁華街","The hotel is downtown."],
+  ["draw","/drɔː/","描く","She drew a picture."],
+  ["dress","/drɛs/","服を着せる、ドレス","She wore a blue dress."],
+  ["drop","/drɔp/","落とす","He dropped his keys."],
+  ["earn","/ɜːrn/","稼ぐ","She earns a good salary."],
+  ["earth","/ɜːrθ/","地球、土","We must protect the earth."],
+  ["earthquake","/ɜːrθkweɪk/","地震","An earthquake hit the city."],
+  ["easily","/íːzɪli/","簡単に","She solved it easily."],
+  ["edge","/ɛdʒ/","端","Stand back from the edge."],
+  ["education","/ɛdʒəkéɪʃən/","教育","Education is very important."],
+  ["effect","/ɪfɛkt/","効果","The medicine had no effect."],
+  ["effort","/ɛfərt/","努力","She put in a lot of effort."],
+  ["Egypt","/íːdʒɪpt/","エジプト","They visited Egypt."],
+  ["either","/íːðər/","どちらか","Either way is fine."],
+  ["elderly","/ɛldərli/","高齢の","He helps elderly people."],
+  ["electric","/ɪlɛktrɪk/","電気の","She drives an electric car."],
+  ["electronics","/ɪlɛktrɔnɪks/","電子機器","The electronics store is nearby."],
+  ["electronic","/ɪlɛktrɔnɪk/","電子の","Electronic devices are everywhere."],
+  ["elevator","/ɛlɪveɪtər/","エレベーター","Take the elevator to floor 5."],
+  ["else","/ɛls/","ほかに","Is there anything else?"],
+  ["emergency","/ɪmɜːrdʒənsi/","緊急事態","Call 119 in an emergency."],
+  ["emotion","/ɪmoʊʃən/","感情","She expressed her emotions."],
+  ["employee","/ɪmplɔɪiː/","従業員","She is a loyal employee."],
+  ["encourage","/ɪnkɜːrɪdʒ/","励ます","He encouraged his students."],
+  ["enemy","/ɛnəmi/","敵","They became enemies."],
+  ["energy","/ɛnərdʒi/","エネルギー","Solar energy is clean."],
+  ["engine","/ɛndʒɪn/","エンジン","The engine stopped working."],
+  ["engineer","/ɛndʒɪnɪər/","エンジニア","She is a software engineer."],
+  ["enough","/ɪnʌf/","十分な","Do you have enough money?"],
+  ["enter","/ɛntər/","入る","Enter the password."],
+  ["entertainment","/ɛntərteɪnmənt/","娯楽","The park offers great entertainment."],
+  ["entrance","/ɛntrəns/","入口","Meet me at the entrance."],
+  ["envelope","/ɛnvəloʊp/","封筒","Put the letter in the envelope."],
+  ["environment","/ɪnváɪrənmənt/","環境","We must protect the environment."],
+  ["equal","/íːkwəl/","平等な","Everyone should be treated equally."],
+  ["equipment","/ɪkwɪpmənt/","設備、器具","The equipment needs repair."],
+  ["escape","/ɪskéɪp/","逃げる","He escaped from prison."],
+  ["especially","/ɪspɛʃəli/","特に","I especially like summer."],
+  ["essay","/ɛseɪ/","エッセイ","Write a 500-word essay."],
+  ["Europe","/jʊərəp/","ヨーロッパ","She traveled to Europe."],
+  ["even","/íːvən/","〜でさえ","Even children can do this."],
+  ["event","/ɪvɛnt/","イベント","The event was a success."],
+  ["eventually","/ɪvɛntʃuəli/","最終的に","He eventually agreed."],
+  ["exact","/ɪɡzǽkt/","正確な","What is the exact time?"],
+  ["exactly","/ɪɡzǽktli/","正確に","That is exactly right."],
+  ["examination","/ɪɡzæmɪneɪʃən/","試験","The examination was difficult."],
+  ["excellent","/ɛksɪlənt/","優秀な","She did an excellent job."],
+  ["except","/ɪksɛpt/","〜を除いて","Everyone was there except him."],
+  ["exchange","/ɪkstʃéɪndʒ/","交換する","Let us exchange information."],
+  ["excuse","/ɪkskjúːs/","言い訳、許す","That is a poor excuse."],
+  ["exercise","/ɛksərsaɪz/","運動","Regular exercise is important."],
+  ["exhibit","/ɪɡzɪbɪt/","展示する","The museum exhibits old art."],
+  ["exist","/ɪɡzɪst/","存在する","Does life exist on other planets?"],
+  ["expect","/ɪkspɛkt/","期待する","I expect you to do your best."],
+  ["expensive","/ɪkspɛnsɪv/","高価な","The bag is too expensive."],
+  ["experience","/ɪkspɪəriəns/","経験","She has a lot of experience."],
+  ["expert","/ɛkspɜːrt/","専門家","He is an expert in finance."],
+  ["explain","/ɪkspleɪn/","説明する","Please explain the rules."],
+  ["explore","/ɪksplɔːr/","探検する","They explored the jungle."],
+  ["explorer","/ɪksplɔːrər/","探検家","He was a famous explorer."],
+  ["express","/ɪksprɛs/","表現する","She expressed her feelings."],
+  ["extra","/ɛkstrə/","余分な、追加の","Can I have extra sauce?"],
+  ["extremely","/ɪkstríːmli/","非常に","She is extremely talented."],
+  ["face","/feɪs/","顔、直面する","Face your fears."],
+  ["fact","/fækt/","事実","That is a fact."],
+  ["factory","/fǽktəri/","工場","He works at a car factory."],
+  ["fail","/feɪl/","失敗する","Don\'t be afraid to fail."],
+  ["fair","/fɛər/","公平な","The judge was very fair."],
+  ["familiar","/fəmɪliər/","なじみのある","The name sounds familiar."],
+  ["fan","/fæn/","ファン、扇","She is a big fan of soccer."],
+  ["fantastic","/fæntǽstɪk/","すばらしい","The show was fantastic."],
+  ["far","/fɑːr/","遠い","The school is far from here."],
+  ["fare","/fɛər/","運賃","The bus fare is 200 yen."],
+  ["fashion","/fǽʃən/","ファッション","She loves fashion."],
+  ["fat","/fæt/","太った、脂肪","This food is high in fat."],
+  ["fault","/fɔːlt/","欠点、過失","It was my fault."],
+  ["favor","/féɪvər/","親切な行為、好意","Can you do me a favor?"],
+  ["fear","/fɪər/","恐れ","He overcame his fear of heights."],
+  ["feature","/fíːtʃər/","特徴","The phone has great features."],
+  ["fee","/fiː/","料金","There is an entry fee."],
+  ["feed","/fiːd/","餌をやる","She feeds the birds every day."],
+  ["female","/fíːmeɪl/","女性の","The doctor is female."],
+  ["fever","/fíːvər/","熱","She has a high fever."],
+  ["few","/fjuː/","少しの","Only a few people came."],
+  ["fight","/faɪt/","戦う","Don\'t fight with others."],
+  ["figure","/fɪgjər/","人物、図","She is a public figure."],
+  ["fill","/fɪl/","満たす","Fill the glass with water."],
+  ["film","/fɪlm/","映画、フィルム","Let us watch a film."],
+  ["finally","/fáɪnəli/","ついに","He finally arrived."],
+  ["firefighter","/fáɪərfaɪtər/","消防士","She wants to be a firefighter."],
+  ["firework","/fáɪərwɜːrk/","花火","The fireworks were beautiful."],
+  ["fisherman","/fɪʃərmæn/","漁師","My grandfather is a fisherman."],
+  ["fitness","/fɪtnɪs/","フィットネス","She goes to a fitness club."],
+  ["fix","/fɪks/","修理する","Can you fix my bike?"],
+  ["flag","/flæg/","旗","The flag waved in the wind."],
+  ["flash","/flæʃ/","閃光","A flash of lightning appeared."],
+  ["flat","/flæt/","平らな","The road is flat."],
+  ["flavor","/fléɪvər/","風味","What flavor do you want?"],
+  ["flight","/flaɪt/","フライト","The flight was on time."],
+  ["float","/floʊt/","浮く","Wood floats on water."],
+  ["flour","/flaʊər/","小麦粉","Add flour to the mixture."],
+  ["flow","/floʊ/","流れる","The river flows to the sea."],
+  ["follow","/fɔloʊ/","従う、ついていく","Follow the instructions."],
+  ["following","/fɔloʊɪŋ/","次の","See the following page."],
+  ["foolish","/fúːlɪʃ/","愚かな","That was a foolish mistake."],
+  ["force","/fɔːrs/","力、強制する","She was forced to leave."],
+  ["forecast","/fɔːrkæst/","予報","The weather forecast says rain."],
+  ["foreign","/fɔrən/","外国の","She speaks three foreign languages."],
+  ["forest","/fɔrɪst/","森","The forest is very deep."],
+  ["forever","/fərɛvər/","永遠に","This memory will last forever."],
+  ["forget","/fərgɛt/","忘れる","Don\'t forget to call."],
+  ["form","/fɔːrm/","形、フォーム","Fill in this form."],
+  ["forward","/fɔːrwərd/","前方に","Move forward slowly."],
+  ["frame","/freɪm/","枠、フレーム","She put the photo in a frame."],
+  ["freedom","/fríːdəm/","自由","Everyone deserves freedom."],
+  ["freeze","/friːz/","凍る","The lake froze in winter."],
+  ["freezing","/fríːzɪŋ/","凍えるような","It is freezing outside."],
+  ["fresh","/frɛʃ/","新鮮な","This bread is fresh."],
+  ["friendly","/frɛndli/","親切な","The staff are very friendly."],
+  ["front","/frʌnt/","前面","Sit in the front row."],
+  ["frozen","/fróʊzən/","冷凍の","Buy some frozen vegetables."],
+  ["full-time","/fʊltaɪm/","フルタイムの","She works full-time."],
+  ["furniture","/fɜːrnɪtʃər/","家具","They bought new furniture."],
+  ["further","/fɜːrðər/","さらに","Let me explain further."],
+  ["future","/fjúːtʃər/","未来","Think about your future."],
+  ["gain","/geɪn/","得る","She gained confidence."],
+  ["gallery","/gǽləri/","ギャラリー","We visited an art gallery."],
+  ["garbage","/gɑːrbɪdʒ/","ごみ","Put the garbage out."],
+  ["gasoline","/gǽsəliːn/","ガソリン","The car needs gasoline."],
+  ["gate","/geɪt/","門","Open the gate."],
+  ["gather","/gǽðər/","集まる","They gathered in the park."],
+  ["generation","/dʒɛnəreɪʃən/","世代","The younger generation loves tech."],
+  ["giant","/dʒáɪənt/","巨大な","A giant panda was born."],
+  ["gift","/gɪft/","贈り物","She gave me a gift."],
+  ["goal","/goʊl/","目標","Her goal is to become a doctor."],
+  ["goods","/gʊdz/","商品","They sell quality goods."],
+  ["government","/gʌvərnmənt/","政府","The government made a new law."],
+  ["grade","/greɪd/","成績、等級","She got top grades."],
+  ["gradually","/grǽdʒuəli/","徐々に","Things improved gradually."],
+  ["graduation","/grǽdʒueɪʃən/","卒業","Graduation is in March."],
+  ["grandparent","/grǽndpɛərənt/","祖父母","She visits her grandparents often."],
+  ["grass","/grɑːs/","草","The grass is green."],
+  ["greet","/griːt/","挨拶する","She greeted everyone warmly."],
+  ["grill","/grɪl/","グリルで焼く","He grilled the fish."],
+  ["grocery","/gróʊsəri/","食料雑貨","She went to the grocery store."],
+  ["ground","/graʊnd/","地面","Sit on the ground."],
+  ["grow","/groʊ/","育つ、成長する","The plant grew quickly."],
+  ["guard","/gɑːrd/","警備する","The guard checked our bags."],
+  ["guess","/gɛs/","推測する","Can you guess the answer?"],
+  ["guest","/gɛst/","客","We have guests tonight."],
+  ["guide","/gaɪd/","案内する","She guided us around the city."],
+  ["habit","/hǽbɪt/","習慣","Exercise is a good habit."],
+  ["handle","/hǽndəl/","取り扱う","Handle with care."],
+  ["hang","/hæŋ/","かける","Hang your coat on the hook."],
+  ["happen","/hǽpən/","起こる","What happened?"],
+  ["happiness","/hǽpɪnɪs/","幸福","Money can\'t buy happiness."],
+  ["hardly","/hɑːrdli/","ほとんど〜ない","I can hardly believe it."],
+  ["harm","/hɑːrm/","害を与える","Don\'t harm animals."],
+  ["harmful","/hɑːrmfəl/","有害な","Smoking is harmful."],
+  ["harmony","/hɑːrməni/","調和","They live in harmony."],
+  ["harvest","/hɑːrvɪst/","収穫","They harvested the wheat."],
+  ["hate","/heɪt/","嫌う","She hates getting up early."],
+  ["headache","/hɛdeɪk/","頭痛","I have a bad headache."],
+  ["headphone","/hɛdfóʊn/","ヘッドフォン","She wore headphones."],
+  ["health","/hɛlθ/","健康","Your health is important."],
+  ["healthy","/hɛlθi/","健康な","Eat healthy food."],
+  ["heater","/híːtər/","ヒーター","Turn on the heater."],
+  ["heavily","/hɛvɪli/","激しく","It rained heavily."],
+  ["helpful","/hɛlpfəl/","役立つ","Your advice was very helpful."],
+  ["herbal","/ɜːrbəl/","ハーブの","She drinks herbal tea."],
+  ["hero","/híəroʊ/","英雄","He is a hero."],
+  ["hidden","/hɪdən/","隠れた","The key was hidden."],
+  ["highway","/háɪweɪ/","高速道路","Drive on the highway."],
+  ["hire","/haɪər/","雇う","They hired a new manager."],
+  ["hit","/hɪt/","打つ、ヒット","The song was a big hit."],
+  ["hold","/hoʊld/","持つ","Hold my hand."],
+  ["honest","/ɔnɪst/","正直な","Please be honest."],
+  ["honey","/hʌni/","蜂蜜","Add honey to the tea."],
+  ["honor","/ɔnər/","名誉","It is an honor to meet you."],
+  ["hopefully","/hoʊpfəli/","うまくいけば","Hopefully it will not rain."],
+  ["horizon","/həráɪzən/","地平線","The sun set on the horizon."],
+  ["horn","/hɔːrn/","角、クラクション","The driver honked the horn."],
+  ["however","/haʊɛvər/","しかしながら","I like it; however, it is expensive."],
+  ["housework","/haʊswɜːrk/","家事","He does the housework."],
+  ["hug","/hʌg/","抱擁する","She gave him a hug."],
+  ["huge","/hjuːdʒ/","巨大な","The building is huge."],
+  ["human","/hjúːmən/","人間","All humans need water."],
+  ["hunt","/hʌnt/","狩りをする","Lions hunt at night."],
+  ["hurt","/hɜːrt/","傷つける","Did you hurt yourself?"],
+  ["husband","/hʌzbənd/","夫","Her husband is a doctor."],
+  ["ID","/aɪdiː/","身分証明書","Show your ID please."],
+  ["idea","/aɪdíːə/","アイデア","That is a great idea."],
+  ["ignore","/ɪgnɔːr/","無視する","Do not ignore the rules."],
+  ["ill","/ɪl/","病気の","She felt ill."],
+  ["image","/ɪmɪdʒ/","イメージ、画像","The image is very clear."],
+  ["imagination","/ɪmædʒɪneɪʃən/","想像力","Use your imagination."],
+  ["imagine","/ɪmǽdʒɪn/","想像する","Imagine a perfect world."],
+  ["immediately","/ɪmíːdiɪtli/","すぐに","Come here immediately."],
+  ["importance","/ɪmpɔːrtəns/","重要性","The importance of health."],
+  ["important","/ɪmpɔːrtənt/","重要な","This is very important."],
+  ["impression","/ɪmprɛʃən/","印象","She made a great impression."],
+  ["improve","/ɪmprúːv/","改善する","How can I improve?"],
+  ["include","/ɪnklúːd/","含む","The price includes tax."],
+  ["increase","/ɪnkríːs/","増加する","Sales increased this year."],
+  ["indeed","/ɪndíːd/","実際に","She is indeed very talented."],
+  ["independent","/ɪndɪpɛndənt/","独立した","She is very independent."],
+  ["indoors","/ɪndɔːrz/","屋内で","Stay indoors when it rains."],
+  ["influence","/ɪnflʊəns/","影響","She had a big influence on me."],
+  ["information","/ɪnfərméɪʃən/","情報","Please give me more information."],
+  ["insect","/ɪnsɛkt/","昆虫","There are many insects here."],
+  ["insist","/ɪnsɪst/","主張する","She insisted on paying."],
+  ["inside","/ɪnsáɪd/","内部に","Come inside."],
+  ["instance","/ɪnstəns/","例","For instance, try this."],
+  ["instead","/ɪnstɛd/","代わりに","Use tea instead of coffee."],
+  ["instant","/ɪnstənt/","即座の","He wanted an instant reply."],
+  ["instruction","/ɪnstrʌkʃən/","指示","Follow the instructions."],
+  ["instructor","/ɪnstrʌktər/","インストラクター","The instructor was very helpful."],
+  ["instrument","/ɪnstrəmənt/","楽器、道具","She plays a musical instrument."],
+  ["interest","/ɪntrɪst/","興味","She has an interest in art."],
+  ["international","/ɪntərnǽʃənəl/","国際的な","It is an international event."],
+  ["interview","/ɪntərvjúː/","インタビュー","She had a job interview."],
+  ["introduce","/ɪntrədjúːs/","紹介する","Let me introduce my friend."],
+  ["invent","/ɪnvɛnt/","発明する","Edison invented the light bulb."],
+  ["invention","/ɪnvɛnʃən/","発明","The invention changed history."],
+  ["invitation","/ɪnvɪteɪʃən/","招待","She accepted the invitation."],
+  ["invite","/ɪnváɪt/","招待する","He invited me to dinner."],
+  ["island","/áɪlənd/","島","They visited a tropical island."],
+  ["issue","/ɪʃuː/","問題、号","This is a serious issue."],
+  ["item","/áɪtəm/","品目","Check the items on the list."],
+  ["jazz","/dʒæz/","ジャズ","She loves jazz music."],
+  ["jellyfish","/dʒɛlifɪʃ/","クラゲ","Watch out for jellyfish."],
+  ["journey","/dʒɜːrni/","旅","It was a long journey."],
+  ["judge","/dʒʌdʒ/","判断する、審判","Don\'t judge a book by its cover."],
+  ["join","/dʒɔɪn/","参加する","Would you like to join us?"],
+  ["ketchup","/kɛtʃəp/","ケチャップ","She put ketchup on her fries."],
+  ["keyboard","/kiːbɔːrd/","キーボード","The keyboard is wireless."],
+  ["kid","/kɪd/","子供","The kids are playing outside."],
+  ["kill","/kɪl/","殺す","Do not kill animals."],
+  ["knee","/niː/","ひざ","She hurt her knee."],
+  ["knit","/nɪt/","編む","She knitted a scarf."],
+  ["knock","/nɔk/","ノックする","Please knock before entering."],
+  ["knowledge","/nɔlɪdʒ/","知識","Knowledge is power."],
+  ["lack","/læk/","欠如、欠く","There is a lack of water."],
+  ["land","/lænd/","陸地、着陸する","The plane landed safely."],
+  ["laptop","/læptɔp/","ノートパソコン","She works on her laptop."],
+  ["lately","/léɪtli/","最近","Have you seen him lately?"],
+  ["later","/léɪtər/","後で","See you later."],
+  ["laughter","/lǽftər/","笑い","Laughter is good for you."],
+  ["laundry","/lɔːndri/","洗濯物","She did the laundry."],
+  ["lawyer","/lɔːjər/","弁護士","He hired a lawyer."],
+  ["lead","/liːd/","率いる","She leads the team."],
+  ["least","/liːst/","最も少ない","At least try."],
+  ["leather","/lɛðər/","革","She wore leather boots."],
+  ["leave","/liːv/","去る、残す","What time do you leave?"],
+  ["lecture","/lɛktʃər/","講義","The lecture was interesting."],
+  ["lend","/lɛnd/","貸す","Can you lend me a pen?"],
+  ["less","/lɛs/","より少ない","Eat less sugar."],
+  ["let","/lɛt/","させる","Let me help you."],
+  ["level","/lɛvəl/","レベル","What level are you?"],
+  ["lie","/laɪ/","横になる、嘘をつく","Don\'t lie to me."],
+  ["license","/láɪsəns/","免許","He got his driver\'s license."],
+  ["lifeguard","/láɪfgɑːrd/","ライフガード","The lifeguard saved him."],
+  ["lifestyle","/láɪfstaɪl/","生活スタイル","She has a healthy lifestyle."],
+  ["lift","/lɪft/","持ち上げる","He lifted the box."],
+  ["likely","/láɪkli/","〜しそうな","It is likely to rain."],
+  ["lime","/laɪm/","ライム","She squeezed lime on the salad."],
+  ["limit","/lɪmɪt/","制限する","There is a time limit."],
+  ["liquid","/lɪkwɪd/","液体","Drink plenty of liquids."],
+  ["lobster","/lɔbstər/","ロブスター","She ordered lobster."],
+  ["local","/lóʊkəl/","地元の","This is a local restaurant."],
+  ["location","/loʊkéɪʃən/","場所","The location is perfect."],
+  ["lock","/lɔk/","鍵をかける","Lock the door."],
+  ["lonely","/lóʊnli/","孤独な","She felt lonely."],
+  ["lose","/luːz/","失う、負ける","Don\'t lose your ticket."],
+  ["loud","/laʊd/","大声の","The music is too loud."],
+  ["lower","/lóʊər/","下げる","Lower your voice."],
+  ["luck","/lʌk/","運","Good luck!"],
+  ["luckily","/lʌkɪli/","幸運にも","Luckily, she was safe."],
+  ["ma\'am","/mæm/","奥様、女性への呼びかけ","Yes, ma\'am."],
+  ["mad","/mæd/","怒っている、狂った","She was mad at him."],
+  ["magic","/mǽdʒɪk/","魔法","It was like magic."],
+  ["main","/meɪn/","主要な","What is the main idea?"],
+  ["major","/méɪdʒər/","主要な、専攻","She majors in biology."],
+  ["majority","/mədʒɔrɪti/","過半数","The majority agreed."],
+  ["makeup","/méɪkʌp/","化粧","She rarely wears makeup."],
+  ["male","/meɪl/","男性の","Is the doctor male or female?"],
+  ["mall","/mɔːl/","ショッピングモール","Let us go to the mall."],
+  ["manage","/mǽnɪdʒ/","管理する","She manages the team."],
+  ["manager","/mǽnɪdʒər/","マネージャー","He became the manager."],
+  ["manual","/mǽnjuəl/","マニュアル、手動の","Read the manual first."],
+  ["market","/mɑːrkɪt/","市場","She shops at the market."],
+  ["marry","/mǽri/","結婚する","They will marry next year."],
+  ["match","/mætʃ/","合う、試合","The colors match well."],
+  ["material","/mətɪəriəl/","材料、素材","What material is this made of?"],
+  ["matter","/mǽtər/","重要である、問題","It doesn\'t matter."],
+  ["mayor","/méɪər/","市長","The mayor gave a speech."],
+  ["meal","/miːl/","食事","She cooked a delicious meal."],
+  ["mean","/miːn/","意味する、意地悪な","What does this word mean?"],
+  ["measure","/mɛʒər/","測る","Measure the room first."],
+  ["medicine","/mɛdɪsɪn/","薬、医学","Take this medicine."],
+  ["melt","/mɛlt/","溶ける","The ice melted."],
+  ["membership","/mɛmbərʃɪp/","会員権","She has a gym membership."],
+  ["memorize","/mɛməraɪz/","暗記する","Memorize the vocabulary."],
+  ["memory","/mɛməri/","記憶","I have good memories of that trip."],
+  ["mention","/mɛnʃən/","言及する","He mentioned the new plan."],
+  ["metal","/mɛtəl/","金属","The door is made of metal."],
+  ["method","/mɛθəd/","方法","Try a different method."],
+  ["middle","/mɪdəl/","中央の","She sat in the middle."],
+  ["midnight","/mɪdnaɪt/","真夜中","He stayed up until midnight."],
+  ["might","/maɪt/","かもしれない","It might rain."],
+  ["million","/mɪljən/","百万","One million people visited."],
+  ["mind","/maɪnd/","心、気にする","Do you mind?"],
+  ["miracle","/mɪrəkəl/","奇跡","It was a miracle."],
+  ["miss","/mɪs/","逃す、寂しく思う","I miss my family."],
+  ["mistake","/mɪstéɪk/","間違い","Everyone makes mistakes."],
+  ["mixed","/mɪkst/","混合の","She had mixed feelings."],
+  ["modern","/mɔdərn/","現代の","This is a modern building."],
+  ["moment","/moʊmənt/","瞬間","Wait a moment please."],
+  ["mostly","/móʊstli/","ほとんど","She mostly works from home."],
+  ["move","/muːv/","動く、引越しする","We moved to a new house."],
+  ["mystery","/mɪstəri/","謎","It remains a mystery."],
+  ["narrow","/nǽroʊ/","狭い","The street is very narrow."],
+  ["nation","/néɪʃən/","国家","This is a powerful nation."],
+  ["national","/nǽʃənəl/","国家の","It is a national holiday."],
+  ["nationality","/næʃənǽlɪti/","国籍","What is your nationality?"],
+  ["native","/néɪtɪv/","生まれた土地の","She is a native speaker."],
+  ["natural","/nǽtʃərəl/","自然な","It is a natural reaction."],
+  ["naturally","/nǽtʃərəli/","自然に","She speaks naturally."],
+  ["nature","/néɪtʃər/","自然","She loves nature."],
+  ["nearby","/nɪərbáɪ/","近くに","There is a park nearby."],
+  ["nearly","/nɪərli/","ほぼ","It is nearly midnight."],
+  ["necessary","/nɛsɪsɛri/","必要な","Is it necessary?"],
+  ["negative","/nɛgətɪv/","否定的な","Try not to be negative."],
+  ["neighbor","/néɪbər/","隣人","My neighbor is friendly."],
+  ["neighborhood","/néɪbərhʊd/","近所","It is a safe neighborhood."],
+  ["neither","/níːðər/","どちらも〜ない","Neither of them came."],
+  ["nephew","/nɛfjuː/","甥","My nephew is 10 years old."],
+  ["nervous","/nɜːrvəs/","緊張した","She was nervous before the test."],
+  ["network","/nɛtwɜːrk/","ネットワーク","She has a wide network."],
+  ["niece","/niːs/","姪","His niece is very cute."],
+  ["nicely","/náɪsli/","上手に、きちんと","She dressed nicely."],
+  ["noise","/nɔɪz/","騒音","There is too much noise."],
+  ["noisy","/nɔɪzi/","うるさい","The classroom was noisy."],
+  ["none","/nʌn/","何も〜ない","None of them arrived."],
+  ["nonsmoking","/nɔnsmoʊkɪŋ/","禁煙の","I need a nonsmoking room."],
+  ["normal","/nɔːrməl/","普通の","That is normal."],
+  ["note","/noʊt/","メモ","Take notes during class."],
+  ["notice","/nóʊtɪs/","気づく","Did you notice anything?"],
+  ["novel","/nɔvəl/","小説","She reads novels."],
+  ["nowadays","/náʊədeɪz/","最近は","Nowadays everyone has a phone."],
+  ["nut","/nʌt/","ナッツ、木の実","She is allergic to nuts."],
+  ["objection","/əbdʒɛkʃən/","反対意見","He raised an objection."],
+  ["observe","/əbzɜːrv/","観察する","Observe the animals."],
+  ["offer","/ɔfər/","申し出る","She offered to help."],
+  ["officer","/ɔfɪsər/","役員、警官","A police officer arrived."],
+  ["official","/əfɪʃəl/","公式の","This is an official document."],
+  ["Olympics","/əlɪmpɪks/","オリンピック","She won gold at the Olympics."],
+  ["once","/wʌns/","一度","I visited once."],
+  ["online","/ɔnlàɪn/","オンラインで","She shops online."],
+  ["operation","/ɔpəreɪʃən/","手術、操作","He had an operation."],
+  ["opinion","/əpɪnjən/","意見","What is your opinion?"],
+  ["opportunity","/ɔpərtjúːnɪti/","機会","This is a great opportunity."],
+  ["opposite","/ɔpəzɪt/","反対の","They have opposite views."],
+  ["orchestra","/ɔːrkɪstrə/","オーケストラ","She plays in an orchestra."],
+  ["order","/ɔːrdər/","注文する、順序","May I take your order?"],
+  ["ordinary","/ɔːrdɪnɛri/","普通の","It was an ordinary day."],
+  ["organization","/ɔːrgənɪzeɪʃən/","組織","She works for a large organization."],
+  ["organize","/ɔːrgənaɪz/","組織する","She organized the event."],
+  ["origin","/ɔrɪdʒɪn/","起源","What is the origin of this word?"],
+  ["originally","/ərɪdʒɪnəli/","元々は","She is originally from Osaka."],
+  ["other","/ʌðər/","他の","Is there any other way?"],
+  ["outdoors","/aʊtdɔːrz/","屋外で","She enjoys the outdoors."],
+  ["outside","/aʊtsáɪd/","外側に","Wait outside please."],
+  ["overcome","/oʊvərkʌm/","克服する","She overcame her fear."],
+  ["own","/oʊn/","自分自身の","She has her own business."],
+  ["owner","/oʊnər/","所有者","He is the owner of the shop."],
+  ["oyster","/ɔɪstər/","カキ","She loves oysters."],
+  ["pace","/peɪs/","ペース","Walk at a comfortable pace."],
+  ["Pacific","/pəsɪfɪk/","太平洋","The Pacific Ocean is huge."],
+  ["pack","/pæk/","荷造りする","Pack your bags."],
+  ["package","/pǽkɪdʒ/","小包","The package arrived today."],
+  ["pain","/peɪn/","痛み","She felt pain in her knee."],
+  ["palace","/pǽlɪs/","宮殿","They visited the palace."],
+  ["park","/pɑːrk/","公園、駐車する","Park the car here."],
+  ["particular","/pərtɪkjələr/","特定の","I like this particular design."],
+  ["partner","/pɑːrtnər/","パートナー","She is my business partner."],
+  ["part-time","/pɑːrt taɪm/","パートタイムの","He works part-time."],
+  ["pass","/pæs/","通過する、合格する","He passed the exam."],
+  ["passage","/pǽsɪdʒ/","通路、文章の一節","Read the passage carefully."],
+  ["passenger","/pǽsɪndʒər/","乗客","The passengers boarded."],
+  ["past","/pæst/","過去、〜を過ぎて","Learn from the past."],
+  ["paste","/peɪst/","ペースト、貼り付ける","Copy and paste the text."],
+  ["path","/pæθ/","道","Follow the path."],
+  ["patient","/péɪʃənt/","患者、辛抱強い","Be patient."],
+  ["pause","/pɔːz/","一時停止する","She paused for a moment."],
+  ["pay","/peɪ/","支払う","How do you pay?"],
+  ["penalty","/pɛnəlti/","罰則、ペナルティ","There is a penalty for late payment."],
+  ["percent","/pərsɛnt/","パーセント","50 percent agreed."],
+  ["perfect","/pɜːrfɪkt/","完璧な","The weather was perfect."],
+  ["perform","/pərfɔːrm/","行う、演じる","She performed on stage."],
+  ["performance","/pərfɔːrməns/","演技、パフォーマンス","The performance was great."],
+  ["perhaps","/pərhǽps/","たぶん","Perhaps she is right."],
+  ["person","/pɜːrsən/","人","She is a kind person."],
+  ["personal","/pɜːrsənəl/","個人的な","Keep your personal data safe."],
+  ["photograph","/fóʊtəgræf/","写真","She took a photograph."],
+  ["photographer","/fətɔgrəfər/","カメラマン","He is a professional photographer."],
+  ["photography","/fətɔgrəfi/","写真撮影","She studies photography."],
+  ["physically","/fɪzɪkli/","肉体的に","She is physically strong."],
+  ["pick","/pɪk/","選ぶ、摘む","Pick the best one."],
+  ["piece","/piːs/","一切れ","Can I have a piece of cake?"],
+  ["planet","/plǽnɪt/","惑星","Earth is a planet."],
+  ["plant","/plænt/","植物、植える","Water the plants."],
+  ["plastic","/plǽstɪk/","プラスチック","Reduce plastic use."],
+  ["platform","/plǽtfɔːrm/","プラットフォーム、駅のホーム","The train is on platform 3."],
+  ["playground","/pléɪgraʊnd/","遊び場","Children play at the playground."],
+  ["pleasant","/plɛzənt/","楽しい","It was a pleasant day."],
+  ["pole","/poʊl/","柱、極","The South Pole is cold."],
+  ["police","/pəliːs/","警察","Call the police."],
+  ["policy","/pɔlɪsi/","方針、政策","Follow the school policy."],
+  ["polite","/pəláɪt/","礼儀正しい","Always be polite."],
+  ["politician","/pɔlɪtɪʃən/","政治家","She became a politician."],
+  ["poorly","/pʊərli/","下手に、気分が悪い","He performed poorly."],
+  ["popularity","/pɔpjəlǽrɪti/","人気","The singer gained popularity."],
+  ["population","/pɔpjəleɪʃən/","人口","The population is growing."],
+  ["position","/pəzɪʃən/","位置、地位","What is your position?"],
+  ["possible","/pɔsɪbəl/","可能な","Is it possible?"],
+  ["pour","/pɔːr/","注ぐ","Pour the water slowly."],
+  ["practice","/prǽktɪs/","練習する","Practice makes perfect."],
+  ["praise","/preɪz/","褒める","She praised his work."],
+  ["prayer","/prɛər/","祈り","She said a prayer."],
+  ["prepare","/prɪpɛər/","準備する","Prepare for the exam."],
+  ["presentation","/prɛzənteɪʃən/","プレゼンテーション","She gave a great presentation."],
+  ["president","/prɛzɪdənt/","大統領、社長","He became president."],
+  ["press","/prɛs/","押す、プレス","Press the button."],
+  ["pretend","/prɪtɛnd/","ふりをする","She pretended to sleep."],
+  ["pretty","/prɪti/","かわいい、かなり","She is pretty."],
+  ["prevent","/prɪvɛnt/","防ぐ","Wash hands to prevent illness."],
+  ["price","/praɪs/","価格","What is the price?"],
+  ["pride","/praɪd/","誇り","She takes pride in her work."],
+  ["principal","/prɪnsɪpəl/","校長","The principal gave a speech."],
+  ["print","/prɪnt/","印刷する","Please print the document."],
+  ["printer","/prɪntər/","プリンター","The printer is out of ink."],
+  ["private","/práɪvɪt/","プライベートな","This is a private room."],
+  ["probably","/prɔbəbli/","おそらく","She will probably come."],
+  ["produce","/prədjúːs/","生産する","Japan produces cars."],
+  ["product","/prɔdʌkt/","製品","This is a popular product."],
+  ["professional","/prəfɛʃənəl/","プロの","He is a professional."],
+  ["professor","/prəfɛsər/","教授","She is a professor."],
+  ["profit","/prɔfɪt/","利益","The company made a profit."],
+  ["project","/prɔdʒɛkt/","プロジェクト","We finished the project."],
+  ["projector","/prədʒɛktər/","プロジェクター","Set up the projector."],
+  ["promise","/prɔmɪs/","約束する","Keep your promise."],
+  ["promote","/prəmoʊt/","昇進させる、促進する","She was promoted."],
+  ["protect","/prətɛkt/","保護する","Protect the environment."],
+  ["quality","/kwɔlɪti/","品質","Quality is important."],
+  ["quickly","/kwɪkli/","素早く","She responded quickly."],
+  ["quiet","/kwáɪɪt/","静かな","Please be quiet."],
+  ["quit","/kwɪt/","やめる","He quit smoking."],
+  ["quite","/kwaɪt/","かなり","It is quite cold today."],
+  ["race","/reɪs/","競走、人種","She won the race."],
+  ["rainbow","/réɪnboʊ/","虹","A rainbow appeared after the rain."],
+  ["raise","/reɪz/","上げる、育てる","Please raise your hand."],
+  ["rank","/ræŋk/","ランク、順位","She ranked first."],
+  ["rarely","/rɛərli/","めったに〜ない","She rarely eats fast food."],
+  ["rate","/reɪt/","割合、レート","The success rate is high."],
+  ["rather","/rǽðər/","むしろ","I would rather stay home."],
+  ["raw","/rɔː/","生の","Do not eat raw chicken."],
+  ["reach","/riːtʃ/","達する、届く","She reached the top."],
+  ["reaction","/riækʃən/","反応","His reaction was surprising."],
+  ["real","/riːl/","本物の","Is that real gold?"],
+  ["reality","/riǽlɪti/","現実","Face reality."],
+  ["realize","/ríːəlaɪz/","気づく","I realized my mistake."],
+  ["reason","/ríːzən/","理由","What is the reason?"],
+  ["receipt","/rɪsiːt/","レシート","Keep your receipt."],
+  ["receive","/rɪsiːv/","受け取る","She received a gift."],
+  ["recent","/ríːsənt/","最近の","Recent news is shocking."],
+  ["recently","/ríːsəntli/","最近","Have you seen her recently?"],
+  ["recipe","/rɛsɪpi/","レシピ","She followed the recipe."],
+  ["recognize","/rɛkəgnaɪz/","認識する","I recognized his face."],
+  ["recommend","/rɛkəmɛnd/","勧める","What do you recommend?"],
+  ["recycle","/riːsáɪkəl/","リサイクルする","Please recycle cans."],
+  ["reduce","/rɪdjúːs/","減らす","Reduce waste."],
+  ["refer","/rɪfɜːr/","参照する","Please refer to the manual."],
+  ["refresh","/rɪfrɛʃ/","リフレッシュする","A walk will refresh you."],
+  ["refrigerator","/rɪfrɪdʒəreɪtər/","冷蔵庫","The food is in the refrigerator."],
+  ["regret","/rɪgrɛt/","後悔する","She regretted the decision."],
+  ["regular","/rɛgjələr/","規則的な","She exercises on a regular basis."],
+  ["relative","/rɛlətɪv/","親戚","She visited her relatives."],
+  ["relax","/rɪlǽks/","リラックスする","Try to relax."],
+  ["relaxing","/rɪlǽksɪŋ/","リラックスできる","It was a relaxing weekend."],
+  ["release","/rɪliːs/","解放する、発売する","They released a new song."],
+  ["remain","/rɪméɪn/","残る","Please remain seated."],
+  ["remind","/rɪmáɪnd/","思い出させる","Remind me tomorrow."],
+  ["remove","/rɪmuːv/","取り除く","Remove your shoes."],
+  ["rent","/rɛnt/","賃借りする","She rents an apartment."],
+  ["rental","/rɛntəl/","レンタル","Rental cars are available."],
+  ["repair","/rɪpɛər/","修理する","He repaired the bicycle."],
+  ["replace","/rɪpléɪs/","取り替える","Replace the battery."],
+  ["reply","/rɪpláɪ/","返事をする","Please reply by Friday."],
+  ["report","/rɪpɔːrt/","報告する","She wrote a report."],
+  ["request","/rɪkwɛst/","要求する","He made a request."],
+  ["require","/rɪkwáɪər/","必要とする","This requires effort."],
+  ["rescue","/rɛskjuː/","救助する","They rescued the child."],
+  ["research","/rɪsɜːrtʃ/","研究する","She researched the topic."],
+  ["researcher","/rɪsɜːrtʃər/","研究者","He is a researcher."],
+  ["resemble","/rɪzɛmbəl/","似ている","She resembles her mother."],
+  ["reservation","/rɛzərveɪʃən/","予約","I made a reservation."],
+  ["reserve","/rɪzɜːrv/","予約する","Reserve a table."],
+  ["residence","/rɛzɪdəns/","住居","This is her residence."],
+  ["respect","/rɪspɛkt/","尊重する","Respect others."],
+  ["rest","/rɛst/","休む","Take a rest."],
+  ["restroom","/rɛstruːm/","トイレ","Where is the restroom?"],
+  ["result","/rɪzʌlt/","結果","What were the results?"],
+  ["retire","/rɪtáɪər/","退職する","She retired last year."],
+  ["return","/rɪtɜːrn/","戻る","She returned home safely."],
+  ["review","/rɪvjúː/","復習する、評価","Review your notes."],
+  ["rhythm","/rɪðəm/","リズム","She has good rhythm."],
+  ["ring","/rɪŋ/","指輪、鳴る","The phone rang."],
+  ["rise","/raɪz/","上がる","Prices continue to rise."],
+  ["risk","/rɪsk/","リスク","There is a health risk."],
+  ["roast","/roʊst/","ローストする","She roasted the chicken."],
+  ["rock","/rɔk/","岩、ロック音楽","The kids climbed the rock."],
+  ["role","/roʊl/","役割","She plays an important role."],
+  ["roll","/roʊl/","転がる","The ball rolled away."],
+  ["round","/raʊnd/","丸い、回","The table is round."],
+  ["row","/roʊ/","列","Sit in the front row."],
+  ["rule","/ruːl/","ルール","Follow the rules."],
+  ["rumor","/rúːmər/","うわさ","That is just a rumor."],
+  ["rush","/rʌʃ/","急ぐ","Don\'t rush."],
+  ["Russian","/rʌʃən/","ロシアの","She speaks Russian."],
+  ["safe","/seɪf/","安全な","Is it safe to swim here?"],
+  ["safety","/séɪfti/","安全","Safety comes first."],
+  ["sail","/seɪl/","航海する","They sailed around the world."],
+  ["salmon","/sǽmən/","サーモン","She ordered salmon."],
+  ["salon","/səlɔn/","サロン","She went to the hair salon."],
+  ["salty","/sɔːlti/","塩辛い","The soup is too salty."],
+  ["sample","/sǽmpəl/","サンプル","Try a free sample."],
+  ["sauce","/sɔːs/","ソース","She put sauce on the pasta."],
+  ["sausage","/sɔsɪdʒ/","ソーセージ","She bought sausages."],
+  ["save","/seɪv/","救う、節約する","Save your money."],
+  ["scare","/skɛər/","怖がらせる","The noise scared her."],
+  ["scared","/skɛərd/","怖い","She was scared."],
+  ["scarf","/skɑːrf/","マフラー","She wore a scarf."],
+  ["scary","/skɛəri/","怖い","The movie was scary."],
+  ["scene","/siːn/","場面","The scene was beautiful."],
+  ["scenery","/síːnəri/","景色","The scenery is amazing."],
+  ["schedule","/skɛdʒuːl/","スケジュール","Check your schedule."],
+  ["science fiction","/saɪəns fɪkʃən/","SF（サイエンスフィクション）","She loves science fiction."],
+  ["score","/skɔːr/","得点","What was the score?"],
+  ["screen","/skriːn/","画面","The screen is cracked."],
+  ["seafood","/síːfuːd/","シーフード","She loves seafood."],
+  ["search","/sɜːrtʃ/","探す、検索する","Search for information online."],
+  ["secret","/síːkrɪt/","秘密","Keep it a secret."],
+  ["section","/sɛkʃən/","部分、セクション","Read this section carefully."],
+  ["seed","/siːd/","種","Plant the seeds."],
+  ["seek","/siːk/","探す","She sought help."],
+  ["seem","/siːm/","〜のように見える","He seems happy."],
+  ["seldom","/sɛldəm/","めったに〜ない","She seldom eats sweets."],
+  ["select","/sɪlɛkt/","選ぶ","Select the best option."],
+  ["semester","/sɪmɛstər/","学期","The semester starts in April."],
+  ["sense","/sɛns/","感覚","She has good common sense."],
+  ["separate","/sɛpərɪt/","分ける","Separate the recycling."],
+  ["serious","/sɪəriəs/","深刻な","This is a serious problem."],
+  ["serve","/sɜːrv/","提供する","She served tea."],
+  ["service","/sɜːrvɪs/","サービス","The service was excellent."],
+  ["set","/sɛt/","置く、セット","Set the table."],
+  ["several","/sɛvərəl/","いくつかの","I have several questions."],
+  ["shadow","/ʃǽdoʊ/","影","She saw her shadow."],
+  ["shake","/ʃeɪk/","振る","Shake the bottle."],
+  ["shape","/ʃeɪp/","形","What shape is it?"],
+  ["share","/ʃɛər/","共有する","Share your ideas."],
+  ["sheet","/ʃiːt/","シーツ、シート","Change the bed sheets."],
+  ["shelf","/ʃɛlf/","棚","Put it on the shelf."],
+  ["shelter","/ʃɛltər/","避難所","They took shelter."],
+  ["shopper","/ʃɔpər/","買い物客","The shoppers were busy."],
+  ["shortly","/ʃɔːrtli/","まもなく","We will arrive shortly."],
+  ["shoot","/ʃuːt/","撃つ、撮影する","She shot the goal."],
+  ["shy","/ʃaɪ/","恥ずかしがりの","He is very shy."],
+  ["shrimp","/ʃrɪmp/","エビ","She ordered shrimp pasta."],
+  ["side","/saɪd/","側面","Which side?"],
+  ["sight","/saɪt/","視力、眺め","What a beautiful sight."],
+  ["sign","/saɪn/","兆候、サインする","Follow the signs."],
+  ["signal","/sɪgnəl/","信号","The signal was lost."],
+  ["silence","/sáɪləns/","沈黙","There was silence."],
+  ["similar","/sɪmɪlər/","似ている","The two are very similar."],
+  ["simple","/sɪmpəl/","シンプルな","Keep it simple."],
+  ["sincerely","/sɪnsɪərli/","心から","She sincerely apologized."],
+  ["sink","/sɪŋk/","沈む、流し台","The ship sank."],
+  ["site","/saɪt/","サイト、場所","This is a historic site."],
+  ["situation","/sɪtʃuéɪʃən/","状況","Explain the situation."],
+  ["sketch","/skɛtʃ/","スケッチする","She sketched the building."],
+  ["skill","/skɪl/","技術","She has good communication skills."],
+  ["skip","/skɪp/","スキップする、飛ばす","Skip the boring parts."],
+  ["slide","/slaɪd/","滑り台、スライド","The kids love the slide."],
+  ["smart","/smɑːrt/","賢い","She is very smart."],
+  ["smartphone","/smɑːrtfoʊn/","スマートフォン","Everyone has a smartphone."],
+  ["smell","/smɛl/","においがする","It smells nice."],
+  ["snake","/sneɪk/","ヘビ","She saw a snake."],
+  ["smoker","/smoʊkər/","喫煙者","He is a smoker."],
+  ["soldier","/soʊldʒər/","兵士","She is a brave soldier."],
+  ["solve","/sɔlv/","解決する","Can you solve this?"],
+  ["sometime","/sʌmtaɪm/","いつか","Let us meet sometime."],
+  ["somewhere","/sʌmwɛər/","どこかに","She went somewhere."],
+  ["souvenir","/suːvənɪər/","土産","She bought a souvenir."],
+  ["space","/speɪs/","宇宙、空間","There is not enough space."],
+  ["special","/spɛʃəl/","特別な","Today is a special day."],
+  ["specialize","/spɛʃəlaɪz/","専門とする","She specializes in art."],
+  ["specific","/spɪsɪfɪk/","特定の","Be more specific."],
+  ["spell","/spɛl/","つづりを書く","How do you spell it?"],
+  ["spelling","/spɛlɪŋ/","つづり","Check your spelling."],
+  ["spice","/spaɪs/","スパイス","Add spice to the dish."],
+  ["spicy","/spaɪsi/","辛い","The curry was spicy."],
+  ["spider","/spáɪdər/","クモ","She is afraid of spiders."],
+  ["spill","/spɪl/","こぼす","She spilled the milk."],
+  ["spot","/spɔt/","場所、見つける","This is a great spot."],
+  ["spread","/sprɛd/","広がる、塗る","Spread butter on the bread."],
+  ["square","/skwɛər/","正方形、広場","Meet at the main square."],
+  ["staff","/stæf/","スタッフ","The staff are very helpful."],
+  ["stair","/stɛər/","階段","Take the stairs."],
+  ["stand","/stænd/","立つ","Please stand up."],
+  ["state","/steɪt/","状態、州、述べる","What is your state?"],
+  ["statement","/steɪtmənt/","声明","She made a statement."],
+  ["statue","/stǽtʃuː/","像","They saw the Statue of Liberty."],
+  ["steal","/stiːl/","盗む","Someone stole my bag."],
+  ["stick","/stɪk/","棒、くっつく","Stick to the plan."],
+  ["stomach","/stʌmək/","胃","My stomach hurts."],
+  ["storm","/stɔːrm/","嵐","A storm is coming."],
+  ["straight","/streɪt/","まっすぐな","Go straight ahead."],
+  ["strength","/strɛŋθ/","強さ","She has great strength."],
+  ["stretch","/strɛtʃ/","伸ばす","Stretch before exercising."],
+  ["stressful","/strɛsfəl/","ストレスの多い","It was a stressful week."],
+  ["style","/staɪl/","スタイル","She has great style."],
+  ["subway","/sʌbweɪ/","地下鉄","Take the subway downtown."],
+  ["succeed","/səksíːd/","成功する","She succeeded in business."],
+  ["success","/səksɛs/","成功","Her success inspired others."],
+  ["successful","/səksɛsfəl/","成功した","She is a successful artist."],
+  ["suddenly","/sʌdənli/","突然","She suddenly remembered."],
+  ["suffer","/sʌfər/","苦しむ","He suffers from allergies."],
+  ["suggest","/sədʒɛst/","提案する","She suggested a new plan."],
+  ["suit","/suːt/","スーツ、合う","Does this suit you?"],
+  ["suitable","/suːtəbəl/","適切な","Is this suitable?"],
+  ["summary","/sʌməri/","要約","Write a summary."],
+  ["sunlight","/sʌnlaɪt/","日光","Plants need sunlight."],
+  ["sunshine","/sʌnʃaɪn/","日差し","Enjoy the sunshine."],
+  ["supply","/səpláɪ/","供給する","Supply and demand."],
+  ["support","/səpɔːrt/","支援する","Please support us."],
+  ["suppose","/səpóʊz/","〜だと思う","I suppose you are right."],
+  ["surface","/sɜːrfɪs/","表面","The surface is rough."],
+  ["surf","/sɜːrf/","サーフィンをする","He surfs every weekend."],
+  ["surprise","/sərpráɪz/","驚かせる","She surprised him."],
+  ["surprisingly","/sərpráɪzɪŋli/","驚くほど","He was surprisingly calm."],
+  ["survey","/sɜːrveɪ/","アンケート","Please complete the survey."],
+  ["survive","/sərváɪv/","生き残る","She survived the accident."],
+  ["swing","/swɪŋ/","ブランコ、振る","She swung the bat."],
+  ["switch","/swɪtʃ/","切り替える","Switch off the lights."],
+  ["sword","/sɔːrd/","剣","He carried a sword."],
+  ["symbol","/sɪmbəl/","シンボル","The dove is a symbol of peace."],
+  ["tablet","/tǽblɪt/","タブレット","She reads on a tablet."],
+  ["task","/tæsk/","課題","Complete the task."],
+  ["taste","/teɪst/","味がする","This tastes sweet."],
+  ["teammate","/tiːmmeɪt/","チームメイト","She is a great teammate."],
+  ["teamwork","/tiːmwɜːrk/","チームワーク","Good teamwork is essential."],
+  ["technique","/tɛkníːk/","技術","She has great technique."],
+  ["technology","/tɛknɔlədʒi/","技術","Technology changes our lives."],
+  ["teenager","/tiːneɪdʒər/","10代の若者","She is a teenager."],
+  ["temperature","/tɛmprɪtʃər/","温度","What is the temperature?"],
+  ["temple","/tɛmpəl/","寺院","They visited a temple."],
+  ["terrible","/tɛrɪbəl/","ひどい","That is terrible news."],
+  ["theme","/θiːm/","テーマ","What is the theme?"],
+  ["therefore","/ðɛərfɔːr/","したがって","Therefore, I agree."],
+  ["thick","/θɪk/","厚い","The wall is thick."],
+  ["thin","/θɪn/","薄い、細い","She is very thin."],
+  ["thought","/θɔːt/","考え","Share your thoughts."],
+  ["throat","/θroʊt/","のど","She has a sore throat."],
+  ["through","/θruː/","〜を通して","Go through the door."],
+  ["thunderstorm","/θʌndərstɔːrm/","雷雨","A thunderstorm is coming."],
+  ["title","/táɪtəl/","タイトル","What is the title of the book?"],
+  ["tool","/tuːl/","道具","Use the right tool."],
+  ["topic","/tɔpɪk/","話題","What is the topic?"],
+  ["total","/toʊtəl/","合計の","What is the total?"],
+  ["totally","/toʊtəli/","完全に","I totally agree."],
+  ["touch","/tʌtʃ/","触れる","Don\'t touch that."],
+  ["tough","/tʌf/","難しい、丈夫な","It was a tough decision."],
+  ["tour","/tʊər/","ツアー","She went on a tour."],
+  ["tourist","/tʊərɪst/","観光客","Many tourists visit Kyoto."],
+  ["tournament","/tʊərnəmənt/","トーナメント","They entered the tournament."],
+  ["toward","/tɔːrd/","〜に向かって","She walked toward the door."],
+  ["track","/træk/","追跡する、トラック","Stay on track."],
+  ["trade","/treɪd/","取引する","Free trade is important."],
+  ["tradition","/trədɪʃən/","伝統","It is an old tradition."],
+  ["traditional","/trədɪʃənəl/","伝統的な","She wears traditional clothes."],
+  ["traffic","/træfɪk/","交通","There is heavy traffic."],
+  ["train","/treɪn/","訓練する、列車","Train hard every day."],
+  ["training","/treɪnɪŋ/","トレーニング","She is in training."],
+  ["translate","/trænsléɪt/","翻訳する","Can you translate this?"],
+  ["trap","/træp/","罠","He fell into a trap."],
+  ["trash","/træʃ/","ごみ","Take out the trash."],
+  ["travel","/trǽvəl/","旅行する","She loves to travel."],
+  ["treatment","/tríːtmənt/","治療","She received treatment."],
+  ["trend","/trɛnd/","トレンド","Follow the latest trends."],
+  ["trick","/trɪk/","トリック、だます","He played a trick."],
+  ["trouble","/trʌbəl/","問題、トラブル","She had trouble sleeping."],
+  ["truck","/trʌk/","トラック","The truck was heavy."],
+  ["true","/truː/","本当の","Is that true?"],
+  ["trust","/trʌst/","信頼する","Trust your instincts."],
+  ["turn","/tɜːrn/","回る、曲がる","Turn left here."],
+  ["tutor","/tjúːtər/","家庭教師","She hired a tutor."],
+  ["twice","/twaɪs/","2度","She goes twice a week."],
+  ["type","/taɪp/","種類、タイプする","What type do you prefer?"],
+  ["typical","/tɪpɪkəl/","典型的な","That is typical of him."],
+  ["unfortunately","/ʌnfɔːrtʃənɪtli/","残念ながら","Unfortunately, she was late."],
+  ["unfriendly","/ʌnfrɛndli/","不親切な","The staff were unfriendly."],
+  ["uniform","/júːnɪfɔːrm/","制服","She wears a school uniform."],
+  ["unique","/juːníːk/","独特の","This is a unique design."],
+  ["unless","/ʌnlɛs/","〜しない限り","Unless you try, you won\'t know."],
+  ["unlike","/ʌnláɪk/","〜とは違って","Unlike him, she is quiet."],
+  ["unusual","/ʌnjúːʒuəl/","珍しい","That is unusual."],
+  ["upset","/ʌpsɛt/","動揺した","She was upset."],
+  ["upstairs","/ʌpstɛərz/","上の階に","She went upstairs."],
+  ["usual","/júːʒuəl/","普通の","As usual, he was late."],
+  ["valuable","/vǽljuəbəl/","貴重な","Time is valuable."],
+  ["value","/vǽljuː/","価値","What is the value?"],
+  ["various","/vɛəriəs/","様々な","She has various interests."],
+  ["vegetable","/vɛdʒɪtəbəl/","野菜","Eat more vegetables."],
+  ["version","/vɜːrʒən/","バージョン","This is the latest version."],
+  ["victory","/vɪktəri/","勝利","She celebrated her victory."],
+  ["view","/vjuː/","眺め、見解","The view from the top is amazing."],
+  ["violent","/váɪələnt/","暴力的な","The storm was violent."],
+  ["visitor","/vɪzɪtər/","訪問者","Many visitors come here."],
+  ["volume","/vɔljuːm/","音量、体積","Turn up the volume."],
+  ["volunteer","/vɔləntɪər/","ボランティアをする","She volunteers at the hospital."],
+  ["vote","/voʊt/","投票する","She voted in the election."],
+  ["wait","/weɪt/","待つ","Please wait here."],
+  ["wake","/weɪk/","目覚める","Wake up early."],
+  ["wallet","/wɔlɪt/","財布","She lost her wallet."],
+  ["wallpaper","/wɔːlpeɪpər/","壁紙","She changed the wallpaper."],
+  ["warm","/wɔːrm/","暖かい","The room is warm."],
+  ["waste","/weɪst/","無駄にする","Don\'t waste food."],
+  ["wave","/weɪv/","波、手を振る","She waved goodbye."],
+  ["wealthy","/wɛlθi/","裕福な","He is very wealthy."],
+  ["web","/wɛb/","ウェブ","Search the web."],
+  ["weekday","/wiːkdeɪ/","平日","She works on weekdays."],
+  ["weigh","/weɪ/","重さがある","How much does it weigh?"],
+  ["weight","/weɪt/","体重、重さ","She lost weight."],
+  ["well-known","/wɛlnoʊn/","よく知られた","She is a well-known singer."],
+  ["whatever","/wɔtɛvər/","何でも","Whatever you decide."],
+  ["wheel","/wiːl/","車輪","The wheel is flat."],
+  ["whenever","/wɛnɛvər/","〜するときはいつも","Call me whenever you need."],
+  ["while","/waɪl/","〜する間","She studied while listening."],
+  ["whoever","/huːɛvər/","誰でも","Whoever wins will get a prize."],
+  ["whole","/hoʊl/","全体の","She ate the whole cake."],
+  ["wide","/waɪd/","広い","The road is wide."],
+  ["wild","/waɪld/","野生の","Wild animals are free."],
+  ["win","/wɪn/","勝つ","She wants to win."],
+  ["wipe","/waɪp/","ふく","Wipe the table."],
+  ["wish","/wɪʃ/","望む","Make a wish."],
+  ["within","/wɪðɪn/","〜以内に","Come within an hour."],
+  ["without","/wɪðáʊt/","〜なしに","Do it without help."],
+  ["wonder","/wʌndər/","不思議に思う","I wonder what happened."],
+  ["wood","/wʊd/","木材","The table is made of wood."],
+  ["wooden","/wʊdən/","木製の","She sat on a wooden chair."],
+  ["workplace","/wɜːrkpleɪs/","職場","Keep the workplace clean."],
+  ["worry","/wɜːri/","心配する","Don\'t worry."],
+  ["worth","/wɜːrθ/","〜の価値がある","It is worth trying."],
+  ["wrap","/ræp/","包む","Wrap the gift."],
+  ["wrongly","/rɔŋli/","間違って","She was wrongly accused."],
+  ["yet","/jɛt/","まだ","Is she here yet?"],
+  ["yoga","/joʊgə/","ヨガ","She does yoga every morning."],
+];
+
+
+var state = {
+  round: 1,
+  okCount: 0,
+  mistakeMap: {},
+  studiedDates: [],
+  streak: 0,
+  roundCompleted: [false, false, false]
+};
+
+var session = { deck:[], retryDeck:[], current:0, okCount:0, isReview:false };
+
+function loadState() {
+  try { var s = localStorage.getItem('eiken_j2_v2'); if(s) state = JSON.parse(s); } catch(e){}
+}
+function saveState() {
+  try { localStorage.setItem('eiken_j2_v2', JSON.stringify(state)); } catch(e){}
+}
+function getTodayStr() {
+  var d = new Date();
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+function recordStudyDate() {
+  var t = getTodayStr();
+  if(state.studiedDates.indexOf(t)===-1){ state.studiedDates.push(t); calcStreak(); saveState(); }
+}
+function calcStreak() {
+  var dates = state.studiedDates.slice().sort();
+  var streak = 0;
+  var d = new Date();
+  for(var i=0;i<365;i++){
+    var check = new Date(d); check.setDate(d.getDate()-i);
+    var s = check.getFullYear()+'-'+String(check.getMonth()+1).padStart(2,'0')+'-'+String(check.getDate()).padStart(2,'0');
+    if(dates.indexOf(s)!==-1) streak++;
+    else if(i>0) break;
+  }
+  state.streak = streak;
+}
+function showPage(name,idx){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
+  document.getElementById('page-'+name).classList.add('active');
+  document.querySelectorAll('.tab')[idx].classList.add('active');
+  if(name==='home') updateHome();
+  if(name==='weak') updateWeak();
+  if(name==='cal') updateCal();
+}
+function updateHome(){
+  var r = state.round;
+  var titles = ['','1周目 · 全'+WORDS.length+'単語','2周目 · 苦手単語特訓','3周目 · 定着確認'];
+  document.getElementById('home-round-title').textContent = titles[r];
+  document.getElementById('home-total').textContent = WORDS.length;
+  document.getElementById('home-ok').textContent = state.okCount;
+  document.getElementById('home-ng').textContent = Object.keys(state.mistakeMap).length;
+  document.getElementById('home-streak').textContent = '🔥 '+state.streak;
+  var pct = Math.round(state.okCount/WORDS.length*100);
+  document.getElementById('home-pct').textContent = pct+'%';
+  for(var i=1;i<=3;i++){
+    var badge = document.getElementById('round-badge-'+i);
+    var status = document.getElementById('round-status-'+i);
+    badge.className = 'round-badge';
+    if(state.roundCompleted[i-1]){
+      badge.classList.add('done'); status.textContent='完了✓'; status.style.color='var(--green)';
+    } else if(i===r){
+      badge.classList.add('current'); status.textContent='進行中'; status.style.color='var(--amber)';
+    } else {
+      badge.classList.add('locked'); status.textContent='ロック中'; status.style.color='var(--muted)';
+    }
+  }
+}
+function startStudy(){
+  var r = state.round;
+  var src;
+  if(r===1){ src=WORDS.slice(); }
+  else {
+    var mk = Object.keys(state.mistakeMap);
+    src = WORDS.filter(function(w){return mk.indexOf(w[0])!==-1;});
+    if(src.length===0){ alert('苦手単語がありません！'); return; }
+  }
+  session.deck=src.slice(); session.retryDeck=[]; session.current=0; session.okCount=0; session.isReview=false;
+  document.getElementById('fc-complete').style.display='none';
+  document.getElementById('study-main').style.display='block';
+  document.getElementById('fc-round-label').textContent=r+'周目';
+  document.getElementById('fc-total').textContent=src.length;
+  updateFCStats(); renderCard();
+  showPage('study',1);
+  recordStudyDate();
+}
+function updateFCStats(){
+  document.getElementById('fc-ok').textContent=session.okCount;
+  document.getElementById('fc-ng').textContent=session.retryDeck.length;
+  var total = parseInt(document.getElementById('fc-total').textContent);
+  var pct = total>0?Math.round(session.okCount/total*100):100;
+  document.getElementById('fc-prog').style.width=pct+'%';
+}
+function renderCard(){
+  var d = session.isReview?session.retryDeck:session.deck;
+  if(session.current>=d.length){
+    if(!session.isReview&&session.retryDeck.length>0){session.isReview=true;session.current=0;renderCard();return;}
+    else if(session.isReview&&session.retryDeck.length>0){session.current=0;renderCard();return;}
+    else{showComplete();return;}
+  }
+  var item=d[session.current];
+  document.getElementById('fc-word').textContent=item[0];
+  document.getElementById('fc-phonetic').textContent=item[1];
+  document.getElementById('fc-answer').textContent=item[2];
+  document.getElementById('fc-answer').style.display='none';
+  document.getElementById('fc-example').textContent=item[3];
+  document.getElementById('fc-example').style.display='none';
+  document.getElementById('fc-tag').textContent=session.isReview?'復習中':'単語';
+  document.getElementById('fc-tag').className='fc-tag '+(session.isReview?'rev':'imp');
+  document.getElementById('btn-reveal').style.display='block';
+  document.getElementById('judge-row').style.display='none';
+}
+function revealAnswer(){
+  document.getElementById('fc-answer').style.display='block';
+  document.getElementById('fc-example').style.display='block';
+  document.getElementById('btn-reveal').style.display='none';
+  document.getElementById('judge-row').style.display='flex';
+}
+function judge(ok){
+  var d=session.isReview?session.retryDeck:session.deck;
+  var item=d[session.current];
+  if(ok){
+    session.okCount++; state.okCount=session.okCount;
+    if(session.isReview){session.retryDeck.splice(session.current,1);if(session.current>=session.retryDeck.length)session.current=0;}
+    else session.current++;
+  } else {
+    if(state.mistakeMap[item[0]])state.mistakeMap[item[0]]++;else state.mistakeMap[item[0]]=1;
+    if(!session.isReview){session.retryDeck.push(item);session.current++;}
+    else{session.current++;if(session.current>=session.retryDeck.length)session.current=0;}
+  }
+  saveState(); updateFCStats(); renderCard();
+}
+function showComplete(){
+  var r=state.round;
+  state.roundCompleted[r-1]=true;
+  if(r<3)state.round=r+1;
+  state.okCount=0;
+  saveState();
+  document.getElementById('study-main').style.display='none';
+  document.getElementById('fc-complete').style.display='block';
+  var emojis=['🎉','🔥','🏆'];
+  var titles=['1周目完了！','2周目完了！','3周完了！完全マスター！'];
+  var subs=['全単語を一通り学習しました。2周目へ！','苦手単語を特訓しました。最終確認へ！','全3周完了！英検準2級の単語は完璧🏆'];
+  document.getElementById('complete-emoji').textContent=emojis[r-1];
+  document.getElementById('complete-title').textContent=titles[r-1];
+  document.getElementById('complete-sub').textContent=subs[r-1];
+}
+function goHome(){showPage('home',0);}
+function updateWeak(){
+  var c=document.getElementById('weak-list-container');
+  var entries=Object.entries(state.mistakeMap).sort(function(a,b){return b[1]-a[1];});
+  if(entries.length===0){c.innerHTML='<div class="empty-state">まだ苦手単語はありません😊<br>学習を始めましょう！</div>';return;}
+  var html='<div class="weak-list">';
+  entries.forEach(function(e){
+    var word=WORDS.find(function(w){return w[0]===e[0];});
+    if(!word)return;
+    html+='<div class="weak-item"><div class="weak-left"><div class="weak-word">'+word[0]+'</div><div class="weak-meaning">'+word[2]+'</div></div><div class="weak-count">'+e[1]+'回ミス</div></div>';
+  });
+  html+='</div>';
+  c.innerHTML=html;
+}
+function updateCal(){
+  var now=new Date();
+  var year=now.getFullYear(),month=now.getMonth();
+  document.getElementById('cal-month').textContent=year+'年'+(month+1)+'月';
+  var firstDay=new Date(year,month,1).getDay();
+  var daysInMonth=new Date(year,month+1,0).getDate();
+  var html='<div class="cal-day-label">日</div><div class="cal-day-label">月</div><div class="cal-day-label">火</div><div class="cal-day-label">水</div><div class="cal-day-label">木</div><div class="cal-day-label">金</div><div class="cal-day-label">土</div>';
+  for(var i=0;i<firstDay;i++) html+='<div class="cal-day"></div>';
+  for(var d=1;d<=daysInMonth;d++){
+    var ds=year+'-'+String(month+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    var today=getTodayStr();
+    var cls='cal-day';
+    if(ds===today)cls+=' today';
+    else if(state.studiedDates.indexOf(ds)!==-1)cls+=' done';
+    html+='<div class="'+cls+'">'+d+'</div>';
+  }
+  document.getElementById('cal-grid').innerHTML=html;
+  var thisMonth=state.studiedDates.filter(function(s){return s.startsWith(year+'-'+String(month+1).padStart(2,'0'));}).length;
+  document.getElementById('cal-streak').textContent='🔥 '+state.streak;
+  document.getElementById('cal-days').textContent=thisMonth;
+}
+loadState(); updateHome();
+</script>
+</body>
+</html>
