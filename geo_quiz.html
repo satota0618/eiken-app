@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>日本の地形 クイズ</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+    background: linear-gradient(135deg, #e8f4f8 0%, #d3e9f0 100%);
+    margin: 0;
+    padding: 16px;
+    min-height: 100vh;
+  }
+  .container { max-width: 600px; margin: 0 auto; }
+  h1 { text-align: center; color: #1a6b8a; font-size: 1.4em; margin-bottom: 4px; }
+  .subtitle { text-align: center; color: #3d8aa8; font-size: 0.85em; margin-bottom: 16px; }
+  .progress-bar { background: #eee; border-radius: 10px; height: 10px; overflow: hidden; margin-bottom: 8px; }
+  .progress-fill { background: linear-gradient(90deg, #7fc4dd, #1a6b8a); height: 100%; transition: width 0.3s; }
+  .status { display: flex; justify-content: space-between; font-size: 0.8em; color: #2a7a99; margin-bottom: 16px; }
+  .card { background: white; border-radius: 16px; padding: 20px; box-shadow: 0 4px 12px rgba(26,107,138,0.15); margin-bottom: 16px; }
+  .round-badge { display: inline-block; background: #1a6b8a; color: white; padding: 3px 10px; border-radius: 12px; font-size: 0.75em; margin-bottom: 12px; }
+  .question { font-size: 1.1em; line-height: 1.6; color: #333; margin-bottom: 16px; white-space: pre-wrap; }
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .option-btn { background: #f0f9fc; border: 2px solid #7fc4dd; border-radius: 10px; padding: 12px 14px; font-size: 1em; text-align: left; cursor: pointer; transition: all 0.2s; color: #333; }
+  .option-btn:active { transform: scale(0.98); }
+  .option-btn.correct { background: #d4edda; border-color: #28a745; font-weight: bold; }
+  .option-btn.wrong { background: #f8d7da; border-color: #dc3545; }
+  .option-btn:disabled { cursor: default; }
+  .explain { margin-top: 14px; padding: 12px; background: #e6f4fa; border-left: 4px solid #7fc4dd; border-radius: 8px; font-size: 0.92em; line-height: 1.5; color: #1a5570; }
+  .next-btn { margin-top: 16px; width: 100%; background: #1a6b8a; color: white; border: none; border-radius: 10px; padding: 14px; font-size: 1em; font-weight: bold; cursor: pointer; }
+  .result-screen { text-align: center; padding: 30px 20px; }
+  .result-screen h2 { color: #1a6b8a; }
+  .big-num { font-size: 2.5em; color: #7fc4dd; font-weight: bold; margin: 10px 0; }
+  .restart-btn { background: #1a6b8a; color: white; border: none; border-radius: 10px; padding: 14px 24px; font-size: 1em; font-weight: bold; cursor: pointer; margin-top: 20px; }
+  .mode-select { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
+  .mode-btn { background: white; border: 2px solid #1a6b8a; color: #1a6b8a; border-radius: 12px; padding: 16px; font-size: 1em; font-weight: bold; cursor: pointer; }
+  .mode-btn.primary { background: #1a6b8a; color: white; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>日本の地形 クイズ</h1>
+  <div class="subtitle">国土・山地・平野・川・湖・島・海岸</div>
+  <div id="app"></div>
+</div>
+
+<script>
+const QUESTIONS = [
+  {q:"日本列島を構成する島の数は、これまでに約何とされていましたか。", opts:["約14000","約7000","約3000","約1000"], a:0, ex:"2023年の調査で、日本の島の数はこれまで約7000とされていましたが、約14000と発表されました。"},
+  {q:"日本の四大島の面積比は「本州:北海道:九州:四国=12:4:2:1」です。この比から、四国の約2倍の面積を持つ島はどれですか。", opts:["北海道","九州","本州","沖縄島"], a:1, ex:"四大島の面積比は本州:北海道:九州:四国=12:4:2:1で、九州は四国(1)の約2倍(2)の面積です。"},
+  {q:"日本の国土面積は約何万km2ですか(世界60位)。", opts:["38万km2","14万km2","100万km2","60万km2"], a:0, ex:"日本の国土面積は約38万km2で、世界第60位です。"},
+  {q:"日本の排他的経済水域の広さは世界第4位ですが、1位ロシア、3位アメリカに続き、2位の国はどこですか。", opts:["カナダ","中国","オーストラリア","ブラジル"], a:0, ex:"日本の排他的経済水域は世界第4位の広さを持ち、1位ロシア、2位カナダ、3位アメリカに次ぐ広さです。"},
+  {q:"日本の南北の長さ(北海道から沖縄まで)は約何kmですか。", opts:["約3000km","約1000km","約5000km","約500km"], a:0, ex:"日本の長さは約3000km(3300km)で、南北に細長い国土をしています。"},
+  {q:"日本の北のはし(北緯45度33分)にあたる島はどこですか。", opts:["択捉島","南鳥島","沖ノ鳥島","与那国島"], a:0, ex:"日本の北のはしは択捉島(北方領土)で、北緯45度33分に位置します。"},
+  {q:"日本の西のはし(東経122度56分)にあたる島はどこですか。", opts:["与那国島","択捉島","南鳥島","沖ノ鳥島"], a:0, ex:"日本の西のはしは与那国島で、沖縄県に属します。"},
+  {q:"日本の南のはし(北緯20度25分)にあたる島はどこですか。", opts:["沖ノ鳥島","南鳥島","択捉島","与那国島"], a:0, ex:"日本の南のはしは沖ノ鳥島で、水没を防ぐための護岸工事が行われています。"},
+  {q:"日本の東のはし(東経153度59分)にあたる島はどこですか。", opts:["南鳥島","沖ノ鳥島","択捉島","与那国島"], a:0, ex:"日本の東のはしは南鳥島です。"},
+  {q:"日本の国土面積に占める山地(丘陵地を含む)の割合は約何分の3ですか。", opts:["4分の3","2分の1","3分の1","5分の4"], a:0, ex:"日本の国土面積の約4分の3が山地(丘陵地を含む)であり、平地は少ない割合となっています。"},
+  {q:"2000年に噴火した、北海道にある火山はどれですか。", opts:["有珠山","富士山","阿蘇山","浅間山"], a:0, ex:"有珠山は北海道の火山で、2000年に噴火したことで知られています。"},
+  {q:"長野県と群馬県の境にある、活動が活発な火山はどれですか。", opts:["浅間山","富士山","阿蘇山","有珠山"], a:0, ex:"浅間山は長野・群馬県境にある活火山です。"},
+  {q:"日本一の高さ(標高)を持つ山はどれですか。", opts:["富士山","阿蘇山","浅間山","御嶽山"], a:0, ex:"富士山は標高3776mで日本最高峰です。静岡県と山梨県にまたがっています。"},
+  {q:"熊本県にある、世界最大級のカルデラを持つ火山はどれですか。", opts:["阿蘇山","富士山","浅間山","有珠山"], a:0, ex:"阿蘇山は熊本県にあり、世界最大級のカルデラ(火山活動でできたくぼ地)を持つことで知られています。"},
+  {q:"東北地方を南北に走る、日本アルプスとは別の山脈はどれですか。", opts:["奥羽山脈","飛騨山脈","紀伊山地","九州山地"], a:0, ex:"奥羽山脈は東北地方を南北に走る、日本で最も長い山脈です。"},
+  {q:"新潟県と群馬県などの境にある山脈はどれですか。", opts:["越後山脈","奥羽山脈","紀伊山地","飛騨山脈"], a:0, ex:"越後山脈は新潟県周辺にある山脈です。"},
+  {q:"近畿地方南部に広がる山地はどれですか。", opts:["紀伊山地","奥羽山脈","越後山脈","九州山地"], a:0, ex:"紀伊山地は近畿地方南部(和歌山県・奈良県・三重県)に広がる山地です。"},
+  {q:"北海道にあり、上川盆地などを流域に持つ、道内最長の川はどれですか。", opts:["石狩川","利根川","信濃川","木曽川"], a:0, ex:"石狩川は北海道最長の川で、上川盆地などを流域に持ちます。"},
+  {q:"山形県を流れ、庄内平野をつくった川はどれですか。", opts:["最上川","利根川","信濃川","木曽川"], a:0, ex:"最上川は山形県を流れ、庄内平野をつくった川です。日本三大急流の一つでもあります。"},
+  {q:"日本で最も広い平野で、流域面積が日本一の川が流れる平野はどれですか。", opts:["関東平野(利根川)","濃尾平野(木曽川)","越後平野(信濃川)","筑紫平野(筑後川)"], a:0, ex:"関東平野は日本最大の平野で、流域面積日本一の利根川が流れています。"},
+  {q:"日本で最も長い川はどれですか。", opts:["信濃川","利根川","石狩川","木曽川"], a:0, ex:"信濃川は日本一長い川(約367km)で、新潟県などを流れます。"},
+  {q:"山梨県にある、ぶどう・ももの産地として知られる盆地はどれですか。", opts:["甲府盆地","諏訪盆地","長野盆地","山形盆地"], a:0, ex:"甲府盆地は山梨県にあり、扇状地が広がり果樹栽培が盛んです。"},
+  {q:"日本三大急流の一つで、濃尾平野を流れる川はどれですか。", opts:["木曽川","利根川","信濃川","石狩川"], a:0, ex:"木曽川は日本三大急流の一つで、濃尾平野を流れます。"},
+  {q:"福岡県・佐賀県に広がり、筑後川がつくった平野はどれですか。", opts:["筑紫平野","越後平野","関東平野","庄内平野"], a:0, ex:"筑紫平野は九州北部に広がり、筑後川の堆積作用でつくられた平野です。"},
+  {q:"熊本県を流れ、日本三大急流の一つに数えられる川はどれですか。", opts:["球磨川","利根川","信濃川","木曽川"], a:0, ex:"球磨川は熊本県を流れる日本三大急流の一つです。"},
+  {q:"北海道東部にある、汽水湖として知られる湖はどれですか。", opts:["サロマ湖","琵琶湖","浜名湖","諏訪湖"], a:0, ex:"サロマ湖は北海道東部にある、海水と淡水が混ざる汽水湖です。"},
+  {q:"滋賀県にある、日本最大の湖はどれですか。", opts:["琵琶湖","サロマ湖","霞ヶ浦","浜名湖"], a:0, ex:"琵琶湖は滋賀県にある日本最大の湖です。"},
+  {q:"近畿地方南部、瀬戸内海にある、たまねぎの産地として知られる島はどれですか。", opts:["淡路島","佐渡島","対馬","屋久島"], a:0, ex:"淡路島は兵庫県に属する瀬戸内海の島で、たまねぎの産地として知られます。"},
+  {q:"東北地方太平洋側に広がる、山地が海に沈んでできた海岸はどれですか。", opts:["三陸海岸","若狭湾","紀伊半島の海岸","九州の海岸"], a:0, ex:"三陸海岸は東北地方の太平洋側にあるリアス海岸で、津波の被害を受けやすい地形です。"},
+  {q:"福井県周辺、日本海側にあるリアス海岸(湾)はどれですか。", opts:["若狭湾","三陸海岸","東京湾","伊勢湾"], a:0, ex:"若狭湾は福井県周辺にある日本海側のリアス海岸です。"},
+  {q:"山地が海に沈んでできた、複雑に入り組んだ海岸を何といいますか。", opts:["リアス(式)海岸","砂浜海岸","フィヨルド","干潟"], a:0, ex:"リアス(式)海岸は山地が海に沈んでできた、複雑に入り組んだ海岸です。三陸海岸や若狭湾が代表例です。"},
+  {q:"日本最大の平野・関東平野が広がる、中心となる都道府県はどこですか。", opts:["東京都","静岡県","愛知県","大阪府"], a:0, ex:"関東平野は関東地方の複数の都県にまたがる、日本最大の平野です。"},
+  {q:"愛知県・岐阜県・三重県にまたがる、木曽川がつくった平野はどれですか。", opts:["濃尾平野","関東平野","越後平野","筑紫平野"], a:0, ex:"濃尾平野は木曽川・長良川・揖斐川(木曽三川)がつくった平野です。"},
+  {q:"日本三大急流とは、球磨川・最上川と、あと一つはどれですか。", opts:["富士川","利根川","信濃川","石狩川"], a:0, ex:"日本三大急流は最上川・富士川・球磨川の3つです。"},
+  {q:"中部地方の中心都市で、濃尾平野に位置する都市はどこですか。", opts:["名古屋市","静岡市","金沢市","岐阜市"], a:0, ex:"名古屋市は愛知県の県庁所在地で、濃尾平野に位置する中部地方の中心都市です。"},
+  {q:"千葉県にある半島はどれですか。", opts:["房総半島","伊豆半島","紀伊半島","知床半島"], a:0, ex:"房総半島は千葉県にある半島です。"},
+  {q:"静岡県にある半島はどれですか。", opts:["伊豆半島","房総半島","紀伊半島","能登半島"], a:0, ex:"伊豆半島は静岡県にある半島で、温泉地としても有名です。"},
+  {q:"和歌山県・奈良県・三重県にまたがる半島はどれですか。", opts:["紀伊半島","房総半島","伊豆半島","三浦半島"], a:0, ex:"紀伊半島は近畿地方南部の半島で、紀伊山地が広がります。"},
+  {q:"太平洋沿岸を流れる暖流を何といいますか。", opts:["黒潮(日本海流)","親潮(千島海流)","対馬海流","リマン海流"], a:0, ex:"黒潮(日本海流)は太平洋沿岸を流れる暖流です。"},
+  {q:"東北地方の太平洋側を流れる寒流を何といいますか。", opts:["千島海流(親潮)","対馬海流","黒潮","リマン海流"], a:0, ex:"千島海流(親潮)は寒流で、東北地方の太平洋側などを流れます。"},
+  {q:"日本海側を流れる暖流を何といいますか。", opts:["対馬海流","千島海流","黒潮","リマン海流"], a:0, ex:"対馬海流は暖流で、日本海側を流れます。秋田県沿岸などに影響します。"},
+  {q:"秋田県沿岸には暖流の対馬海流が流れる一方、岩手県沿岸には寒流の千島海流が流れます。この違いが生まれる理由は何ですか。", opts:["日本海側と太平洋側で流れる海流が異なるから","季節によって海流が入れ替わるから","水温がどちらも同じだから","そもそも海流は流れていないから"], a:0, ex:"秋田県は日本海側にあるため暖流の対馬海流が、岩手県は太平洋側にあるため寒流の千島海流が流れています。日本海側と太平洋側で流れる海流が違うことがポイントです。"},
+  {q:"瀬戸内海に面し、うどんで有名な県はどこですか。", opts:["香川県","徳島県","愛媛県","高知県"], a:0, ex:"香川県は瀬戸内海に面し、県庁所在地は高松市、讃岐うどんで有名です。"},
+  {q:"火山の熱を利用した発電方法を何といいますか。", opts:["地熱発電","水力発電","風力発電","太陽光発電"], a:0, ex:"地熱発電は火山や温泉の熱を利用した発電方法です。"},
+  {q:"福岡県・佐賀県周辺に広がる山地はどれですか。", opts:["筑紫山地","紀伊山地","飛騨山脈","奥羽山脈"], a:0, ex:"筑紫山地は九州北部(福岡県・佐賀県周辺)に広がる山地です。"},
+  {q:"長野県・岐阜県・富山県にまたがる、日本アルプスの一つはどれですか。", opts:["飛騨山脈","奥羽山脈","越後山脈","紀伊山地"], a:0, ex:"飛騨山脈は日本アルプスの一つ(北アルプス)で、長野・岐阜・富山県にまたがります。"},
+  {q:"北海道にある、南北に走る山脈はどれですか。", opts:["日高山脈","奥羽山脈","越後山脈","飛騨山脈"], a:0, ex:"日高山脈は北海道にある山脈です。"},
+  {q:"新潟県に広がる、信濃川がつくった平野はどれですか。", opts:["越後平野","讃岐平野","高知平野","関東平野"], a:0, ex:"越後平野は新潟県にあり、信濃川がつくった平野です。"},
+  {q:"香川県に広がる、ため池が多いことで知られる平野はどれですか。", opts:["讃岐平野","越後平野","高知平野","筑紫平野"], a:0, ex:"讃岐平野は香川県にあり、雨が少ないためため池が多く見られます。"},
+  {q:"北方領土を占拠している国はどこですか。", opts:["ロシア連邦","中国","韓国","北朝鮮"], a:0, ex:"北方領土(択捉島・国後島・色丹島・歯舞群島)は現在ロシア連邦が占拠しています。"}
+];
+
+let order = [];
+let currentIdx = 0;
+let round = 1;
+let wrongInRound = [];
+let stats = {correct:0, total:0};
+let currentQ = null;
+let answered = false;
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function startApp(){ render(startScreen()); }
+
+function startScreen(){
+  const div = document.createElement('div');
+  div.innerHTML = `
+    <div class="card">
+      <p style="line-height:1.6;color:#1a5570;">全${QUESTIONS.length}問。3ラウンド方式で、間違えた問題はあとでもう一度出題されます。</p>
+      <div class="mode-select"><button class="mode-btn primary" id="startBtn">はじめる</button></div>
+    </div>
+  `;
+  setTimeout(()=>{
+    document.getElementById('startBtn').onclick = ()=>{
+      order = shuffle(QUESTIONS.map((_,i)=>i));
+      currentIdx = 0; round = 1; wrongInRound = []; stats = {correct:0,total:0};
+      showQuestion();
+    };
+  },0);
+  return div;
+}
+
+function showQuestion(){
+  if(currentIdx >= order.length){
+    if(wrongInRound.length > 0 && round < 3){
+      round += 1; order = shuffle(wrongInRound); wrongInRound = []; currentIdx = 0;
+    } else { showResult(); return; }
+  }
+  const qIdx = order[currentIdx];
+  const base = QUESTIONS[qIdx];
+  const idxArr = shuffle(base.opts.map((_,i)=>i));
+  const newOpts = idxArr.map(i=>base.opts[i]);
+  const newCorrect = idxArr.indexOf(base.a);
+  currentQ = {q:base.q, opts:newOpts, a:newCorrect, ex:base.ex, _origIdx:qIdx};
+  answered = false;
+  render(questionScreen());
+}
+
+function questionScreen(){
+  const div = document.createElement('div');
+  const progressPct = Math.round((currentIdx/order.length)*100);
+  const optsHtml = currentQ.opts.map((opt,i)=>`<button class="option-btn" data-i="${i}">${opt}</button>`).join('');
+  div.innerHTML = `
+    <div class="progress-bar"><div class="progress-fill" style="width:${progressPct}%"></div></div>
+    <div class="status"><span>ラウンド ${round} / 3</span><span>${currentIdx+1} / ${order.length}問</span></div>
+    <div class="card">
+      <div class="round-badge">正解数 ${stats.correct}/${stats.total}</div>
+      <div class="question">${currentQ.q}</div>
+      <div class="options">${optsHtml}</div>
+      <div id="explainArea"></div>
+    </div>
+  `;
+  setTimeout(()=>{
+    div.querySelectorAll('.option-btn').forEach(btn=>{ btn.onclick = ()=> selectAnswer(parseInt(btn.dataset.i), div); });
+  },0);
+  return div;
+}
+
+function selectAnswer(i, div){
+  if(answered) return;
+  answered = true;
+  stats.total += 1;
+  const correct = (i === currentQ.a);
+  if(correct) stats.correct += 1; else wrongInRound.push(currentQ._origIdx);
+
+  div.querySelectorAll('.option-btn').forEach((btn,idx)=>{
+    btn.disabled = true;
+    if(idx === currentQ.a) btn.classList.add('correct');
+    else if(idx === i) btn.classList.add('wrong');
+  });
+
+  const explainArea = div.querySelector('#explainArea');
+  explainArea.innerHTML = `
+    <div class="explain">${correct ? '⭕ 正解！' : '❌ 不正解'}　${currentQ.ex}</div>
+    <button class="next-btn" id="nextBtn">次へ</button>
+  `;
+  document.getElementById('nextBtn').onclick = ()=>{ currentIdx += 1; showQuestion(); };
+}
+
+function showResult(){
+  const div = document.createElement('div');
+  const pct = stats.total ? Math.round((stats.correct/stats.total)*100) : 0;
+  div.innerHTML = `
+    <div class="card result-screen">
+      <h2>おつかれさま！</h2>
+      <div class="big-num">${stats.correct} / ${stats.total}</div>
+      <p style="color:#1a5570;">正答率 ${pct}%</p>
+      <button class="restart-btn" id="restartBtn">もう一度はじめる</button>
+    </div>
+  `;
+  setTimeout(()=>{ document.getElementById('restartBtn').onclick = startApp; },0);
+  render(div);
+}
+
+function render(node){ const app = document.getElementById('app'); app.innerHTML=''; app.appendChild(node); }
+
+startApp();
+</script>
+</body>
+</html>
