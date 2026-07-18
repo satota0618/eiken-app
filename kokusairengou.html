@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kokusai Rengo — 国際連合 一問一答</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,72,400;0,72,500;0,72,600;1,72,400;1,72,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy: #16233F;
+    --ink: #22314F;
+    --un-blue: #418FDE;
+    --un-blue-deep: #2E6BB0;
+    --parchment: #F7F3E9;
+    --parchment-dim: #EDE7D8;
+    --gold: #B8944F;
+    --gold-bright: #D8B463;
+    --leaf-idle: #C9C3B2;
+    --success: #3E7C59;
+    --miss: #A8465A;
+    --radius: 18px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    min-height: 100%;
+    background:
+      radial-gradient(ellipse 900px 500px at 50% -10%, rgba(65,143,222,0.18), transparent 60%),
+      var(--navy);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+  }
+
+  .stage {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 36px 20px 60px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  header {
+    text-align: center;
+    color: var(--parchment);
+    margin-bottom: 6px;
+  }
+
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--un-blue);
+    opacity: 0.9;
+  }
+
+  h1 {
+    font-family: 'Newsreader', serif;
+    font-weight: 500;
+    font-size: 24px;
+    margin: 6px 0 2px;
+    letter-spacing: 0.01em;
+  }
+
+  .subtitle {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    color: rgba(247,243,233,0.55);
+    margin-bottom: 6px;
+  }
+
+  /* --- Wreath / lap indicator --- */
+  .wreath-wrap {
+    position: relative;
+    width: 156px;
+    height: 156px;
+    margin: 6px auto 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .wreath-wrap svg { width: 100%; height: 100%; overflow: visible; }
+
+  .leaf { transition: fill 0.5s ease, opacity 0.5s ease; }
+  .leaf.lit { fill: var(--gold-bright); }
+
+  .lap-core {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--parchment);
+  }
+  .lap-core .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: rgba(247,243,233,0.55);
+    text-transform: uppercase;
+  }
+  .lap-core .num {
+    font-family: 'Newsreader', serif;
+    font-size: 30px;
+    line-height: 1;
+    margin-top: 2px;
+  }
+  .lap-core .num small {
+    font-size: 14px;
+    color: rgba(247,243,233,0.5);
+    font-family: 'Inter', sans-serif;
+  }
+
+  .lap-caption {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: rgba(247,243,233,0.55);
+    letter-spacing: 0.1em;
+    margin-bottom: 22px;
+    text-align: center;
+  }
+
+  /* --- Card --- */
+  .card {
+    width: 100%;
+    background: var(--parchment);
+    border-radius: var(--radius);
+    padding: 30px 28px 26px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(184,148,79,0.25);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: "";
+    position: absolute;
+    inset: 8px;
+    border: 1px solid rgba(184,148,79,0.35);
+    border-radius: 12px;
+    pointer-events: none;
+  }
+
+  .meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--un-blue-deep);
+    letter-spacing: 0.06em;
+    margin-bottom: 18px;
+  }
+  .meta-row .qnum { font-weight: 600; }
+  .meta-row .remaining { color: #8a8571; }
+
+  .question {
+    font-family: 'Newsreader', serif;
+    font-size: 24px;
+    line-height: 1.55;
+    font-weight: 500;
+    color: var(--navy);
+    min-height: 96px;
+    margin: 0 0 20px;
+  }
+
+  .answer-wrap {
+    border-top: 1px dashed rgba(34,49,79,0.2);
+    padding-top: 18px;
+    min-height: 30px;
+  }
+
+  .answer-text {
+    font-family: 'Newsreader', serif;
+    font-style: italic;
+    font-size: 20px;
+    color: var(--success);
+    display: none;
+  }
+  .answer-text.shown { display: block; animation: fadeUp 0.35s ease; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  button {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    border: none;
+    border-radius: 10px;
+    padding: 13px 22px;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+  }
+  button:active { transform: scale(0.97); }
+
+  .reveal-btn {
+    width: 100%;
+    background: var(--navy);
+    color: var(--parchment);
+    letter-spacing: 0.03em;
+  }
+  .reveal-btn:hover { box-shadow: 0 6px 18px rgba(22,35,63,0.35); }
+
+  .grade-controls {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 20px;
+  }
+  .grade-controls[hidden] { display: none; }
+
+  .btn-wrong {
+    background: rgba(168,70,90,0.12);
+    color: var(--miss);
+    border: 1px solid rgba(168,70,90,0.35);
+  }
+  .btn-wrong:hover { background: rgba(168,70,90,0.2); }
+
+  .btn-correct {
+    background: var(--success);
+    color: var(--parchment);
+  }
+  .btn-correct:hover { box-shadow: 0 6px 18px rgba(62,124,89,0.4); }
+
+  .stat-row {
+    display: flex;
+    justify-content: center;
+    gap: 26px;
+    margin-top: 22px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: rgba(247,243,233,0.5);
+    letter-spacing: 0.06em;
+  }
+  .stat-row b { color: var(--gold-bright); font-weight: 600; }
+
+  /* --- Completion screen --- */
+  .complete-screen {
+    width: 100%;
+    text-align: center;
+    color: var(--parchment);
+  }
+  .complete-screen[hidden] { display: none; }
+  .complete-screen h2 {
+    font-family: 'Newsreader', serif;
+    font-weight: 500;
+    font-size: 30px;
+    margin: 18px 0 8px;
+  }
+  .complete-screen p {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: rgba(247,243,233,0.7);
+    line-height: 1.7;
+    max-width: 420px;
+    margin: 0 auto 22px;
+  }
+  .restart-btn {
+    background: var(--gold);
+    color: var(--navy);
+  }
+  .restart-btn:hover { box-shadow: 0 6px 18px rgba(184,148,79,0.4); }
+
+  footer {
+    margin-top: 30px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: rgba(247,243,233,0.3);
+    letter-spacing: 0.08em;
+    text-align: center;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="stage">
+  <header>
+    <div class="eyebrow">No.4 &nbsp;講義Ⅱ&nbsp;&nbsp;·&nbsp;&nbsp;一問一答</div>
+    <h1>Kokusai Rengo</h1>
+    <div class="subtitle">国際連合 — 三周して身につける</div>
+  </header>
+
+  <div class="wreath-wrap">
+    <svg id="wreathSvg" viewBox="-110 -110 220 220"></svg>
+    <div class="lap-core">
+      <div class="label">Lap · 周</div>
+      <div class="num"><span id="roundNum">1</span><small>/3</small></div>
+    </div>
+  </div>
+  <div class="lap-caption" id="lapCaption">1周目 — 全22問に正解して次の周へ</div>
+
+  <div class="card" id="quizCard">
+    <div class="meta-row">
+      <span class="qnum">問 <span id="qLabel">1</span></span>
+      <span class="remaining">習得 <span id="masteredCount">0</span>/22 ・ 残り <span id="remainingCount">22</span></span>
+    </div>
+    <p class="question" id="questionText">読み込み中…</p>
+    <div class="answer-wrap">
+      <p class="answer-text" id="answerText"></p>
+      <button class="reveal-btn" id="revealBtn">答えを見る</button>
+    </div>
+    <div class="grade-controls" id="gradeControls" hidden>
+      <button class="btn-wrong" id="wrongBtn">もう一度（不正解）</button>
+      <button class="btn-correct" id="correctBtn">正解</button>
+    </div>
+  </div>
+
+  <div class="stat-row">
+    <span>累計正解 <b id="totalCorrect">0</b></span>
+    <span>累計不正解 <b id="totalWrong">0</b></span>
+  </div>
+
+  <div class="complete-screen" id="completeScreen" hidden>
+    <h2>3周、完了しました</h2>
+    <p>国際連合 一問一答 22問を、3周とも全問正解でやり遂げました。お疲れさまでした。もう一度挑戦して定着させることもできます。</p>
+    <button class="restart-btn" id="restartBtn">もう一度最初から</button>
+  </div>
+
+  <footer>KOKUSAI RENGO QUIZ &nbsp;/&nbsp; 一問一答 No.4 講義Ⅱ 国際連合</footer>
+</div>
+
+<script>
+(function(){
+  const questions = [
+    { q: "国際連盟の本部が置かれた都市はどこですか。", a: "ジュネーブ" },
+    { q: "国際連盟の事務局次長として活躍した日本人は誰ですか。", a: "新渡戸稲造" },
+    { q: "国際連合の本部がある都市はどこですか。", a: "ニューヨーク" },
+    { q: "国際連合の原加盟国（設立当初の加盟国）は何か国ですか。", a: "51か国" },
+    { q: "国際連合の2022年現在の加盟国数は何か国ですか。", a: "193か国" },
+    { q: "国際連合のすべての加盟国で構成され、毎年1回開かれるものは何ですか。", a: "総会" },
+    { q: "国際連合の機関のうち、世界の平和と安全を守るための機関を何といいますか。", a: "安全保障理事会" },
+    { q: "安全保障理事会の常任理事国（2022年現在）をすべて答えなさい。", a: "アメリカ・ロシア・イギリス・フランス・中国（順不同）" },
+    { q: "安全保障理事会の非常任理事国の任期は何年ですか。", a: "2年" },
+    { q: "国家間の紛争を裁く国際連合の機関を何といいますか。", a: "国際司法裁判所" },
+    { q: "オランダのハーグに置かれる、国家間の紛争を裁く機関を何といいますか。", a: "国際司法裁判所（ハーグ）" },
+    { q: "教育・科学・文化を通じた国際協力を促進する国際連合の機関を、アルファベット6字で答えなさい。", a: "UNESCO" },
+    { q: "発展途上国の子どもに対して、様々な援助を行う国際連合の機関を、アルファベット6字で答えなさい。", a: "UNICEF" },
+    { q: "難民を国際的に保護し、支援を行う国際連合の機関を、アルファベット5字で答えなさい。", a: "UNHCR" },
+    { q: "「世界保健機関」の略称を、アルファベット大文字3字で答えなさい。", a: "WHO" },
+    { q: "IAEAは、（　）の平和的利用をすすめ、軍事的利用への転用を防ぐ活動などを行っています。（　）にあてはまる語句を答えなさい。", a: "原子力" },
+    { q: "地域紛争において、停戦の監視などを行う「国連平和維持活動」の略称を、アルファベット大文字3字で答えなさい。", a: "PKO" },
+    { q: "日本が批准している条約として誤っているものを選び、記号で答えなさい。\nア 子どもの権利条約　イ 女子差別撤廃条約　ウ 死刑廃止条約　エ 障害者の権利に関する条約", a: "ウ（死刑廃止条約）" },
+    { q: "2017年に国際連合で採択された核兵器禁止条約の前文に明記されている日本語を、カタカナ5字で答えなさい。", a: "ヒバクシャ" },
+    { q: "2015年に国際連合で採択されたSDGsは何の略称ですか。", a: "（国連）持続可能な開発目標" },
+    { q: "発展途上国に対して政府が技術協力や資金援助を行う取り組みを何といいますか。アルファベット大文字3字で答えなさい。", a: "ODA" },
+    { q: "ODAの一環で、JICA（国際協力機構）によって派遣される、発展途上国で技術指導などを行う人々のことを何といいますか。", a: "青年海外協力隊" },
+    { q: "非政府組織の略称を、アルファベット大文字3字で答えなさい。", a: "NGO" }
+  ];
+
+  const TOTAL = questions.length;
+  const TOTAL_ROUNDS = 3;
+
+  let round = 1;
+  let queue = [];
+  let mastered = new Set();
+  let current = null;
+  let totalCorrect = 0;
+  let totalWrong = 0;
+
+  const els = {
+    questionText: document.getElementById('questionText'),
+    answerText: document.getElementById('answerText'),
+    revealBtn: document.getElementById('revealBtn'),
+    gradeControls: document.getElementById('gradeControls'),
+    wrongBtn: document.getElementById('wrongBtn'),
+    correctBtn: document.getElementById('correctBtn'),
+    qLabel: document.getElementById('qLabel'),
+    masteredCount: document.getElementById('masteredCount'),
+    remainingCount: document.getElementById('remainingCount'),
+    roundNum: document.getElementById('roundNum'),
+    lapCaption: document.getElementById('lapCaption'),
+    totalCorrect: document.getElementById('totalCorrect'),
+    totalWrong: document.getElementById('totalWrong'),
+    quizCard: document.getElementById('quizCard'),
+    completeScreen: document.getElementById('completeScreen'),
+    restartBtn: document.getElementById('restartBtn'),
+    statRow: document.querySelector('.stat-row')
+  };
+
+  function shuffle(arr){
+    const a = arr.slice();
+    for(let i=a.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [a[i],a[j]] = [a[j],a[i]];
+    }
+    return a;
+  }
+
+  function buildWreath(){
+    const svg = document.getElementById('wreathSvg');
+    const perSide = 12;
+    const leavesPerRound = 4; // 12 / 3 rounds
+    let html = '';
+    [-1, 1].forEach(side => {
+      for(let i=0;i<perSide;i++){
+        const t = i/(perSide-1);
+        const angle = (Math.PI*0.18) + t*(Math.PI*0.62);
+        const r = 78 - t*18;
+        const x = side * Math.sin(angle) * r;
+        const y = 96 - Math.cos(angle)*r - 20;
+        const rot = side * (angle*180/Math.PI) * -1 + (side>0?90:-90);
+        const roundIdx = Math.floor(i/leavesPerRound); // 0,1,2
+        html += `<ellipse class="leaf" data-round="${roundIdx}" data-side="${side}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" rx="7" ry="3.4" transform="rotate(${rot.toFixed(1)} ${x.toFixed(1)} ${y.toFixed(1)})" fill="var(--leaf-idle)"></ellipse>`;
+      }
+    });
+    svg.innerHTML = html;
+  }
+
+  function updateWreath(){
+    document.querySelectorAll('.leaf').forEach(leaf => {
+      const r = parseInt(leaf.dataset.round, 10);
+      if (r < round - 1) leaf.classList.add('lit');
+      else leaf.classList.remove('lit');
+    });
+  }
+
+  function startRound(){
+    queue = shuffle(questions.map((_,i)=>i));
+    mastered = new Set();
+    els.roundNum.textContent = round;
+    const captions = {
+      1: "1周目 — 全22問に正解して次の周へ",
+      2: "2周目 — もう一度、順番を変えて全問正解を目指す",
+      3: "3周目 — 最後の一周。ここを乗り切れば定着"
+    };
+    els.lapCaption.textContent = captions[round] || "";
+    updateWreath();
+    nextQuestion();
+  }
+
+  function updateCounters(){
+    els.masteredCount.textContent = mastered.size;
+    els.remainingCount.textContent = TOTAL - mastered.size;
+    els.totalCorrect.textContent = totalCorrect;
+    els.totalWrong.textContent = totalWrong;
+  }
+
+  function nextQuestion(){
+    if (queue.length === 0){
+      if (mastered.size >= TOTAL){
+        finishRound();
+        return;
+      }
+    }
+    current = queue.shift();
+    const item = questions[current];
+    els.qLabel.textContent = current + 1;
+    els.questionText.textContent = item.q;
+    els.answerText.textContent = item.a;
+    els.answerText.classList.remove('shown');
+    els.gradeControls.hidden = true;
+    els.revealBtn.hidden = false;
+    updateCounters();
+  }
+
+  function finishRound(){
+    if (round >= TOTAL_ROUNDS){
+      showComplete();
+    } else {
+      round += 1;
+      startRound();
+    }
+  }
+
+  function showComplete(){
+    els.quizCard.hidden = true;
+    els.statRow.hidden = true;
+    els.completeScreen.hidden = false;
+    document.querySelectorAll('.leaf').forEach(leaf => leaf.classList.add('lit'));
+    els.lapCaption.textContent = "全3周 完了";
+    els.roundNum.textContent = "✓";
+  }
+
+  els.revealBtn.addEventListener('click', () => {
+    els.answerText.classList.add('shown');
+    els.revealBtn.hidden = true;
+    els.gradeControls.hidden = false;
+  });
+
+  els.correctBtn.addEventListener('click', () => {
+    mastered.add(current);
+    totalCorrect += 1;
+    nextQuestion();
+  });
+
+  els.wrongBtn.addEventListener('click', () => {
+    queue.push(current);
+    totalWrong += 1;
+    nextQuestion();
+  });
+
+  els.restartBtn.addEventListener('click', () => {
+    round = 1;
+    totalCorrect = 0;
+    totalWrong = 0;
+    els.quizCard.hidden = false;
+    els.statRow.hidden = false;
+    els.completeScreen.hidden = true;
+    startRound();
+  });
+
+  buildWreath();
+  startRound();
+})();
+</script>
+</body>
+</html>
