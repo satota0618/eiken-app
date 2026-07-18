@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>からだのしくみ一問一答 - 中学受験理科</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F6F1E4;
+    --card:#FFFDF8;
+    --ink:#2B2620;
+    --muted:#8A8272;
+    --line:#DED4BE;
+    --gold:#C99A4B;
+    --green:#4C7A5E;
+    --amber:#C9862F;
+    --red:#B23B2E;
+    --blue:#2E5C8A;
+    --purple:#6B5B95;
+    --pink:#C0538C;
+    --teal:#2F8F8F;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(ellipse at top left, rgba(76,122,94,0.06), transparent 55%),
+      radial-gradient(ellipse at bottom right, rgba(178,59,46,0.05), transparent 55%),
+      var(--paper);
+    font-family:'Zen Kaku Gothic New', sans-serif;
+    color:var(--ink);
+    min-height:100vh;
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    padding:28px 16px 60px;
+  }
+  .wrap{
+    width:100%;
+    max-width:760px;
+  }
+  .masthead{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    margin-bottom:16px;
+    padding:0 6px;
+  }
+  .masthead h1{
+    font-family:'Shippori Mincho', serif;
+    font-weight:800;
+    font-size:22px;
+    letter-spacing:.04em;
+    margin:0;
+  }
+  .masthead h1 small{
+    display:block;
+    font-family:'Zen Kaku Gothic New', sans-serif;
+    font-weight:500;
+    font-size:11.5px;
+    color:var(--muted);
+    letter-spacing:.14em;
+    margin-top:3px;
+  }
+  .masthead .stat{
+    font-family:'Shippori Mincho', serif;
+    font-size:13px;
+    color:var(--muted);
+    text-align:right;
+  }
+  .masthead .stat b{
+    color:var(--ink);
+    font-size:17px;
+  }
+
+  /* the textbook page card, complete with a colored edge-tab like the real workbook */
+  .page{
+    position:relative;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:3px;
+    box-shadow:0 1px 2px rgba(43,38,32,.05), 0 14px 30px -18px rgba(43,38,32,.35);
+    padding:34px 34px 30px 34px;
+    padding-right:64px;
+    min-height:420px;
+  }
+  .tabstrip{
+    position:absolute;
+    top:0; right:0; bottom:0;
+    width:40px;
+    display:flex;
+    flex-direction:column;
+    border-left:1px solid var(--line);
+    overflow:hidden;
+    border-radius:0 3px 3px 0;
+  }
+  .tab{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    writing-mode:vertical-rl;
+    text-orientation:mixed;
+    font-family:'Shippori Mincho', serif;
+    font-weight:700;
+    font-size:12.5px;
+    letter-spacing:.08em;
+    color:#fff;
+    cursor:pointer;
+    border-bottom:1px solid rgba(255,255,255,.28);
+    opacity:.55;
+    transition:opacity .18s ease, flex .18s ease;
+    padding:8px 0;
+  }
+  .tab:last-child{border-bottom:none;}
+  .tab.active{opacity:1; flex:1.7;}
+  .tab .no{
+    display:block;
+    font-size:9.5px;
+    font-weight:500;
+    opacity:.85;
+    margin-bottom:3px;
+    letter-spacing:0;
+  }
+  .tab:hover{opacity:.85;}
+
+  /* start screen */
+  .eyebrow{
+    font-size:11.5px;
+    letter-spacing:.16em;
+    color:var(--muted);
+    font-weight:700;
+    margin-bottom:6px;
+  }
+  .lead{
+    font-family:'Shippori Mincho', serif;
+    font-size:26px;
+    font-weight:800;
+    line-height:1.5;
+    margin:0 0 14px;
+  }
+  .lead .accent{color:var(--red);}
+  .desc{
+    font-size:14px;
+    line-height:1.9;
+    color:#544d42;
+    margin-bottom:26px;
+  }
+  .catgrid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+    margin-bottom:26px;
+  }
+  .catcard{
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:12px 14px;
+    cursor:pointer;
+    background:#fff;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+  }
+  .catcard:hover{transform:translateY(-1px); box-shadow:0 6px 16px -10px rgba(43,38,32,.4);}
+  .catcard.selected{border-color:var(--ink); box-shadow:0 0 0 1.5px var(--ink) inset;}
+  .catcard .dot{
+    width:11px;height:11px;border-radius:50%;flex:none;
+  }
+  .catcard .name{font-size:13.5px; font-weight:700;}
+  .catcard .cnt{font-size:11px; color:var(--muted); margin-top:1px;}
+
+  .startbtn{
+    width:100%;
+    background:var(--ink);
+    color:#fff;
+    border:none;
+    border-radius:8px;
+    padding:15px;
+    font-family:'Shippori Mincho', serif;
+    font-size:16px;
+    font-weight:700;
+    letter-spacing:.06em;
+    cursor:pointer;
+    transition:background .15s ease;
+  }
+  .startbtn:hover{background:#171310;}
+  .startbtn:disabled{background:var(--line); cursor:default;}
+
+  /* quiz screen */
+  .qmeta{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:14px;
+  }
+  .qtag{
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.08em;
+    color:#fff;
+    padding:4px 10px;
+    border-radius:100px;
+  }
+  .qcount{font-size:12.5px; color:var(--muted); font-weight:500;}
+
+  .progress-track{
+    width:100%;
+    height:6px;
+    background:#EFE8D6;
+    border-radius:100px;
+    overflow:hidden;
+    margin-bottom:26px;
+    position:relative;
+  }
+  .progress-fill{
+    height:100%;
+    background:linear-gradient(90deg, var(--red), #d9695c);
+    border-radius:100px;
+    transition:width .25s ease;
+  }
+
+  .qtype{
+    font-size:11px;
+    color:var(--muted);
+    font-weight:700;
+    letter-spacing:.1em;
+    margin-bottom:8px;
+  }
+  .qtext{
+    font-family:'Shippori Mincho', serif;
+    font-size:19px;
+    font-weight:700;
+    line-height:1.75;
+    margin-bottom:22px;
+  }
+
+  .choices{display:flex; flex-direction:column; gap:10px;}
+  .choice{
+    text-align:left;
+    background:#fff;
+    border:1.5px solid var(--line);
+    border-radius:8px;
+    padding:13px 16px;
+    font-size:14.5px;
+    font-family:'Zen Kaku Gothic New', sans-serif;
+    color:var(--ink);
+    cursor:pointer;
+    display:flex;
+    gap:10px;
+    align-items:flex-start;
+    transition:border-color .12s ease, background .12s ease;
+  }
+  .choice .mark{
+    flex:none;
+    width:22px;height:22px;
+    border-radius:50%;
+    border:1.5px solid var(--line);
+    font-size:12px;
+    display:flex; align-items:center; justify-content:center;
+    font-weight:700;
+    color:var(--muted);
+  }
+  .choice:hover:not(.locked){border-color:var(--ink);}
+  .choice.locked{cursor:default;}
+  .choice.correct{border-color:var(--green); background:#EEF5EF;}
+  .choice.correct .mark{background:var(--green); border-color:var(--green); color:#fff;}
+  .choice.wrong{border-color:var(--red); background:#FBEDEA;}
+  .choice.wrong .mark{background:var(--red); border-color:var(--red); color:#fff;}
+  .choice.dim{opacity:.5;}
+
+  .feedback{
+    margin-top:20px;
+    padding:14px 16px;
+    border-radius:8px;
+    font-size:13.5px;
+    line-height:1.85;
+    display:none;
+  }
+  .feedback.show{display:block;}
+  .feedback.correct{background:#EEF5EF; border:1px solid #cfe3d3; color:#274a34;}
+  .feedback.wrong{background:#FBEDEA; border:1px solid #f0cec8; color:#6e2019;}
+  .feedback .label{font-weight:800; margin-bottom:4px; display:block;}
+
+  .nextbtn{
+    margin-top:22px;
+    width:100%;
+    background:var(--ink);
+    color:#fff;
+    border:none;
+    border-radius:8px;
+    padding:14px;
+    font-family:'Shippori Mincho', serif;
+    font-size:15px;
+    font-weight:700;
+    letter-spacing:.05em;
+    cursor:pointer;
+    display:none;
+  }
+  .nextbtn.show{display:block;}
+  .nextbtn:hover{background:#171310;}
+
+  .backlink{
+    display:inline-block;
+    margin-top:14px;
+    font-size:12px;
+    color:var(--muted);
+    cursor:pointer;
+    text-decoration:underline;
+  }
+
+  /* result screen */
+  .resulthead{text-align:center; margin-bottom:8px;}
+  .scoreBig{
+    font-family:'Shippori Mincho', serif;
+    font-size:52px;
+    font-weight:800;
+    line-height:1;
+    margin:6px 0 4px;
+  }
+  .scoreBig span{font-size:24px; color:var(--muted); font-weight:500;}
+  .scoreLine{
+    text-align:center;
+    font-size:13.5px;
+    color:var(--muted);
+    margin-bottom:26px;
+  }
+  .reviewlist{
+    display:flex; flex-direction:column; gap:10px;
+    margin-bottom:24px;
+  }
+  .revitem{
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:12px 14px;
+    background:#FBF8F1;
+  }
+  .revitem .revq{font-size:13.5px; font-weight:700; margin-bottom:5px; line-height:1.6;}
+  .revitem .reva{font-size:12.5px; color:#54443c; line-height:1.7;}
+  .revitem .reva b{color:var(--green);}
+  .noneright{
+    text-align:center;
+    font-size:13.5px;
+    color:var(--muted);
+    padding:20px 0 26px;
+  }
+  .resultbtns{display:flex; gap:10px;}
+  .resultbtns button{
+    flex:1;
+    border-radius:8px;
+    padding:13px;
+    font-family:'Shippori Mincho', serif;
+    font-size:14px;
+    font-weight:700;
+    cursor:pointer;
+    border:1.5px solid var(--ink);
+  }
+  .resultbtns .primary{background:var(--ink); color:#fff;}
+  .resultbtns .ghost{background:#fff; color:var(--ink);}
+
+  .footnote{
+    text-align:center;
+    font-size:11px;
+    color:var(--muted);
+    margin-top:18px;
+    letter-spacing:.04em;
+  }
+
+  @media (max-width:520px){
+    .page{padding:24px 20px 24px 20px; padding-right:50px;}
+    .tabstrip{width:30px;}
+    .tab{font-size:10.5px;}
+    .lead{font-size:21px;}
+    .catgrid{grid-template-columns:1fr;}
+    .qtext{font-size:17px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="masthead">
+    <h1>からだのしくみ<small>HUMAN BODY DRILL &nbsp;/&nbsp; 理科・人体 一問一答</small></h1>
+    <div class="stat" id="masthead-stat"></div>
+  </div>
+
+  <div class="page">
+    <div class="tabstrip" id="tabstrip"></div>
+    <div id="screen"></div>
+  </div>
+
+  <div class="footnote">呼吸・消化・血液循環・排出・骨と筋肉・生殖と誕生・目と耳 — 全項目対応</div>
+</div>
+
+<script>
+/* ---------------------------------------------------------
+   Data
+--------------------------------------------------------- */
+const CATS = [
+  {id:'kokyu',    no:'No.35', label:'呼吸',           color:'var(--green)'},
+  {id:'ketsueki', no:'No.35', label:'心臓と血液',     color:'var(--red)'},
+  {id:'shoka',    no:'No.36', label:'消化と吸収',     color:'var(--amber)'},
+  {id:'haisyutsu',no:'No.37', label:'排出系',         color:'var(--blue)'},
+  {id:'hone',     no:'No.38', label:'骨と筋肉',       color:'var(--purple)'},
+  {id:'seishoku', no:'No.38', label:'生殖と誕生',     color:'var(--pink)'},
+  {id:'meimi',    no:'No.38', label:'目と耳',         color:'var(--teal)'},
+];
+
+const Q = [
+{cat:'kokyu', type:'tf', q:'肺自体には筋肉があり、自分の力でふくらんだり縮んだりする。', choices:['正しい（○）','誤り（×）'], a:1,
+  ex:'肺には筋肉がないため自力では動けません。横隔膜やろっ骨の動き（呼吸運動）によって、肺のまわりの体積が変化することでふくらんだり縮んだりします。'},
+{cat:'kokyu', type:'mc', q:'肺胞と毛細血管の間でやり取りされる2つの気体の組み合わせとして正しいものはどれか。', choices:['酸素と二酸化炭素','酸素と窒素','二酸化炭素と水蒸気','酸素と水素'], a:0,
+  ex:'肺胞では血液中に酸素をとりこみ、血液中の二酸化炭素を肺胞内に出すというガス交換が行われます。'},
+{cat:'kokyu', type:'mc', q:'肺が多数の小さな肺胞に分かれていることの利点として最も適切なのはどれか。', choices:['血液の量を増やすため','肺全体の表面積を大きくし、効率よく気体交換を行うため','肺を軽くして呼吸を楽にするため','体温を一定に保つため'], a:1,
+  ex:'一つ一つは小さくても、無数に集まることで表面積が非常に大きくなり（合計約50〜60m²ともいわれる）、効率よく酸素と二酸化炭素を交換できます。'},
+{cat:'kokyu', type:'tf', q:'はく息はすう息にくらべて、二酸化炭素の割合が多い。', choices:['正しい（○）','誤り（×）'], a:0,
+  ex:'すう息（空気）は酸素約21%・二酸化炭素約0.04%ですが、はく息は酸素約17%・二酸化炭素約4%になり、二酸化炭素の割合が大きく増えます。'},
+{cat:'kokyu', type:'mc', q:'呼吸運動のモデル実験で、下のゴム膜を下に引くと、ガラスびん内のゴム風船（肺のモデル）はどうなるか。', choices:['ふくらむ','縮む','変化しない','破裂する'], a:0,
+  ex:'ゴム膜を下に引くとびんの中の空気が広がって気圧が下がり、ゴム風船の中に外から空気が吸いこまれてふくらみます。これは息を吸うときと同じしくみです。'},
+{cat:'kokyu', type:'mc', q:'はく息とすう息を比べたとき、割合がほとんど変化しない気体はどれか。', choices:['酸素','二酸化炭素','ちっ素','水分（水蒸気）'], a:2,
+  ex:'ちっ素はどちらも約78%でほとんど変わりません。呼吸によって主に変化するのは酸素と二酸化炭素の割合です。'},
+{cat:'kokyu', type:'mc', q:'呼吸運動のモデル実験で、ガラスびんの中のゴム風船は体のどの部分を表しているか。', choices:['肺','横隔膜','気管','ろっ骨'], a:0,
+  ex:'ガラス管＝気管、ゴム風船＝肺、ガラスびん＝胸こう、下のゴム膜＝横隔膜を表すモデルです。'},
+{cat:'kokyu', type:'mc', q:'息を吸うとき、ろっ骨とろっ骨まわりの筋肉、および横隔膜はそれぞれどのように動くか。', choices:['胸こうが広がり、横隔膜は下がる','胸こうが縮み、横隔膜は上がる','胸こうは変化せず横隔膜だけ下がる','胸こうが広がり、横隔膜も上がる'], a:0,
+  ex:'息を吸うとき、ろっ骨は筋肉によって引き上げられて胸こうが広がり、同時に横隔膜が下がることで胸こう内の体積が増え、肺に空気が入ります。'},
+
+{cat:'ketsueki', type:'mc', q:'血液の成分のうち、酸素を全身に運ぶはたらきをもつのはどれか。', choices:['赤血球','白血球','血小板','血しょう'], a:0,
+  ex:'赤血球にふくまれる鉄をふくむ赤い色素（ヘモグロビン）が酸素と結びつき、酸素の多いところで結合し、少ないところで離すことで酸素を運びます。'},
+{cat:'ketsueki', type:'mc', q:'血液の成分のうち、体内に入った細菌などを分解するはたらきをもつのはどれか。', choices:['赤血球','白血球','血小板','血しょう'], a:1,
+  ex:'白血球は体内に侵入した細菌やウイルスなどを分解し、体を守るはたらきをします。'},
+{cat:'ketsueki', type:'mc', q:'出血したときに血液を固めるはたらきをするのはどれか。', choices:['赤血球','白血球','血小板','血しょう'], a:2,
+  ex:'血小板は傷口で血液を固める（血液を止める）はたらきをもちます。'},
+{cat:'ketsueki', type:'mc', q:'養分や不要な物質、二酸化炭素などを液体として運ぶ血液の成分はどれか。', choices:['赤血球','白血球','血小板','血しょう'], a:3,
+  ex:'血しょうは血液の液体成分で、養分・不要な物質・ホルモンなどを溶かして運びます。'},
+{cat:'ketsueki', type:'tf', q:'動脈血は静脈血にくらべて酸素を多くふくみ、鮮やかな赤色をしている。', choices:['正しい（○）','誤り（×）'], a:0,
+  ex:'動脈血は酸素を多くふくむため鮮やかな赤色、静脈血は酸素が少なく二酸化炭素を多くふくむため暗い赤色をしています。'},
+{cat:'ketsueki', type:'mc', q:'心臓から肺以外の全身に血液を送り、全身をめぐって心臓にもどってくる血液の道すじを何というか。', choices:['肺循環','体循環','門脈循環','小循環'], a:1,
+  ex:'心臓→全身の各器官→心臓、というように全身をめぐる道すじを体循環といいます。'},
+{cat:'ketsueki', type:'mc', q:'心臓から肺へ血液を送り、肺で気体を交換したあと心臓にもどる道すじを何というか。', choices:['肺循環','体循環','大循環','静脈循環'], a:0,
+  ex:'心臓→肺→心臓、という道すじを肺循環といい、ここで血液は二酸化炭素を出し、酸素を受け取ります。'},
+{cat:'ketsueki', type:'mc', q:'心臓から送り出される血液が流れる、壁が厚くて弾力のある血管を何というか。', choices:['動脈','静脈','毛細血管','門脈'], a:0,
+  ex:'動脈は強い圧力に耐えられるよう壁が厚くじょうぶにできています。心臓にもどる血管である静脈は動脈より壁がうすく、弁があります。'},
+{cat:'ketsueki', type:'tf', q:'静脈には血液の逆流を防ぐための弁がある。', choices:['正しい（○）','誤り（×）'], a:0,
+  ex:'静脈は動脈より血流の勢いが弱いため、ところどころに弁があり血液が逆流しないようになっています。'},
+
+{cat:'shoka', type:'mc', q:'食べた物を体に吸収されやすい小さな物質に変えるはたらきを何というか。', choices:['消化','吸収','排出','分解のみ'], a:0,
+  ex:'消化とは、食べ物を細かくくだき、水にとけやすい小さな物質に変化させることです。'},
+{cat:'shoka', type:'mc', q:'口から出され、デンプンを分解する消化酵素（アミラーゼ）をふくむ消化液はどれか。', choices:['だ液','胃液','たん汁','すい液のみ'], a:0,
+  ex:'だ液にはアミラーゼという消化酵素がふくまれ、デンプンを麦芽糖などに分解します。'},
+{cat:'shoka', type:'mc', q:'胃液にふくまれ、タンパク質を分解するはたらきをもつ消化酵素はどれか。', choices:['アミラーゼ','ペプシン','リパーゼ','トリプシン'], a:1,
+  ex:'胃液にはペプシンという消化酵素がふくまれ、タンパク質を分解します（強い酸性の胃酸もふくまれます）。'},
+{cat:'shoka', type:'tf', q:'たん汁（胆汁）には消化酵素がふくまれている。', choices:['正しい（○）','誤り（×）'], a:1,
+  ex:'たん汁自体には消化酵素はふくまれていませんが、脂肪を細かい粒にして消化を助けるはたらき（乳化）をします。肝臓でつくられ、たんのうにたくわえられます。'},
+{cat:'shoka', type:'mc', q:'デンプンは消化の過程を経て、最終的に何という物質に分解されて吸収されるか。', choices:['ブドウ糖','アミノ酸','脂肪酸とモノグリセリド','タンパク質のまま'], a:0,
+  ex:'デンプン→麦芽糖などを経て、最終的にブドウ糖に分解されて小腸で吸収されます。'},
+{cat:'shoka', type:'mc', q:'小腸の内側の壁に無数にある、小さな突起（表面積を広げるつくり）を何というか。', choices:['柔毛（じゅうもう）','繊毛','肺胞','ひだ状器官'], a:0,
+  ex:'柔毛は小腸の内側の表面積を大きく広げ、養分を効率よく吸収できるようにしています。'},
+{cat:'shoka', type:'mc', q:'柔毛の毛細血管から吸収される養分はどれか。', choices:['ブドウ糖とアミノ酸','脂肪酸とモノグリセリド','無機質のみ','酸素のみ'], a:0,
+  ex:'ブドウ糖とアミノ酸は柔毛の毛細血管に吸収され、肝臓を通って全身に運ばれます。'},
+{cat:'shoka', type:'mc', q:'脂肪酸とモノグリセリドは柔毛で吸収されたあと、どのように変化してどの管に入るか。', choices:['再び脂肪に合成されてリンパ管に入る','タンパク質に合成されて毛細血管に入る','そのままの形で毛細血管に入る','ブドウ糖に変化して毛細血管に入る'], a:0,
+  ex:'脂肪酸とモノグリセリドは柔毛の細胞内で再び脂肪に合成され、リンパ管に入って全身に運ばれます。'},
+{cat:'shoka', type:'mc', q:'だ液（アミラーゼ）のはたらきを調べる実験で、だ液の代わりに同じ量の水を入れた試験管を用意するのはなぜか。', choices:['だ液のはたらきによる変化かどうかを比べるため（対照実験）','デンプンの量を減らすため','ヨウ素液の反応を強めるため','実験の温度を下げるため'], a:0,
+  ex:'だ液の有無以外の条件をそろえた対照実験を行うことで、色の変化がだ液のはたらきによるものだと確かめられます。'},
+
+{cat:'haisyutsu', type:'mc', q:'血液中の尿素などの不要な物質をこしとる器官はどれか。', choices:['肝臓','じん臓','すい臓','ぼうこう'], a:1,
+  ex:'じん臓は血液中の尿素などの不要な物質と余分な水分・塩分をこしとり、尿をつくる器官です。'},
+{cat:'haisyutsu', type:'mc', q:'じん臓でこしとられた不要な物質は、何として体外に出されるか。', choices:['汗','尿','たん汁','リンパ液'], a:1,
+  ex:'じん臓でこしとられた不要な物質と水分は尿として、輸尿管を通ってぼうこうに送られたあと体外に出されます。'},
+{cat:'haisyutsu', type:'mc', q:'じん臓でつくられた尿を、体外に出るまで一時的にためておく器官はどれか。', choices:['ぼうこう','肝臓','輸尿管','十二指腸'], a:0,
+  ex:'ぼうこうは尿を一時的にためておく袋状の器官です。'},
+{cat:'haisyutsu', type:'mc', q:'体の中でできた有害なアンモニアを、毒性の低い尿素につくり変える器官はどれか。', choices:['じん臓','肝臓','すい臓','小腸'], a:1,
+  ex:'アンモニアはタンパク質が分解されるときにできますが、有害なため肝臓で毒性の低い尿素に変えられ、じん臓に運ばれてこしとられます。'},
+{cat:'haisyutsu', type:'tf', q:'汗にも、尿と同じように体内の不要な物質がわずかにふくまれている。', choices:['正しい（○）','誤り（×）'], a:0,
+  ex:'汗は主に水分と塩分ですが、尿素などの不要な物質もわずかにふくまれています。皮膚の汗腺でつくられます。'},
+{cat:'haisyutsu', type:'mc', q:'じん臓からぼうこうへ尿を送る管を何というか。', choices:['輸尿管','大動脈','門脈','胆管'], a:0,
+  ex:'輸尿管はじん臓でつくられた尿をぼうこうへ運ぶ管です。'},
+
+{cat:'hone', type:'mc', q:'骨と骨のつなぎ目のうち、体を曲げたり回したりできる部分を何というか。', choices:['関節','腱','軟骨','じん帯'], a:0,
+  ex:'関節は骨と骨のつなぎ目のうち動かすことができる部分で、うで・ひざ・指など体のあちこちにあります。'},
+{cat:'hone', type:'mc', q:'筋肉の両端にあり、骨と筋肉を結びつける丈夫なつくりを何というか。', choices:['腱（けん）','関節','軟骨','じん帯'], a:0,
+  ex:'腱は筋肉の両端にあるじょうぶな組織で、筋肉と骨を結びつけ、筋肉の縮む力を骨に伝えます。'},
+{cat:'hone', type:'tf', q:'うでを曲げるとき、内側の筋肉（力こぶの筋肉）が縮み、外側の筋肉はゆるむ。', choices:['正しい（○）','誤り（×）'], a:0,
+  ex:'骨格筋は対になってはたらき、一方が縮むと他方がゆるむことで関節を曲げたり伸ばしたりします。'},
+{cat:'hone', type:'mc', q:'骨のはたらきとしてあてはまらないものはどれか。', choices:['体を支える','脳や内臓を守る','食べ物を消化する','筋肉とともに体を動かす'], a:2,
+  ex:'骨には体を支える・脳や内臓を守る・体を動かす・血液の成分をつくる、などのはたらきがありますが、消化は行いません。'},
+{cat:'hone', type:'mc', q:'骨の内部にあり、赤血球や白血球などの血液の成分をつくっているところを何というか。', choices:['骨髄','軟骨','関節','骨膜'], a:0,
+  ex:'骨の内部の骨髄では、赤血球・白血球・血小板などの血液の成分がつくられています。'},
+{cat:'hone', type:'mc', q:'心臓や胃、腸などの壁をつくり、自分の意思で直接動かすことができない筋肉を何というか。', choices:['骨格筋','内臓筋','随意筋のみ','平滑腱'], a:1,
+  ex:'内臓筋（平滑筋・心筋）は自分の意思で自由に動かすことができない筋肉で、骨格筋（随意筋）とは区別されます。'},
+{cat:'hone', type:'tf', q:'1つの関節を動かすには、性質の異なる2種類以上の筋肉が対になってはたらく。', choices:['正しい（○）','誤り（×）'], a:0,
+  ex:'例えばうでの関節では、曲げる筋肉と伸ばす筋肉が対になり、一方が縮むと他方がゆるむことで関節が動きます。'},
+{cat:'hone', type:'mc', q:'頭の骨のように、骨と骨のつなぎ目がしっかりかみ合って動かなくなったものを何というか。', choices:['関節','縫合（ほうごう）','軟骨結合','腱結合'], a:1,
+  ex:'頭がい骨のつなぎ目のように、ぎざぎざにかみ合って動かなくなったつくりを縫合といいます。'},
+
+{cat:'seishoku', type:'mc', q:'精子と卵（卵子）が結びつくことを何というか。', choices:['受精','発生','着床','分娩'], a:0,
+  ex:'精子と卵が結びつくことを受精といい、できた細胞を受精卵といいます。'},
+{cat:'seishoku', type:'mc', q:'受精卵が子宮の壁にくっつくことを何というか。', choices:['受精','着床','排卵','分娩'], a:1,
+  ex:'受精卵が細胞分裂をくり返しながら子宮の壁にくっつくことを着床といい、ここから母体内での成長が始まります。'},
+{cat:'seishoku', type:'mc', q:'母親と胎児の間で、養分・不要な物質・酸素・二酸化炭素などをやり取りする器官は何か。', choices:['たいばん（胎盤）','卵巣','子宮','羊膜'], a:0,
+  ex:'たいばんは母親の血液と胎児の血液が（直接混ざることなく）近づいて物質のやり取りを行う器官です。'},
+{cat:'seishoku', type:'mc', q:'胎児を外部の衝撃からやわらかく守るため、羊水で満たされたうすい膜を何というか。', choices:['たいばん','羊膜','へそのお','卵管'], a:1,
+  ex:'羊膜という袋の中は羊水で満たされており、胎児は羊水の中に浮かんだ状態で守られています。'},
+{cat:'seishoku', type:'mc', q:'胎児とたいばんをつなぎ、養分や不要な物質をやり取りする管を何というか。', choices:['へそのお','卵管','輸精管','気管'], a:0,
+  ex:'へそのおは胎児とたいばんをつなぐ管で、この中を血管が通り、養分や酸素、不要な物質のやり取りが行われます。'},
+{cat:'seishoku', type:'tf', q:'たいばんでは、母親の血液と胎児の血液が直接混ざり合っている。', choices:['正しい（○）','誤り（×）'], a:1,
+  ex:'母親と胎児の血液は直接混ざることはなく、たいばんで物質だけが交換されます。'},
+{cat:'seishoku', type:'mc', q:'受精から誕生までの、ヒトの平均的な妊娠期間はおよそ何週間か。', choices:['約28週','約38週','約48週','約20週'], a:1,
+  ex:'ヒトの妊娠期間は受精から誕生まで平均約38週（約270日）です。'},
+{cat:'seishoku', type:'mc', q:'卵（卵子）をつくる女性の生殖器官はどれか。', choices:['卵巣','子宮','卵管','ちつ'], a:0,
+  ex:'卵巣で卵（卵子）がつくられ、卵管を通って子宮に送られます。'},
+
+{cat:'meimi', type:'mc', q:'目に入る光の量を調節する、ひとみのまわりの部分を何というか。', choices:['水晶体（レンズ）','こうさい','もうまく','角まく'], a:1,
+  ex:'こうさいは、明るさに応じてひとみの大きさを変え、目に入る光の量を調節します。'},
+{cat:'meimi', type:'mc', q:'光を屈折させて像を結ばせる、カメラのレンズにあたる部分を何というか。', choices:['水晶体','こうさい','もうまく','角まく'], a:0,
+  ex:'水晶体（レンズ）は厚みを変えることでピントを合わせ、光を屈折させてもうまくに像を結びます。'},
+{cat:'meimi', type:'mc', q:'光の像が実際にうつり、光を感じる細胞が集まっている部分はどこか。', choices:['水晶体','こうさい','もうまく','角まく'], a:2,
+  ex:'もうまくには光を感じる細胞が多数集まっており、ここにうつった像の刺激が電気信号に変えられます。'},
+{cat:'meimi', type:'mc', q:'もうまくで受け取った光の刺激を脳に伝える神経を何というか。', choices:['視神経','聴神経','運動神経','せき髄'], a:0,
+  ex:'視神経は目で受け取った光の刺激（電気信号）を脳に伝える神経です。'},
+{cat:'meimi', type:'mc', q:'音の振動を最初に受け取る、外耳と中耳の間にあるうすい膜を何というか。', choices:['こまく','耳小骨','うずまき管','半規管'], a:0,
+  ex:'こまくは外から伝わった音の振動を受け取り、中耳へ伝えるうすい膜です。'},
+{cat:'meimi', type:'mc', q:'こまくの振動を大きくして中耳から内耳へ伝える、3つの小さな骨を何というか。', choices:['耳小骨','半規管','聴神経','うずまき管'], a:0,
+  ex:'耳小骨はこまくの振動を増幅し、うずまき管へ伝える3つの小さな骨です。'},
+{cat:'meimi', type:'mc', q:'音の振動を電気信号に変えて脳に伝える、らせん状のつくりを何というか。', choices:['うずまき管','半規管','耳小骨','こまく'], a:0,
+  ex:'うずまき管の中には音を感じる細胞があり、振動を電気信号に変えて聴神経を通じて脳に伝えます。'},
+{cat:'meimi', type:'mc', q:'体の回転を感じ取る、耳の中にある3本の半円形の管を何というか。', choices:['半規管','うずまき管','耳小骨','こまく'], a:0,
+  ex:'半規管は体の回転を感じ取るつくりで、平衡感覚（体のバランス）に関わっています。'},
+];
+
+/* ---------------------------------------------------------
+   State
+--------------------------------------------------------- */
+let selectedCat = 'all';
+let queue = [];
+let idx = 0;
+let score = 0;
+let wrongLog = [];
+let locked = false;
+
+const screenEl = document.getElementById('screen');
+const tabstripEl = document.getElementById('tabstrip');
+const mastheadStat = document.getElementById('masthead-stat');
+
+function countFor(catId){
+  return catId==='all' ? Q.length : Q.filter(q=>q.cat===catId).length;
+}
+
+function buildTabs(){
+  tabstripEl.innerHTML = '';
+  CATS.forEach(c=>{
+    const t = document.createElement('div');
+    t.className = 'tab' + (selectedCat===c.id ? ' active' : '');
+    t.style.background = c.color;
+    t.innerHTML = `<span class="no">${c.no}</span>${c.label}`;
+    t.onclick = ()=>{ selectedCat = c.id; renderStart(); };
+    tabstripEl.appendChild(t);
+  });
+}
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+/* ---------------------------------------------------------
+   Start screen
+--------------------------------------------------------- */
+function renderStart(){
+  buildTabs();
+  mastheadStat.textContent = '';
+  const n = countFor(selectedCat);
+  screenEl.innerHTML = `
+    <div class="eyebrow">単元をえらんで挑戦</div>
+    <h2 class="lead">からだの<span class="accent">しくみ</span>を<br>とことん確認しよう。</h2>
+    <p class="desc">呼吸・心臓と血液・消化と吸収・排出系・骨と筋肉・生殖と誕生・目と耳の7単元、全${Q.length}問。右のタブか下のカードから単元をえらんで、一問ずつ答えていこう。</p>
+    <div class="catgrid" id="catgrid"></div>
+    <button class="startbtn" id="startbtn">${selectedCat==='all' ? 'すべての単元（'+n+'問）ではじめる' : CATS.find(c=>c.id===selectedCat).label+'（'+n+'問）ではじめる'}</button>
+  `;
+  const grid = document.getElementById('catgrid');
+  const allCard = document.createElement('div');
+  allCard.className = 'catcard' + (selectedCat==='all' ? ' selected' : '');
+  allCard.innerHTML = `<span class="dot" style="background:var(--ink)"></span><div><div class="name">すべての単元</div><div class="cnt">${Q.length}問</div></div>`;
+  allCard.onclick = ()=>{ selectedCat='all'; renderStart(); };
+  grid.appendChild(allCard);
+  CATS.forEach(c=>{
+    const card = document.createElement('div');
+    card.className = 'catcard' + (selectedCat===c.id ? ' selected' : '');
+    card.innerHTML = `<span class="dot" style="background:${c.color}"></span><div><div class="name">${c.label}</div><div class="cnt">${countFor(c.id)}問</div></div>`;
+    card.onclick = ()=>{ selectedCat=c.id; renderStart(); };
+    grid.appendChild(card);
+  });
+  document.getElementById('startbtn').onclick = startQuiz;
+}
+
+/* ---------------------------------------------------------
+   Quiz flow
+--------------------------------------------------------- */
+function startQuiz(){
+  const pool = selectedCat==='all' ? Q : Q.filter(q=>q.cat===selectedCat);
+  queue = shuffle(pool).map(item=>{
+    if(item.type!=='mc') return item;
+    const order = shuffle(item.choices.map((_,i)=>i));
+    const choices = order.map(i=>item.choices[i]);
+    const a = order.indexOf(item.a);
+    return Object.assign({}, item, {choices, a});
+  });
+  idx = 0;
+  score = 0;
+  wrongLog = [];
+  renderQuestion();
+}
+
+function catInfo(id){ return CATS.find(c=>c.id===id); }
+
+function renderQuestion(){
+  locked = false;
+  buildTabs();
+  const item = queue[idx];
+  const ci = catInfo(item.cat);
+  mastheadStat.innerHTML = `<b>${score}</b> / ${idx} 正解中`;
+
+  const pct = Math.round((idx/queue.length)*100);
+
+  let choicesHtml = '';
+  item.choices.forEach((c,i)=>{
+    choicesHtml += `
+      <button class="choice" data-i="${i}">
+        <span class="mark">${item.type==='tf' ? (i===0?'○':'×') : String.fromCharCode(65+i)}</span>
+        <span>${c}</span>
+      </button>`;
+  });
+
+  screenEl.innerHTML = `
+    <div class="qmeta">
+      <span class="qtag" style="background:${ci.color}">${ci.label}</span>
+      <span class="qcount">第 ${idx+1} 問 / 全 ${queue.length} 問</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+    <div class="qtype">${item.type==='tf' ? '正誤問題' : '選択問題'}</div>
+    <div class="qtext">${item.q}</div>
+    <div class="choices">${choicesHtml}</div>
+    <div class="feedback" id="feedback"></div>
+    <button class="nextbtn" id="nextbtn">${idx===queue.length-1 ? '結果を見る' : '次の問題へ'}</button>
+  `;
+
+  document.querySelectorAll('.choice').forEach(btn=>{
+    btn.onclick = ()=> selectChoice(parseInt(btn.dataset.i), item);
+  });
+  document.getElementById('nextbtn').onclick = ()=>{
+    idx++;
+    if(idx>=queue.length){ renderResult(); } else { renderQuestion(); }
+  };
+}
+
+function selectChoice(i, item){
+  if(locked) return;
+  locked = true;
+  const correct = i===item.a;
+  if(correct) score++; else wrongLog.push(item);
+
+  document.querySelectorAll('.choice').forEach((btn,bi)=>{
+    btn.classList.add('locked');
+    if(bi===item.a) btn.classList.add('correct');
+    else if(bi===i) btn.classList.add('wrong');
+    else btn.classList.add('dim');
+  });
+
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback show ' + (correct ? 'correct' : 'wrong');
+  fb.innerHTML = `<span class="label">${correct ? '正解！' : '不正解 — 正しい答え：' + item.choices[item.a]}</span>${item.ex}`;
+
+  document.getElementById('nextbtn').classList.add('show');
+  mastheadStat.innerHTML = `<b>${score}</b> / ${idx+1} 正解中`;
+}
+
+/* ---------------------------------------------------------
+   Result screen
+--------------------------------------------------------- */
+function renderResult(){
+  buildTabs();
+  const total = queue.length;
+  const pct = Math.round((score/total)*100);
+  mastheadStat.textContent = '';
+
+  let reviewHtml = '';
+  if(wrongLog.length===0){
+    reviewHtml = `<div class="noneright">全問正解です。お見事！ 別の単元にも挑戦してみよう。</div>`;
+  } else {
+    reviewHtml = `<div class="reviewlist">` + wrongLog.map(item=>`
+      <div class="revitem">
+        <div class="revq">${item.q}</div>
+        <div class="reva">正解：<b>${item.choices[item.a]}</b><br>${item.ex}</div>
+      </div>
+    `).join('') + `</div>`;
+  }
+
+  screenEl.innerHTML = `
+    <div class="resulthead">
+      <div class="eyebrow">結果発表</div>
+      <div class="scoreBig">${score}<span> / ${total} 問正解</span></div>
+    </div>
+    <div class="scoreLine">正答率 ${pct}%　${pct===100 ? '－ パーフェクト！' : pct>=80 ? '－ よくできました' : pct>=50 ? '－ もう少し復習しよう' : '－ 見直しが必要です'}</div>
+    <div class="eyebrow" style="margin-bottom:10px;">${wrongLog.length>0 ? '間違えた問題のふりかえり' : ''}</div>
+    ${reviewHtml}
+    <div class="resultbtns">
+      <button class="ghost" id="retryBtn">同じ単元をもう一度</button>
+      <button class="primary" id="homeBtn">単元選択にもどる</button>
+    </div>
+  `;
+  document.getElementById('retryBtn').onclick = startQuiz;
+  document.getElementById('homeBtn').onclick = renderStart;
+}
+
+/* init */
+renderStart();
+</script>
+</body>
+</html>
