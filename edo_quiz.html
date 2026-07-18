@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>近世の産業・文化史 一問一答 - 中学受験社会</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F1E8D4;
+    --card:#FBF6EA;
+    --ink:#2B2620;
+    --muted:#867A60;
+    --line:#DED0AC;
+    --gold:#B08D57;
+    --indigo:#1F3A5F;
+    --indigo2:#2E5C8A;
+    --shu:#BC4A3C;
+    --moss:#6B7A4A;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(circle at 15% 8%, rgba(31,58,95,0.07), transparent 45%),
+      radial-gradient(circle at 88% 92%, rgba(188,74,60,0.06), transparent 45%),
+      var(--paper);
+    font-family:'Zen Kaku Gothic New', sans-serif;
+    color:var(--ink);
+    min-height:100vh;
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    padding:28px 16px 60px;
+  }
+  .wrap{width:100%; max-width:760px;}
+
+  .masthead{
+    display:flex; align-items:center; justify-content:space-between;
+    margin-bottom:16px; padding:0 6px;
+  }
+  .masthead .titleblock{display:flex; align-items:center; gap:12px;}
+  .seal{
+    flex:none;
+    width:42px; height:42px;
+    border-radius:6px;
+    background:var(--shu);
+    color:#fff;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Shippori Mincho', serif;
+    font-weight:800;
+    font-size:14px;
+    line-height:1.15;
+    text-align:center;
+    letter-spacing:0;
+    box-shadow:0 3px 8px rgba(188,74,60,.35);
+  }
+  .masthead h1{
+    font-family:'Shippori Mincho', serif;
+    font-weight:800;
+    font-size:21px;
+    letter-spacing:.03em;
+    margin:0;
+  }
+  .masthead h1 small{
+    display:block;
+    font-family:'Zen Kaku Gothic New', sans-serif;
+    font-weight:500;
+    font-size:11px;
+    color:var(--muted);
+    letter-spacing:.12em;
+    margin-top:3px;
+  }
+  .masthead .stat{
+    font-family:'Shippori Mincho', serif;
+    font-size:13px;
+    color:var(--muted);
+    text-align:right;
+  }
+  .masthead .stat b{color:var(--ink); font-size:17px;}
+
+  .page{
+    position:relative;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:3px;
+    box-shadow:0 1px 2px rgba(43,38,32,.05), 0 14px 30px -18px rgba(43,38,32,.35);
+    padding:34px 34px 30px 34px;
+    padding-right:64px;
+    min-height:420px;
+    background-image:
+      linear-gradient(180deg, rgba(43,38,32,0.02) 0px, transparent 2px);
+    background-size: 100% 26px;
+  }
+  .tabstrip{
+    position:absolute; top:0; right:0; bottom:0; width:40px;
+    display:flex; flex-direction:column;
+    border-left:1px solid var(--line);
+    overflow:hidden; border-radius:0 3px 3px 0;
+  }
+  .tab{
+    flex:1; display:flex; align-items:center; justify-content:center;
+    writing-mode:vertical-rl; text-orientation:mixed;
+    font-family:'Shippori Mincho', serif;
+    font-weight:700; font-size:12.5px; letter-spacing:.1em;
+    color:#fff; cursor:pointer;
+    border-bottom:1px solid rgba(255,255,255,.28);
+    opacity:.55; transition:opacity .18s ease, flex .18s ease;
+    padding:8px 0;
+  }
+  .tab:last-child{border-bottom:none;}
+  .tab.active{opacity:1; flex:1.7;}
+  .tab:hover{opacity:.85;}
+
+  .eyebrow{font-size:11.5px; letter-spacing:.16em; color:var(--muted); font-weight:700; margin-bottom:6px;}
+  .lead{
+    font-family:'Shippori Mincho', serif;
+    font-size:25px; font-weight:800; line-height:1.55; margin:0 0 14px;
+  }
+  .lead .accent{color:var(--shu);}
+  .desc{font-size:14px; line-height:1.9; color:#544d42; margin-bottom:26px;}
+
+  .catgrid{display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:26px;}
+  .catcard{
+    border:1px solid var(--line); border-radius:8px; padding:12px 14px; cursor:pointer;
+    background:#fff; display:flex; align-items:center; gap:10px;
+    transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+  }
+  .catcard:hover{transform:translateY(-1px); box-shadow:0 6px 16px -10px rgba(43,38,32,.4);}
+  .catcard.selected{border-color:var(--ink); box-shadow:0 0 0 1.5px var(--ink) inset;}
+  .catcard .dot{width:11px; height:11px; border-radius:50%; flex:none;}
+  .catcard .name{font-size:13.5px; font-weight:700;}
+  .catcard .cnt{font-size:11px; color:var(--muted); margin-top:1px;}
+
+  .startbtn{
+    width:100%; background:var(--ink); color:#fff; border:none; border-radius:8px;
+    padding:15px; font-family:'Shippori Mincho', serif; font-size:16px; font-weight:700;
+    letter-spacing:.06em; cursor:pointer; transition:background .15s ease;
+  }
+  .startbtn:hover{background:#171310;}
+
+  .qmeta{display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;}
+  .qtag{font-size:11px; font-weight:700; letter-spacing:.08em; color:#fff; padding:4px 10px; border-radius:100px;}
+  .qcount{font-size:12.5px; color:var(--muted); font-weight:500;}
+
+  .progress-track{width:100%; height:6px; background:#EAE0C4; border-radius:100px; overflow:hidden; margin-bottom:26px;}
+  .progress-fill{height:100%; background:linear-gradient(90deg, var(--shu), #d9695c); border-radius:100px; transition:width .25s ease;}
+
+  .qtype{font-size:11px; color:var(--muted); font-weight:700; letter-spacing:.1em; margin-bottom:8px;}
+  .qtext{font-family:'Shippori Mincho', serif; font-size:19px; font-weight:700; line-height:1.75; margin-bottom:22px;}
+
+  .choices{display:flex; flex-direction:column; gap:10px;}
+  .choice{
+    text-align:left; background:#fff; border:1.5px solid var(--line); border-radius:8px;
+    padding:13px 16px; font-size:14.5px; font-family:'Zen Kaku Gothic New', sans-serif;
+    color:var(--ink); cursor:pointer; display:flex; gap:10px; align-items:flex-start;
+    transition:border-color .12s ease, background .12s ease;
+  }
+  .choice .mark{
+    flex:none; width:22px; height:22px; border-radius:50%; border:1.5px solid var(--line);
+    font-size:12px; display:flex; align-items:center; justify-content:center; font-weight:700; color:var(--muted);
+  }
+  .choice:hover:not(.locked){border-color:var(--ink);}
+  .choice.locked{cursor:default;}
+  .choice.correct{border-color:var(--moss); background:#EFF2E7;}
+  .choice.correct .mark{background:var(--moss); border-color:var(--moss); color:#fff;}
+  .choice.wrong{border-color:var(--shu); background:#FBEDEA;}
+  .choice.wrong .mark{background:var(--shu); border-color:var(--shu); color:#fff;}
+  .choice.dim{opacity:.5;}
+
+  .feedback{margin-top:20px; padding:14px 16px; border-radius:8px; font-size:13.5px; line-height:1.85; display:none;}
+  .feedback.show{display:block;}
+  .feedback.correct{background:#EFF2E7; border:1px solid #d0d9bf; color:#2f3a21;}
+  .feedback.wrong{background:#FBEDEA; border:1px solid #f0cec8; color:#6e2019;}
+  .feedback .label{font-weight:800; margin-bottom:4px; display:block;}
+
+  .nextbtn{
+    margin-top:22px; width:100%; background:var(--ink); color:#fff; border:none; border-radius:8px;
+    padding:14px; font-family:'Shippori Mincho', serif; font-size:15px; font-weight:700;
+    letter-spacing:.05em; cursor:pointer; display:none;
+  }
+  .nextbtn.show{display:block;}
+  .nextbtn:hover{background:#171310;}
+
+  .resulthead{text-align:center; margin-bottom:8px;}
+  .sealBig{
+    width:118px; height:118px; border-radius:10px; margin:0 auto 10px;
+    background:var(--shu); color:#fff;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    font-family:'Shippori Mincho', serif;
+    box-shadow:0 8px 20px -6px rgba(188,74,60,.5);
+  }
+  .sealBig .n{font-size:40px; font-weight:800; line-height:1;}
+  .sealBig .d{font-size:12px; margin-top:4px; opacity:.9;}
+  .scoreLine{text-align:center; font-size:13.5px; color:var(--muted); margin-bottom:26px;}
+
+  .reviewlist{display:flex; flex-direction:column; gap:10px; margin-bottom:24px;}
+  .revitem{border:1px solid var(--line); border-radius:8px; padding:12px 14px; background:#FBF6EA;}
+  .revitem .revq{font-size:13.5px; font-weight:700; margin-bottom:5px; line-height:1.6;}
+  .revitem .reva{font-size:12.5px; color:#54443c; line-height:1.7;}
+  .revitem .reva b{color:var(--moss);}
+  .noneright{text-align:center; font-size:13.5px; color:var(--muted); padding:20px 0 26px;}
+
+  .resultbtns{display:flex; gap:10px;}
+  .resultbtns button{
+    flex:1; border-radius:8px; padding:13px; font-family:'Shippori Mincho', serif;
+    font-size:14px; font-weight:700; cursor:pointer; border:1.5px solid var(--ink);
+  }
+  .resultbtns .primary{background:var(--ink); color:#fff;}
+  .resultbtns .ghost{background:#fff; color:var(--ink);}
+
+  .footnote{text-align:center; font-size:11px; color:var(--muted); margin-top:18px; letter-spacing:.04em;}
+
+  @media (max-width:520px){
+    .page{padding:24px 20px 24px 20px; padding-right:50px;}
+    .tabstrip{width:30px;}
+    .tab{font-size:10.5px;}
+    .lead{font-size:20px;}
+    .catgrid{grid-template-columns:1fr;}
+    .qtext{font-size:17px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="masthead">
+    <div class="titleblock">
+      <div class="seal">近世<br>史</div>
+      <h1>近世の産業・文化史<small>EDO PERIOD DRILL &nbsp;/&nbsp; 社会・歴史 一問一答</small></h1>
+    </div>
+    <div class="stat" id="masthead-stat"></div>
+  </div>
+
+  <div class="page">
+    <div class="tabstrip" id="tabstrip"></div>
+    <div id="screen"></div>
+  </div>
+
+  <div class="footnote">農業と産業・商業と交通・元禄文化・化政文化・学問と教育 — 全項目対応／すべて四択形式</div>
+</div>
+
+<script>
+/* ---------------------------------------------------------
+   Data
+--------------------------------------------------------- */
+const CATS = [
+  {id:'nogyo',   label:'農業と産業', color:'var(--moss)'},
+  {id:'kotsu',   label:'商業と交通', color:'var(--indigo2)'},
+  {id:'genroku', label:'元禄文化',   color:'var(--shu)'},
+  {id:'kasei',   label:'化政文化',   color:'var(--indigo)'},
+  {id:'gakumon', label:'学問と教育', color:'var(--gold)'},
+];
+
+const Q = [
+/* 農業と産業 */
+{cat:'nogyo', q:'江戸時代に使われるようになった、深く耕すことができる農具はどれか。', choices:['備中ぐわ','千歯こき','唐箕','千石どおし'], a:0,
+  ex:'備中ぐわは刃先が数本に分かれ、深く耕すことができる農具で、農作業の効率を大きく向上させました。'},
+{cat:'nogyo', q:'脱穀の作業を効率化し、能率が大きく上がったことから「後家倒し」ともよばれた農具はどれか。', choices:['備中ぐわ','千歯こき','踏車','唐箕'], a:1,
+  ex:'千歯こきは稲穂から実を効率よくしごき取れる道具で、それまで手作業で行っていた脱穀を大幅に効率化しました。'},
+{cat:'nogyo', q:'干鰯や油かすなど、お金を出して購入する肥料をまとめて何というか。', choices:['金肥','緑肥','厩肥','堆肥'], a:0,
+  ex:'金肥はお金で購入する肥料のことで、干鰯（ほしか）・油かす・しめ粕などが代表例です。従来の草木を使った自給肥料に代わって普及しました。'},
+{cat:'nogyo', q:'海や沼、沖積地などを陸地に変えて田畑を切り開く事業を何というか。', choices:['新田開発','検地','刀狩','惣'], a:0,
+  ex:'新田開発により、有明海の千拓地や印旛沼など各地で耕地が広げられ、江戸時代の石高は大きく増加しました。'},
+{cat:'nogyo', q:'薩摩藩の特産品として知られ、さとうきびを原料としてつくられたものはどれか。', choices:['黒砂糖','藍','紅花','漆'], a:0,
+  ex:'薩摩藩は奄美群島や琉球でさとうきびを栽培させ、黒砂糖を専売にして藩の財政を支えました。'},
+{cat:'nogyo', q:'米や麦以外に栽培され、売って現金収入を得るための農作物を何というか。', choices:['商品作物','自給作物','救荒作物','年貢作物'], a:0,
+  ex:'商品作物には、綿花・麻・あい・べにばな・うるしなどがあり、農村でも貨幣経済が広がるきっかけとなりました。'},
+{cat:'nogyo', q:'問屋が農民に原料や道具を貸し出し、できた製品を買い取る生産のしくみを何というか。', choices:['問屋制家内工業','工場制手工業','株仲間','座'], a:0,
+  ex:'問屋制家内工業では、問屋が原料・資金・道具を農民に前貸しし、完成した製品を買い取りました。江戸時代中期以降に広まりました。'},
+{cat:'nogyo', q:'工場に労働者を集め、分業によって製品を生産するしくみを何というか。', choices:['問屋制家内工業','工場制手工業（マニュファクチュア）','農村家内工業','専売制'], a:1,
+  ex:'工場制手工業（マニュファクチュア）は、工場に人を集めて分業で生産する形態で、問屋制家内工業よりもさらに進んだ生産のしくみです。'},
+
+/* 商業と交通 */
+{cat:'kotsu', q:'江戸・大阪・京都の3つの都市をまとめて何というか。', choices:['三都','五街道','三家','三奉行'], a:0,
+  ex:'江戸・大阪・京都は江戸時代の政治・経済・文化の中心地として栄え、まとめて三都とよばれました。'},
+{cat:'kotsu', q:'「将軍のおひざもと」とよばれ、人口約100万人をかかえた都市はどこか。', choices:['江戸','大阪','京都','長崎'], a:0,
+  ex:'江戸は将軍のおひざもとと呼ばれ、参勤交代による大名やその家臣なども多く住み、当時世界最大級の人口をかかえる都市でした。'},
+{cat:'kotsu', q:'諸藩の蔵屋敷が集まり、「天下の台所」とよばれた都市はどこか。', choices:['江戸','大阪','京都','奈良'], a:1,
+  ex:'大阪には各藩の蔵屋敷が置かれ、年貢米や特産物が集まって取り引きされたことから「天下の台所」とよばれました。'},
+{cat:'kotsu', q:'江戸を起点として整備された、5つの主要な陸上交通路をまとめて何というか。', choices:['五街道','三都','東廻り航路','西廻り航路'], a:0,
+  ex:'五街道は東海道・中山道・甲州街道・日光街道・奥州街道の5つの街道の総称で、江戸を起点に整備されました。'},
+{cat:'kotsu', q:'五街道のうち、江戸と京都を太平洋側を通って結ぶ街道はどれか。', choices:['東海道','中山道','甲州街道','奥州街道'], a:0,
+  ex:'東海道は江戸と京都を結ぶ代表的な街道で、歌川広重の「東海道五十三次」でも知られています。'},
+{cat:'kotsu', q:'街道沿いに設けられ、旅人が宿泊したり休憩したりするために発達した町を何というか。', choices:['宿場町','門前町','城下町','港町'], a:0,
+  ex:'宿場町には本陣・旅籠などが整備され、大名行列や旅人の宿泊・休憩の拠点として栄えました。'},
+{cat:'kotsu', q:'手紙や書状などを、街道を利用して素早く運んだ江戸時代の運送の仕事を何というか。', choices:['飛脚','廻船','関所役人','五人組'], a:0,
+  ex:'飛脚は街道の宿場を中継しながら手紙や荷物を運ぶ仕事で、江戸時代の情報伝達を支えました。'},
+{cat:'kotsu', q:'東北・北陸地方の年貢米などを日本海側から下関を経て大阪まで運んだ海上航路を何というか。', choices:['東廻り航路','西廻り航路','南海路','参勤交代路'], a:1,
+  ex:'西廻り航路は日本海沿岸から下関を回って大阪へ向かう航路で、河村瑞賢によって整備されました。'},
+{cat:'kotsu', q:'江戸と大阪の間を行き来し、酒などの荷物を運んだ廻船を何というか。', choices:['菱垣廻船・樽廻船','北前船','朱印船','南蛮船'], a:0,
+  ex:'菱垣廻船・樽廻船は江戸と大阪を結んで日用品や酒などを運んだ廻船で、江戸の商業発展を支えました。'},
+{cat:'kotsu', q:'東廻り航路・西廻り航路の整備に大きく貢献した人物は誰か。', choices:['河村瑞賢','角倉了以','伊能忠敬','徳川吉宗'], a:0,
+  ex:'河村瑞賢は江戸時代前期の商人で、東廻り航路・西廻り航路を整備し、全国的な海上輸送網の発展に貢献しました。'},
+
+/* 元禄文化 */
+{cat:'genroku', q:'元禄文化が栄えたのは、何代将軍のころか。', choices:['徳川家康','徳川綱吉','徳川吉宗','徳川家斉'], a:1,
+  ex:'元禄文化は5代将軍徳川綱吉の時代を中心に栄えた文化です。'},
+{cat:'genroku', q:'元禄文化が中心的に栄えた地域はどこか。', choices:['江戸','上方（大阪・京都）','東北地方','九州地方'], a:1,
+  ex:'元禄文化は上方（大阪・京都）の裕福な町人を担い手として栄えた文化です。'},
+{cat:'genroku', q:'「日本永代蔵」などの浮世草子を書いた人物は誰か。', choices:['井原西鶴','松尾芭蕉','近松門左衛門','滝沢馬琴'], a:0,
+  ex:'井原西鶴は町人の生活をいきいきと描いた浮世草子の作者として知られています。'},
+{cat:'genroku', q:'俳句を確立し、「奥の細道」を著した人物は誰か。', choices:['井原西鶴','松尾芭蕉','近松門左衛門','十返舎一九'], a:1,
+  ex:'松尾芭蕉は俳句を芸術として確立した俳人で、「奥の細道」は東北・北陸地方を旅した際の紀行文です。'},
+{cat:'genroku', q:'「曽根崎心中」などの人形浄瑠璃の脚本を書いた人物は誰か。', choices:['井原西鶴','松尾芭蕉','近松門左衛門','喜多川歌麿'], a:2,
+  ex:'近松門左衛門は人形浄瑠璃や歌舞伎の脚本を数多く書き、義理と人情の間で悩む人々の姿を描きました。'},
+{cat:'genroku', q:'「燕子花図屏風」を描いた、元禄期の装飾画で知られる画家は誰か。', choices:['尾形光琳','菱川師宣','葛飾北斎','歌川広重'], a:0,
+  ex:'尾形光琳は大胆な構図と美しい色彩を特徴とする装飾画（琳派）を大成した画家です。'},
+{cat:'genroku', q:'「見返り美人図」を描き、浮世絵の祖といわれる人物は誰か。', choices:['尾形光琳','菱川師宣','喜多川歌麿','東洲斎写楽'], a:1,
+  ex:'菱川師宣は町人の風俗を描いた浮世絵を確立し、「見返り美人図」などの作品で知られています。'},
+{cat:'genroku', q:'元禄文化の特徴として正しいものはどれか。', choices:['江戸の武士を担い手として栄えた','上方の町人を担い手として栄えた','幕府によって全面的に禁止された文化だった','キリスト教の影響を強く受けた文化だった'], a:1,
+  ex:'元禄文化は経済的に豊かになった上方の町人を担い手として発達した文化です。'},
+{cat:'genroku', q:'元禄文化が栄えたのはおよそ何世紀のことか。', choices:['16世紀末〜17世紀初頭','17世紀末〜18世紀初頭','18世紀末〜19世紀初頭','19世紀末〜20世紀初頭'], a:1,
+  ex:'元禄文化は17世紀末から18世紀初頭にかけて、5代将軍綱吉の時代を中心に栄えました。'},
+
+/* 化政文化 */
+{cat:'kasei', q:'化政文化が栄えたのは、何代将軍のころか。', choices:['5代将軍綱吉','8代将軍吉宗','11代将軍家斉','15代将軍慶喜'], a:2,
+  ex:'化政文化は11代将軍徳川家斉の時代を中心に、19世紀初め頃栄えた文化です。'},
+{cat:'kasei', q:'化政文化が中心的に栄えた都市はどこか。', choices:['江戸','大阪','京都','長崎'], a:0,
+  ex:'化政文化は元禄文化とは異なり、江戸の町人を担い手として栄えた文化です。'},
+{cat:'kasei', q:'「南総里見八犬伝」を著した人物は誰か。', choices:['滝沢馬琴','十返舎一九','井原西鶴','近松門左衛門'], a:0,
+  ex:'滝沢馬琴（曲亭馬琴）は長編読本「南総里見八犬伝」の作者として知られています。'},
+{cat:'kasei', q:'「東海道中膝栗毛」を著した人物は誰か。', choices:['滝沢馬琴','十返舎一九','松尾芭蕉','喜多川歌麿'], a:1,
+  ex:'十返舎一九は弥次さん・喜多さんの旅を描いたこっけい本「東海道中膝栗毛」の作者です。'},
+{cat:'kasei', q:'美人画を得意とした浮世絵師は誰か。', choices:['喜多川歌麿','東洲斎写楽','葛飾北斎','歌川広重'], a:0,
+  ex:'喜多川歌麿は女性の表情や姿を美しく描いた美人画で人気を博した浮世絵師です。'},
+{cat:'kasei', q:'役者絵で知られ、わずか10か月ほどの活動で多くの傑作を残した浮世絵師は誰か。', choices:['喜多川歌麿','東洲斎写楽','葛飾北斎','尾形光琳'], a:1,
+  ex:'東洲斎写楽は歌舞伎役者の表情を大胆に誇張して描いた役者絵で知られる浮世絵師です。'},
+{cat:'kasei', q:'「富嶽三十六景」を描いた浮世絵師は誰か。', choices:['葛飾北斎','歌川広重','喜多川歌麿','菱川師宣'], a:0,
+  ex:'葛飾北斎は富士山をさまざまな角度から描いた「富嶽三十六景」で世界的にも高く評価されています。'},
+{cat:'kasei', q:'「東海道五十三次」を描いた浮世絵師は誰か。', choices:['葛飾北斎','歌川広重','東洲斎写楽','尾形光琳'], a:1,
+  ex:'歌川広重は東海道の宿場町の風景を情緒豊かに描いた「東海道五十三次」で知られています。'},
+{cat:'kasei', q:'世相を風刺したこっけいな短歌や、こっけいな五・七・五の句をそれぞれ何というか。', choices:['狂歌・川柳','俳句・和歌','浮世草子・洒落本','漢詩・漢文'], a:0,
+  ex:'狂歌は五・七・五・七・七の形式で世相を皮肉やこっけいをこめてよんだ短歌、川柳は五・七・五の形式でよまれた句で、どちらも化政文化を代表する庶民文芸です。'},
+
+/* 学問と教育 */
+{cat:'gakumon', q:'オランダ語の書物を通じて、西洋の学問を学ぶ学問を何というか。', choices:['蘭学','国学','朱子学','陽明学'], a:0,
+  ex:'蘭学はオランダ語の書物を通じて医学・天文学などの西洋の知識を学ぶ学問で、鎖国下でも長崎を通じて発展しました。'},
+{cat:'gakumon', q:'前野良沢とともにオランダの解剖書を翻訳し、「解体新書」を著した人物は誰か。', choices:['杉田玄白','伊能忠敬','本居宣長','新井白石'], a:0,
+  ex:'杉田玄白は前野良沢らとともにオランダ語の解剖書「ターヘル・アナトミア」を翻訳し、「解体新書」として出版しました。'},
+{cat:'gakumon', q:'全国を測量し、正確な日本地図の基礎となる「大日本沿海輿地全図」の作成に貢献した人物は誰か。', choices:['杉田玄白','伊能忠敬','本居宣長','間宮林蔵'], a:1,
+  ex:'伊能忠敬は幕府の命を受けて全国を実測してまわり、精密な日本地図の作成に大きく貢献しました。'},
+{cat:'gakumon', q:'日本古来の精神や考え方を明らかにしようとする学問を何というか。', choices:['蘭学','国学','朱子学','儒学'], a:1,
+  ex:'国学は「古事記」などの古典を研究し、仏教や儒教が伝わる以前の日本古来の精神を明らかにしようとする学問です。'},
+{cat:'gakumon', q:'「古事記伝」を著し、国学を大成した人物は誰か。', choices:['本居宣長','杉田玄白','伊能忠敬','賀茂真淵'], a:0,
+  ex:'本居宣長は「古事記」を研究してその注釈書「古事記伝」を著し、国学を大成しました。'},
+{cat:'gakumon', q:'江戸幕府が正学として奨励した、身分秩序を重んじる学問は何か。', choices:['蘭学','国学','朱子学','蘭方医学'], a:2,
+  ex:'朱子学は身分の上下や秩序を重んじる儒学の一派で、江戸幕府は寛政の改革の頃に朱子学を正学として奨励しました。'},
+{cat:'gakumon', q:'庶民の子どもが「読み・書き・そろばん」などの実用的な知識を学んだ教育施設を何というか。', choices:['寺子屋','藩校','昌平坂学問所','私塾'], a:0,
+  ex:'寺子屋は町や村に開かれ、庶民の子どもたちが「読み・書き・そろばん」など日常生活に役立つ知識を学びました。'},
+{cat:'gakumon', q:'各藩が武士の子弟を教育するために設けた学校を何というか。', choices:['寺子屋','藩校','私塾','昌平坂学問所'], a:1,
+  ex:'藩校は各藩が武士の子弟を教育するために設けた学校で、儒学を中心に武芸なども教えられました。'},
+];
+
+/* ---------------------------------------------------------
+   State
+--------------------------------------------------------- */
+let selectedCat = 'all';
+let queue = [];
+let idx = 0;
+let score = 0;
+let wrongLog = [];
+let locked = false;
+
+const screenEl = document.getElementById('screen');
+const tabstripEl = document.getElementById('tabstrip');
+const mastheadStat = document.getElementById('masthead-stat');
+
+function countFor(catId){ return catId==='all' ? Q.length : Q.filter(q=>q.cat===catId).length; }
+
+function buildTabs(){
+  tabstripEl.innerHTML = '';
+  CATS.forEach(c=>{
+    const t = document.createElement('div');
+    t.className = 'tab' + (selectedCat===c.id ? ' active' : '');
+    t.style.background = c.color;
+    t.textContent = c.label;
+    t.onclick = ()=>{ selectedCat = c.id; renderStart(); };
+    tabstripEl.appendChild(t);
+  });
+}
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+/* ---------------------------------------------------------
+   Start screen
+--------------------------------------------------------- */
+function renderStart(){
+  buildTabs();
+  mastheadStat.textContent = '';
+  const n = countFor(selectedCat);
+  screenEl.innerHTML = `
+    <div class="eyebrow">単元をえらんで挑戦</div>
+    <h2 class="lead">江戸の<span class="accent">産業と文化</span>を<br>とことん確認しよう。</h2>
+    <p class="desc">農業と産業・商業と交通・元禄文化・化政文化・学問と教育の5単元、全${Q.length}問。すべて四択形式で、一問ごとに正誤が表示されます。</p>
+    <div class="catgrid" id="catgrid"></div>
+    <button class="startbtn" id="startbtn">${selectedCat==='all' ? 'すべての単元（'+n+'問）ではじめる' : CATS.find(c=>c.id===selectedCat).label+'（'+n+'問）ではじめる'}</button>
+  `;
+  const grid = document.getElementById('catgrid');
+  const allCard = document.createElement('div');
+  allCard.className = 'catcard' + (selectedCat==='all' ? ' selected' : '');
+  allCard.innerHTML = `<span class="dot" style="background:var(--ink)"></span><div><div class="name">すべての単元</div><div class="cnt">${Q.length}問</div></div>`;
+  allCard.onclick = ()=>{ selectedCat='all'; renderStart(); };
+  grid.appendChild(allCard);
+  CATS.forEach(c=>{
+    const card = document.createElement('div');
+    card.className = 'catcard' + (selectedCat===c.id ? ' selected' : '');
+    card.innerHTML = `<span class="dot" style="background:${c.color}"></span><div><div class="name">${c.label}</div><div class="cnt">${countFor(c.id)}問</div></div>`;
+    card.onclick = ()=>{ selectedCat=c.id; renderStart(); };
+    grid.appendChild(card);
+  });
+  document.getElementById('startbtn').onclick = startQuiz;
+}
+
+/* ---------------------------------------------------------
+   Quiz flow
+--------------------------------------------------------- */
+function startQuiz(){
+  const pool = selectedCat==='all' ? Q : Q.filter(q=>q.cat===selectedCat);
+  queue = shuffle(pool).map(item=>{
+    const order = shuffle([0,1,2,3]);
+    const choices = order.map(i=>item.choices[i]);
+    const a = order.indexOf(item.a);
+    return Object.assign({}, item, {choices, a});
+  });
+  idx = 0; score = 0; wrongLog = [];
+  renderQuestion();
+}
+
+function catInfo(id){ return CATS.find(c=>c.id===id); }
+
+function renderQuestion(){
+  locked = false;
+  buildTabs();
+  const item = queue[idx];
+  const ci = catInfo(item.cat);
+  mastheadStat.innerHTML = `<b>${score}</b> / ${idx} 正解中`;
+
+  const pct = Math.round((idx/queue.length)*100);
+
+  let choicesHtml = '';
+  item.choices.forEach((c,i)=>{
+    choicesHtml += `
+      <button class="choice" data-i="${i}">
+        <span class="mark">${String.fromCharCode(65+i)}</span>
+        <span>${c}</span>
+      </button>`;
+  });
+
+  screenEl.innerHTML = `
+    <div class="qmeta">
+      <span class="qtag" style="background:${ci.color}">${ci.label}</span>
+      <span class="qcount">第 ${idx+1} 問 / 全 ${queue.length} 問</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+    <div class="qtype">四択問題</div>
+    <div class="qtext">${item.q}</div>
+    <div class="choices">${choicesHtml}</div>
+    <div class="feedback" id="feedback"></div>
+    <button class="nextbtn" id="nextbtn">${idx===queue.length-1 ? '結果を見る' : '次の問題へ'}</button>
+  `;
+
+  document.querySelectorAll('.choice').forEach(btn=>{
+    btn.onclick = ()=> selectChoice(parseInt(btn.dataset.i), item);
+  });
+  document.getElementById('nextbtn').onclick = ()=>{
+    idx++;
+    if(idx>=queue.length){ renderResult(); } else { renderQuestion(); }
+  };
+}
+
+function selectChoice(i, item){
+  if(locked) return;
+  locked = true;
+  const correct = i===item.a;
+  if(correct) score++; else wrongLog.push(item);
+
+  document.querySelectorAll('.choice').forEach((btn,bi)=>{
+    btn.classList.add('locked');
+    if(bi===item.a) btn.classList.add('correct');
+    else if(bi===i) btn.classList.add('wrong');
+    else btn.classList.add('dim');
+  });
+
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback show ' + (correct ? 'correct' : 'wrong');
+  fb.innerHTML = `<span class="label">${correct ? '正解！' : '不正解 — 正しい答え：' + item.choices[item.a]}</span>${item.ex}`;
+
+  document.getElementById('nextbtn').classList.add('show');
+  mastheadStat.innerHTML = `<b>${score}</b> / ${idx+1} 正解中`;
+}
+
+/* ---------------------------------------------------------
+   Result screen
+--------------------------------------------------------- */
+function renderResult(){
+  buildTabs();
+  const total = queue.length;
+  const pct = Math.round((score/total)*100);
+  mastheadStat.textContent = '';
+
+  let reviewHtml = '';
+  if(wrongLog.length===0){
+    reviewHtml = `<div class="noneright">全問正解です。見事な達成です！ 別の単元にも挑戦してみよう。</div>`;
+  } else {
+    reviewHtml = `<div class="reviewlist">` + wrongLog.map(item=>`
+      <div class="revitem">
+        <div class="revq">${item.q}</div>
+        <div class="reva">正解：<b>${item.choices[item.a]}</b><br>${item.ex}</div>
+      </div>
+    `).join('') + `</div>`;
+  }
+
+  screenEl.innerHTML = `
+    <div class="resulthead">
+      <div class="eyebrow">結果発表</div>
+      <div class="sealBig"><div class="n">${score}/${total}</div><div class="d">正解</div></div>
+    </div>
+    <div class="scoreLine">正答率 ${pct}%　${pct===100 ? '－ パーフェクト！' : pct>=80 ? '－ よくできました' : pct>=50 ? '－ もう少し復習しよう' : '－ 見直しが必要です'}</div>
+    <div class="eyebrow" style="margin-bottom:10px;">${wrongLog.length>0 ? '間違えた問題のふりかえり' : ''}</div>
+    ${reviewHtml}
+    <div class="resultbtns">
+      <button class="ghost" id="retryBtn">同じ単元をもう一度</button>
+      <button class="primary" id="homeBtn">単元選択にもどる</button>
+    </div>
+  `;
+  document.getElementById('retryBtn').onclick = startQuiz;
+  document.getElementById('homeBtn').onclick = renderStart;
+}
+
+/* init */
+renderStart();
+</script>
+</body>
+</html>
