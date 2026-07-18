@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>社会 一問一答ドリル</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Yomogi&display=swap');
+
+:root{
+  --paper:#F0EAD9;
+  --paper-deep:#E5DCC4;
+  --rule:#C9BFA0;
+  --margin-line:#c98a8a;
+  --ink:#22303F;
+  --ink-soft:#5b6b78;
+  --akapen:#B8262E;
+  --akapen-dark:#7e1a20;
+  --gold:#A9822F;
+  --card-shadow: 0 18px 40px rgba(34,48,63,0.18), 0 2px 6px rgba(34,48,63,0.12);
+}
+*{box-sizing:border-box;}
+html,body{height:100%;}
+body{
+  margin:0;
+  min-height:100vh;
+  background: radial-gradient(ellipse at top left, rgba(255,255,255,0.5), transparent 60%), var(--paper);
+  font-family:'Zen Kaku Gothic New', sans-serif;
+  color:var(--ink);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:28px 14px;
+  position:relative;
+  overflow-x:hidden;
+}
+body::before{
+  content:"";
+  position:fixed; inset:0;
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 27px, var(--rule) 28px),
+    repeating-linear-gradient(90deg, transparent 0 55px, var(--margin-line) 55px 56px, transparent 56px 3000px);
+  opacity:0.28;
+  pointer-events:none;
+}
+.stage{ position:relative; width:100%; max-width:560px; }
+
+/* ---------- deck picker ---------- */
+.picker-sheet{
+  background:linear-gradient(180deg, #FBF8EF, #F3EDDC 70%);
+  border-radius:6px;
+  box-shadow:var(--card-shadow);
+  padding:30px 28px;
+  border:1px solid rgba(0,0,0,0.06);
+}
+.picker-title{
+  font-family:'Shippori Mincho', serif;
+  font-weight:800;
+  font-size:20px;
+  color:var(--ink);
+  margin-bottom:2px;
+}
+.picker-sub{
+  font-size:12.5px;
+  color:var(--ink-soft);
+  margin-bottom:22px;
+}
+.deck-card{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:16px 16px;
+  border:1.5px solid var(--rule);
+  border-radius:9px;
+  background:#fff;
+  cursor:pointer;
+  margin-bottom:12px;
+  transition:transform .12s ease, box-shadow .12s ease, border-color .2s ease;
+}
+.deck-card:hover{
+  border-color:var(--akapen);
+  transform:translateY(-2px);
+  box-shadow:0 8px 18px rgba(184,38,46,0.15);
+}
+.deck-num{
+  font-family:'Shippori Mincho', serif;
+  font-weight:800;
+  font-size:13px;
+  color:#fff;
+  background:var(--ink);
+  border-radius:6px;
+  padding:6px 9px;
+  flex-shrink:0;
+}
+.deck-info{ flex:1; }
+.deck-name{
+  font-family:'Shippori Mincho', serif;
+  font-weight:800;
+  font-size:17px;
+  color:var(--ink);
+}
+.deck-meta{
+  font-size:12px;
+  color:var(--ink-soft);
+  margin-top:3px;
+}
+.deck-arrow{ color:var(--akapen); font-size:20px; }
+
+/* ---------- Ticket / lap indicator ---------- */
+.lap-ticket{ display:flex; gap:8px; justify-content:center; margin-bottom:14px; }
+.lap-punch{
+  position:relative;
+  width:96px;
+  padding:8px 6px 9px;
+  text-align:center;
+  background:#fff;
+  border:1.5px dashed var(--rule);
+  border-radius:8px;
+  font-family:'Shippori Mincho', serif;
+  font-weight:700;
+  font-size:12.5px;
+  color:var(--ink-soft);
+  transition:all .35s ease;
+}
+.lap-punch .num{ display:block; font-size:20px; font-weight:800; color:var(--ink-soft); line-height:1.3; }
+.lap-punch.active{ border-style:solid; border-color:var(--akapen); color:var(--akapen-dark); box-shadow:0 4px 10px rgba(184,38,46,0.18); }
+.lap-punch.active .num{ color:var(--akapen); }
+.lap-punch.done{ background:var(--ink); border-color:var(--ink); color:#f0ead9; }
+.lap-punch.done .num{ color:#f0ead9; }
+.lap-punch.done::after{
+  content:"済"; position:absolute; top:-9px; right:-7px;
+  width:22px;height:22px;border-radius:50%; background:var(--akapen); color:#fff;
+  font-size:11px; display:flex; align-items:center; justify-content:center;
+  font-family:'Shippori Mincho',serif; box-shadow:0 2px 4px rgba(0,0,0,.25);
+}
+
+/* ---------- Main sheet ---------- */
+.sheet{
+  position:relative;
+  background:linear-gradient(180deg, #FBF8EF, #F3EDDC 70%);
+  border-radius:6px;
+  box-shadow:var(--card-shadow);
+  padding:30px 28px 26px 40px;
+  border:1px solid rgba(0,0,0,0.06);
+}
+.sheet::before{ content:""; position:absolute; top:0; bottom:0; left:26px; width:1.5px; background:var(--margin-line); opacity:.55; }
+.head-row{ display:flex; align-items:baseline; justify-content:space-between; margin-bottom:6px; }
+.eyebrow{ font-family:'Shippori Mincho',serif; font-weight:700; font-size:13px; letter-spacing:.14em; color:var(--ink-soft); }
+.qcount{ font-family:'Shippori Mincho',serif; font-size:13px; color:var(--ink-soft); font-weight:700; }
+.qcount b{ color:var(--akapen); font-size:16px; }
+.progress-track{ height:6px; background:var(--paper-deep); border-radius:3px; overflow:hidden; margin:10px 0 22px; border:1px solid rgba(0,0,0,0.05); }
+.progress-fill{ height:100%; background:linear-gradient(90deg, var(--akapen), #d9564d); width:0%; transition:width .5s cubic-bezier(.4,0,.2,1); }
+.qnum{ display:inline-flex; align-items:center; gap:6px; font-family:'Shippori Mincho',serif; font-weight:800; font-size:15px; color:var(--akapen-dark); margin-bottom:10px; }
+.qnum .box{ width:26px;height:26px;border:2px solid var(--akapen-dark); display:flex;align-items:center;justify-content:center; border-radius:3px; font-size:13px; }
+.qtext{ font-size:17px; line-height:1.85; font-weight:500; color:var(--ink); min-height:70px; white-space:pre-wrap; }
+.answer-zone{ margin-top:18px; padding-top:16px; border-top:1.5px dashed var(--rule); min-height:64px; }
+.answer-label{ font-family:'Yomogi', cursive; color:var(--akapen); font-size:15px; margin-bottom:4px; display:flex; align-items:center; gap:6px; }
+.answer-text{ font-family:'Shippori Mincho', serif; font-weight:700; font-size:21px; color:var(--ink); animation:reveal .35s ease; }
+@keyframes reveal{ from{ opacity:0; transform:translateY(4px); } to{ opacity:1; transform:translateY(0); } }
+.badge-2026{
+  display:inline-flex; align-items:center; gap:5px;
+  margin-top:10px;
+  padding:5px 10px;
+  border-radius:20px;
+  font-size:12px; font-weight:700;
+  font-family:'Zen Kaku Gothic New', sans-serif;
+  background:#e8f4e8; color:#2a6b35;
+  border:1.5px solid #2a6b35;
+}
+.badge-2026.changed{
+  background:#fff4e0; color:#8a5a00;
+  border-color:#c98000;
+}
+.badge-2026-note{
+  display:block;
+  margin-top:5px;
+  font-size:13px;
+  color:#8a5a00;
+  font-family:'Yomogi', cursive;
+  animation:reveal .35s ease;
+}
+.btn-row{ margin-top:22px; display:flex; gap:10px; }
+.btn{ flex:1; border:none; cursor:pointer; font-family:'Zen Kaku Gothic New', sans-serif; font-weight:700; font-size:15px; padding:14px 10px; border-radius:8px; transition:transform .12s ease, box-shadow .12s ease, background .2s ease; letter-spacing:.02em; }
+.btn:active{ transform:translateY(1px) scale(0.98); }
+.btn-reveal{ background:var(--ink); color:#F0EAD9; box-shadow:0 6px 14px rgba(34,48,63,0.25); }
+.btn-reveal:hover{ background:#31435a; }
+.btn-correct{ background:#e7f0e6; color:#2f6b3a; border:1.5px solid #2f6b3a; }
+.btn-correct:hover{ background:#d9ecd8; }
+.btn-wrong{ background:#fbe9e8; color:var(--akapen-dark); border:1.5px solid var(--akapen); }
+.btn-wrong:hover{ background:#f7d9d7; }
+.stamp-wrap{ position:absolute; top:14px; right:18px; width:88px; height:88px; pointer-events:none; opacity:0; }
+.stamp-wrap.show{ animation:stampIn .5s cubic-bezier(.2,1.4,.5,1) forwards; }
+@keyframes stampIn{ 0%{ opacity:0; transform:scale(2.4) rotate(-18deg); } 60%{ opacity:1; } 100%{ opacity:.92; transform:scale(1) rotate(-10deg); } }
+.stamp-wrap svg{ width:100%; height:100%; overflow:visible; }
+.stamp-note{ position:absolute; top:60px; right:10px; font-family:'Yomogi', cursive; font-size:14px; color:var(--akapen); opacity:0; white-space:nowrap; }
+.stamp-note.show{ animation:noteIn .45s ease .25s forwards; }
+@keyframes noteIn{ from{ opacity:0; transform:translateX(6px); } to{ opacity:1; transform:translateX(0); } }
+.footer-row{ margin-top:20px; display:flex; justify-content:space-between; align-items:center; font-size:12px; color:var(--ink-soft); gap:10px; }
+.reset-link{ background:none;border:none;cursor:pointer; color:var(--ink-soft); text-decoration:underline; font-size:12px; font-family:'Zen Kaku Gothic New', sans-serif; white-space:nowrap; }
+.reset-link:hover{ color:var(--akapen); }
+.round-complete, .final-complete{ text-align:center; padding:20px 6px 6px; }
+.seal{ width:120px; height:120px; margin:0 auto 18px; }
+.rc-title{ font-family:'Shippori Mincho', serif; font-weight:800; font-size:24px; color:var(--akapen-dark); margin-bottom:6px; }
+.rc-sub{ font-size:14px; color:var(--ink-soft); margin-bottom:22px; line-height:1.7; }
+.stat-bars{ display:flex; flex-direction:column; gap:10px; margin:0 auto 24px; max-width:380px; text-align:left; }
+.stat-row{ display:flex; align-items:center; gap:10px; font-size:13px; font-weight:700; color:var(--ink-soft); }
+.stat-row .label{ width:56px; flex-shrink:0; font-family:'Shippori Mincho',serif;}
+.stat-bar-track{ flex:1;height:14px;background:var(--paper-deep);border-radius:7px;overflow:hidden; border:1px solid rgba(0,0,0,0.06); }
+.stat-bar-fill{ height:100%;border-radius:7px; background:linear-gradient(90deg,#8a9a3f,#adbf55); transition:width .8s ease; }
+.stat-row .pct{ width:44px; text-align:right; color:var(--ink); }
+.btn-next{ background:var(--akapen); color:#fff; border:none; padding:15px 30px; font-size:15px; font-weight:700; border-radius:9px; cursor:pointer; box-shadow:0 8px 18px rgba(184,38,46,0.3); font-family:'Zen Kaku Gothic New', sans-serif; }
+.btn-next:hover{ background:#9c1f26; }
+
+@media (max-width:480px){
+  .sheet{ padding:24px 16px 22px 30px; }
+  .lap-punch{ width:80px; }
+  .qtext{ font-size:15.5px; }
+}
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div class="lap-ticket" id="lapTicket"></div>
+  <div class="sheet" id="sheet"></div>
+</div>
+
+<script>
+const DECKS = {
+  election: {
+    no: "No.1",
+    title: "選挙",
+    storageKey: "election-quiz-state-v1",
+    questions: [
+      {id:1, q:"日本における直接民主制の例として最もふさわしくないものを次から選びなさい。\nア 日本国憲法改正の国民投票　イ 内閣総理大臣の指名　ウ 最高裁判所裁判官の国民審査", a:"イ"},
+      {id:2, q:"人々が自分たちのなかから選んだ代表者を通じて意思を決定する政治の仕組みを何といいますか。", a:"間接民主制"},
+      {id:3, q:"次のうち「秘密選挙」の説明として正しいものを選びなさい。\nア 自分が選んだ候補者に直接投票する　イ 誰に投票したか他人に知られないようにする\nウ 一定の年齢以上のすべての国民が選挙権を有する　エ 一人一票の選挙権を有する", a:"イ"},
+      {id:4, q:"次のうち「普通選挙」の説明として正しいものを選びなさい。（選択肢は問3と同じ）", a:"ウ"},
+      {id:5, q:"次のうち「平等選挙」の説明として正しいものを選びなさい。（選択肢は問3と同じ）", a:"エ"},
+      {id:6, q:"次のうち「直接選挙」の説明として正しいものを選びなさい。（選択肢は問3と同じ）", a:"ア"},
+      {id:7, q:"政権を担当する政党を何といいますか。", a:"与党"},
+      {id:8, q:"政権を担当しない政党を何といいますか。", a:"野党"},
+      {id:9, q:"1つの選挙区から一人を選ぶ選挙制度を何といいますか。", a:"小選挙区制"},
+      {id:10, q:"1つの選挙区から二人以上を選ぶ選挙制度を何といいますか。", a:"大選挙区制"},
+      {id:11, q:"各政党の得票数を整数で割り、数値の大きい順に当選者を決める、比例代表制の配分方法を何といいますか。", a:"ドント方式（ドント式）"},
+      {id:12, q:"日本の選挙の所管官庁を何といいますか。", a:"総務省"},
+      {id:13, q:"日本の選挙の方法や選挙運動・選挙費用の制限などについて定められている法律を何といいますか。", a:"公職選挙法"},
+      {id:14, q:"日本の選挙権年齢は何歳以上ですか。", a:"満18歳以上"},
+      {id:15, q:"衆議院議員の被選挙権は何歳以上ですか。", a:"満25歳以上"},
+      {id:16, q:"衆議院議員の議員定数は何名ですか。", a:"465名"},
+      {id:17, q:"参議院議員の被選挙権は何歳以上ですか。", a:"満30歳以上"},
+      {id:18, q:"参議院議員の議員定数は何名ですか。", a:"248名"},
+      {id:19, q:"2022年末現在、衆議院議員総選挙における小選挙区は何区ありますか。", a:"289区"},
+      {id:20, q:"衆議院議員総選挙において、選挙区の落選者が（　）代表で復活当選することがあります。（　）にあてはまる語句を漢字2字で答えなさい。", a:"比例"},
+      {id:21, q:"参議院議員通常選挙は何年ごとに行われますか。", a:"3年ごと"},
+      {id:22, q:"1回の参議院議員通常選挙では何名を選出しますか。", a:"124名"},
+      {id:23, q:"参議院議員通常選挙の選挙区において、合区となっている都道府県の組み合わせ（2022年末現在）として正しいものを2つ選びなさい。\nア 宮崎県・大分県　イ 高知県・徳島県　ウ 香川県・愛媛県\nエ 鳥取県・島根県　オ 和歌山県・奈良県　カ 秋田県・山形県", a:"イ・エ（高知県・徳島県／鳥取県・島根県）"},
+      {id:24, q:"「一票の格差」問題について、各選挙区の議員1人あたりの有権者数に差があることが、（　）に反するとの見方が存在します。（　）にあてはまる語句を漢字2字で答えなさい。", a:"平等（権）"},
+      {id:25, q:"選挙当日に仕事や用事があることが見込まれる人が事前に投票できる制度を何といいますか。", a:"期日前投票"}
+    ]
+  },
+  localgov: {
+    no: "No.2",
+    title: "地方自治",
+    storageKey: "localgov-quiz-state-v1",
+    questions: [
+      {id:1, q:"ブライスという人物は、「地方自治は（　）の学校」という言葉を残したとされています。（　）にあてはまる語句を漢字4字で答えなさい。", a:"民主主義"},
+      {id:2, q:"中央省庁における、地方自治の所管官庁はどこですか。", a:"総務省"},
+      {id:3, q:"地方公共団体のうち、市町村は日本全国におよそいくつありますか（2022年現在）。最もふさわしいものを選びなさい。\nア 300　イ 1700　ウ 3300　エ 7000", a:"イ", a2026:"イ（2026年も同じく約1718で変わらず）"},
+      {id:4, q:"地方公共団体の組織の仕事として誤っているものを次から選びなさい。\nア 学校や図書館などの設置・管理　イ 地方裁判所や家庭裁判所の運営\nウ 保健所の設置・管理　エ 消防", a:"イ"},
+      {id:5, q:"地方公共団体の仕事のうち、法定受託事務にあてはまるものとして誤っているものを次から選びなさい。\nア 戸籍事務　イ パスポートの交付　ウ 国道の管理　エ 消防", a:"エ"},
+      {id:6, q:"地方議会の議員の任期は何年ですか。", a:"4年"},
+      {id:7, q:"地方議会の議員の被選挙権は何歳以上ですか。", a:"満25歳以上"},
+      {id:8, q:"地方議会が法律の範囲内で制定した、その地方公共団体において適用される決まりを何といいますか。", a:"条例"},
+      {id:9, q:"地方公共団体の長を何といいますか。漢字2字で答えなさい。", a:"首長"},
+      {id:10, q:"都道府県知事の任期は何年ですか。", a:"4年"},
+      {id:11, q:"市（区）町村長の任期は何年ですか。", a:"4年"},
+      {id:12, q:"都道府県知事の被選挙権は何歳以上ですか。", a:"満30歳以上"},
+      {id:13, q:"市（区）町村長の被選挙権は何歳以上ですか。", a:"満25歳以上"},
+      {id:14, q:"地方公共団体間の格差をなくすために国から交付されるお金を何といいますか。", a:"地方交付税交付金"},
+      {id:15, q:"国が委任している事務の経費など、国から交付される使いみちが指定されているお金を何といいますか。", a:"国庫支出金"},
+      {id:16, q:"応援したい地域などに寄付を行うことで、所得税や住民税が控除される制度を何といいますか。", a:"ふるさと納税"},
+      {id:17, q:"直接請求権について、「議会の解散請求」の請求先を次から選びなさい。\nア 監査委員　イ 選挙管理委員会　ウ 公安委員会　エ 教育委員会", a:"イ"},
+      {id:18, q:"直接請求権には「議員・首長の（　）」がふくまれます。（　）にあてはまる語句を答えなさい。", a:"解職請求（リコール）"},
+      {id:19, q:"条例に基づいて行われる住民投票について述べた次のA・Bの正誤の組み合わせとして正しいものを選びなさい。\nA 過去には、その地域に住む中学生や外国人に投票資格があたえられた事例が見られる。\nB 投票結果については必ず従う必要がある。\nア A:正 B:正　イ A:正 B:誤　ウ A:誤 B:正　エ A:誤 B:誤", a:"イ"},
+      {id:20, q:"第三者が行政に対する苦情を処理したり、行政が適正に行われているかどうかを監視したりする制度を何といいますか。", a:"オンブズパーソン制度（オンブズマン制度）"}
+    ]
+  },
+  zaisei: {
+    no: "No.3",
+    title: "財政・社会保障",
+    storageKey: "zaisei-quiz-state-v1",
+    questions: [
+      {id:1, q:"税を負担する人と納める人が同じものを何といいますか。", a:"直接税"},
+      {id:2, q:"税を負担する人と納める人が異なるものを何といいますか。", a:"間接税"},
+      {id:3, q:"問1の税として誤っているものを次から選びなさい。\nア 法人税　イ 相続税　ウ 固定資産税　エ 関税", a:"エ"},
+      {id:4, q:"問2の税として誤っているものを次から選びなさい。\nア 消費税　イ 入湯税　ウ 自動車税　エ 国際観光旅客税", a:"ウ"},
+      {id:5, q:"所得税は所得の多い人ほど税金の負担が多くなる仕組みが導入されています。この仕組みを何といいますか。漢字4字で答えなさい。", a:"累進課税制度"},
+      {id:6, q:"国が行う道路や港湾の整備などを何と言いますか。漢字4字で答えなさい。", a:"公共事業"},
+      {id:7, q:"日本の歳出に占める割合（2022年度・補正後予算）が最も高いものを次から選びなさい。\nア 国債費　イ 社会保障関係費　ウ 地方交付税交付金　エ 防衛関係費", a:"イ"},
+      {id:8, q:"日本国憲法第25条が保障している、社会権に含まれる権利を何といいますか。", a:"生存権"},
+      {id:9, q:"次の日本国憲法第25条の条文中の（①）〜（③）にあてはまる文言をそれぞれ答えなさい。\n「すべて国民は、（①）で（②）的な（③）の生活を営む権利を有する。」", a:"①健康　②文化　③最低限度"},
+      {id:10, q:"日本の社会保障における主な所管官庁はどこですか。", a:"厚生労働省"},
+      {id:11, q:"社会保険にふくまれるものとして誤っているものを次から選びなさい。\nア 介護保険　イ 医療保険　ウ 火災保険　エ 年金保険", a:"ウ"},
+      {id:12, q:"くらしに困っている人に生活費などを支給する制度を何といいますか。", a:"公的扶助（生活保護）"},
+      {id:13, q:"高齢者や障がい者など、助けが必要な人たちのくらしを支える仕組みを何といいますか。", a:"社会福祉"},
+      {id:14, q:"地域の公衆衛生を担う公的機関を何といいますか。", a:"保健所"},
+      {id:15, q:"日常生活に支障のある高齢者の家庭を訪問し、介護を行う介護サービスを何といいますか。", a:"ホームヘルパー"},
+      {id:16, q:"本来であれば大人が担うような介護や家事を行う18歳未満の子どものことを何といいますか。", a:"ヤングケアラー"},
+      {id:17, q:"高齢者や障がい者なども、社会のなかで他の人々と同じようにくらすことができる世の中をつくる考え方を何といいますか。", a:"ノーマライゼーション"},
+      {id:18, q:"高齢者や障がい者などにとって、くらしのなかで妨げとなるものを取り除くことを何といいますか。", a:"バリアフリー"},
+      {id:19, q:"車いすを利用する人が通行しやすい、ゆるやかな坂道を何といいますか。", a:"スロープ"},
+      {id:20, q:"あらゆる人にとって使いやすいデザインやくふうをすることを何といいますか。", a:"ユニバーサルデザイン"},
+      {id:21, q:"デザインで情報をあらわしたものを何といいますか。", a:"ピクトグラム"}
+    ]
+  }
+};
+
+const TOTAL_LAPS = 3;
+let currentDeckKey = null;
+let state = null;
+
+function deck(){ return DECKS[currentDeckKey]; }
+function TOTAL(){ return deck().questions.length; }
+function freshRoundQueue(){ return deck().questions.map(q=>q.id); }
+
+function defaultState(){
+  return {
+    round: 1,
+    queue: freshRoundQueue(),
+    seenFirstTry: {},
+    firstTryCorrectCount: 0,
+    roundHistory: [],
+    finished: false,
+    currentId: null,
+    revealed: false
+  };
+}
+
+async function loadDeckSummary(key){
+  try{
+    const res = await window.storage.get(DECKS[key].storageKey, false);
+    if(!res) return null;
+    return JSON.parse(res.value);
+  }catch(e){ return null; }
+}
+
+async function renderPicker(){
+  document.getElementById('lapTicket').innerHTML = '';
+  const sheet = document.getElementById('sheet');
+  sheet.className = 'picker-sheet';
+  sheet.innerHTML = `
+    <div class="picker-title">社会 一問一答 3周ドリル</div>
+    <div class="picker-sub">やる回を選んでください。まちがえた問題はその周のうちに出し直され、3周やりきると正解率の伸びが見られます。</div>
+    <div id="deckList"></div>
+  `;
+  const list = document.getElementById('deckList');
+  for(const key of Object.keys(DECKS)){
+    const d = DECKS[key];
+    const st = await loadDeckSummary(key);
+    let meta = "まだ未着手";
+    if(st){
+      if(st.finished && st.round > TOTAL_LAPS) meta = "3周コンプリート済み";
+      else meta = `${st.round}周目 ・ ${Object.keys(st.seenFirstTry).length}/${d.questions.length}問クリア中`;
+    }
+    const card = document.createElement('div');
+    card.className = 'deck-card';
+    card.onclick = () => enterDeck(key);
+    card.innerHTML = `
+      <div class="deck-num">${d.no}</div>
+      <div class="deck-info">
+        <div class="deck-name">${d.title}</div>
+        <div class="deck-meta">${meta}</div>
+      </div>
+      <div class="deck-arrow">→</div>
+    `;
+    list.appendChild(card);
+  }
+}
+
+async function enterDeck(key){
+  currentDeckKey = key;
+  document.getElementById('sheet').className = 'sheet';
+  try{
+    const res = await window.storage.get(deck().storageKey, false);
+    state = res ? JSON.parse(res.value) : defaultState();
+  }catch(e){
+    state = defaultState();
+  }
+  if(!state.currentId && state.queue.length){ state.currentId = state.queue[0]; }
+  render();
+}
+
+async function saveState(){
+  try{ await window.storage.set(deck().storageKey, JSON.stringify(state), false); }
+  catch(e){ console.error("save failed", e); }
+}
+
+function getQuestion(id){ return deck().questions.find(q=>q.id===id); }
+
+function renderLapTicket(){
+  const wrap = document.getElementById('lapTicket');
+  wrap.innerHTML = '';
+  for(let i=1;i<=TOTAL_LAPS;i++){
+    const div = document.createElement('div');
+    let cls = 'lap-punch';
+    if(i < state.round || (i===state.round && state.finished)) cls += ' done';
+    else if(i === state.round) cls += ' active';
+    div.className = cls;
+    div.innerHTML = `${i}周目<span class="num">${i}</span>`;
+    wrap.appendChild(div);
+  }
+}
+
+function uniqueSeenCount(){ return Object.keys(state.seenFirstTry).length; }
+
+function render(){
+  renderLapTicket();
+  const sheet = document.getElementById('sheet');
+
+  if(state.finished && state.round > TOTAL_LAPS){ renderFinal(sheet); return; }
+  if(state.queue.length === 0){ renderRoundComplete(sheet); return; }
+
+  const qid = state.currentId || state.queue[0];
+  const item = getQuestion(qid);
+  const doneCount = uniqueSeenCount();
+  const total = TOTAL();
+
+  sheet.innerHTML = `
+    <div class="head-row">
+      <span class="eyebrow">${deck().no} ${deck().title} ／ 一問一答ドリル ・ ${state.round}周目</span>
+      <span class="qcount"><b>${doneCount}</b> / ${total} 問クリア</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" style="width:${(doneCount/total*100).toFixed(1)}%"></div></div>
+
+    <div class="qnum"><span class="box">問</span>${String(item.id).padStart(2,'0')}</div>
+    <div class="qtext">${escapeHtml(item.q)}</div>
+
+    <div class="answer-zone" id="answerZone"></div>
+
+    <div class="footer-row">
+      <button class="reset-link" onclick="backToPicker()">← ほかの回へ</button>
+      <button class="reset-link" onclick="resetCurrentDeck()">この回をはじめからやり直す</button>
+    </div>
+  `;
+
+  const az = document.getElementById('answerZone');
+  if(!state.revealed){
+    az.innerHTML = `<button class="btn btn-reveal" style="width:100%" onclick="reveal()">こたえを見る</button>`;
+  }else{
+    const changed = !!item.a2026 && item.a2026 !== item.a;
+    const badge2026 = item.a2026
+      ? `<span class="badge-2026 ${changed ? 'changed' : ''}">
+           ${changed ? '⚠️ 2026年は変更あり' : '✅ 2026年も同じ'}
+         </span>
+         ${changed ? `<span class="badge-2026-note">2026年の答え：${escapeHtml(item.a2026)}</span>` : ''}`
+      : `<span class="badge-2026">✅ 2026年も同じ</span>`;
+    az.innerHTML = `
+      <div class="answer-label">✎ 正解</div>
+      <div class="answer-text">${escapeHtml(item.a)}</div>
+      ${badge2026}
+      <div class="btn-row">
+        <button class="btn btn-correct" onclick="mark(true)">◯ わかった</button>
+        <button class="btn btn-wrong" onclick="mark(false)">✕ まちがえた</button>
+      </div>
+    `;
+  }
+}
+
+function escapeHtml(str){
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+}
+
+function reveal(){ state.revealed = true; render(); }
+
+function mark(correct){
+  const qid = state.currentId;
+  const firstTime = !(qid in state.seenFirstTry);
+  if(firstTime){
+    state.seenFirstTry[qid] = correct;
+    if(correct) state.firstTryCorrectCount++;
+  }
+  state.queue.shift();
+  if(!correct){ state.queue.push(qid); }
+
+  state.revealed = false;
+  state.currentId = state.queue.length ? state.queue[0] : null;
+
+  saveState();
+  render();
+  showStamp(correct);
+}
+
+function showStamp(correct){
+  const sheet = document.getElementById('sheet');
+  const wrap = document.createElement('div');
+  wrap.className = 'stamp-wrap show';
+  wrap.innerHTML = correct ? stampCircleSVG() : stampCrossSVG();
+  sheet.appendChild(wrap);
+
+  const note = document.createElement('div');
+  note.className = 'stamp-note show';
+  note.textContent = correct ? "せいかい！" : "つぎ、がんばろう";
+  sheet.appendChild(note);
+
+  setTimeout(()=>{ wrap.remove(); note.remove(); }, 900);
+}
+
+function stampCircleSVG(){
+  return `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="38" fill="none" stroke="#B8262E" stroke-width="7" stroke-linecap="round"/></svg>`;
+}
+function stampCrossSVG(){
+  return `<svg viewBox="0 0 100 100">
+    <line x1="24" y1="24" x2="76" y2="76" stroke="#B8262E" stroke-width="7" stroke-linecap="round"/>
+    <line x1="76" y1="24" x2="24" y2="76" stroke="#B8262E" stroke-width="7" stroke-linecap="round"/>
+  </svg>`;
+}
+
+function renderRoundComplete(sheet){
+  const total = TOTAL();
+  const accuracy = Math.round((state.firstTryCorrectCount / total) * 100);
+  sheet.innerHTML = `
+    <div class="round-complete">
+      <div class="seal">${sealSVG(state.round)}</div>
+      <div class="rc-title">${state.round}周目、クリア！</div>
+      <div class="rc-sub">1回目で正解できたのは ${state.firstTryCorrectCount} / ${total} 問（${accuracy}%）でした。<br>まちがえた問題は、この周の中で正解するまで出題されました。</div>
+      <button class="btn-next" onclick="nextRound()">${state.round < TOTAL_LAPS ? (state.round+1)+'周目へ進む' : '結果を見る'}</button>
+    </div>
+  `;
+}
+
+function nextRound(){
+  const total = TOTAL();
+  state.roundHistory.push({round: state.round, accuracy: Math.round((state.firstTryCorrectCount/total)*100)});
+  if(state.round >= TOTAL_LAPS){
+    state.finished = true;
+    state.round = TOTAL_LAPS + 1;
+  }else{
+    state.round += 1;
+    state.queue = freshRoundQueue();
+    state.seenFirstTry = {};
+    state.firstTryCorrectCount = 0;
+    state.currentId = state.queue[0];
+    state.revealed = false;
+  }
+  saveState();
+  render();
+}
+
+function renderFinal(sheet){
+  const bars = state.roundHistory.map(r=>`
+    <div class="stat-row">
+      <span class="label">${r.round}周目</span>
+      <div class="stat-bar-track"><div class="stat-bar-fill" style="width:${r.accuracy}%"></div></div>
+      <span class="pct">${r.accuracy}%</span>
+    </div>
+  `).join('');
+  sheet.innerHTML = `
+    <div class="final-complete">
+      <div class="seal">${sealSVG('合格')}</div>
+      <div class="rc-title">3周、コンプリート！</div>
+      <div class="rc-sub">「${deck().title}」の一問一答を3周やりきりました。回を重ねるごとの正解率はこちら。</div>
+      <div class="stat-bars">${bars}</div>
+      <div class="footer-row" style="justify-content:center; gap:14px;">
+        <button class="reset-link" onclick="backToPicker()">← ほかの回へ</button>
+        <button class="btn-next" onclick="resetCurrentDeck()">もう一度さいしょから</button>
+      </div>
+    </div>
+  `;
+}
+
+async function resetCurrentDeck(){
+  state = defaultState();
+  state.currentId = state.queue[0];
+  await saveState();
+  render();
+}
+
+function backToPicker(){
+  currentDeckKey = null;
+  state = null;
+  renderPicker();
+}
+
+renderPicker();
+</script>
+</body>
+</html>
