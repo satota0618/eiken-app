@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>近代以降の産業・文化史 一問一答 - 中学受験社会</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F1E8D4;
+    --card:#FBF6EA;
+    --ink:#2B2620;
+    --muted:#867A60;
+    --line:#DED0AC;
+    --moss:#6B7A4A;
+    --shu:#BC4A3C;
+    --plum:#7B3F61;
+    --khaki:#5A5A3C;
+    --teal:#2E7D7B;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(circle at 15% 8%, rgba(46,125,123,0.07), transparent 45%),
+      radial-gradient(circle at 88% 92%, rgba(188,74,60,0.06), transparent 45%),
+      var(--paper);
+    font-family:'Zen Kaku Gothic New', sans-serif;
+    color:var(--ink);
+    min-height:100vh;
+    display:flex; align-items:flex-start; justify-content:center;
+    padding:28px 16px 60px;
+  }
+  .wrap{width:100%; max-width:760px;}
+
+  .masthead{display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; padding:0 6px;}
+  .masthead .titleblock{display:flex; align-items:center; gap:12px;}
+  .seal{
+    flex:none; width:42px; height:42px; border-radius:6px; background:var(--teal); color:#fff;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Shippori Mincho', serif; font-weight:800; font-size:14px; line-height:1.15; text-align:center;
+    box-shadow:0 3px 8px rgba(46,125,123,.35);
+  }
+  .masthead h1{font-family:'Shippori Mincho', serif; font-weight:800; font-size:21px; letter-spacing:.03em; margin:0;}
+  .masthead h1 small{display:block; font-family:'Zen Kaku Gothic New', sans-serif; font-weight:500; font-size:11px; color:var(--muted); letter-spacing:.12em; margin-top:3px;}
+  .masthead .stat{font-family:'Shippori Mincho', serif; font-size:13px; color:var(--muted); text-align:right;}
+  .masthead .stat b{color:var(--ink); font-size:17px;}
+
+  .page{
+    position:relative; background:var(--card); border:1px solid var(--line); border-radius:3px;
+    box-shadow:0 1px 2px rgba(43,38,32,.05), 0 14px 30px -18px rgba(43,38,32,.35);
+    padding:34px 34px 30px 34px; padding-right:64px; min-height:420px;
+  }
+  .tabstrip{
+    position:absolute; top:0; right:0; bottom:0; width:40px;
+    display:flex; flex-direction:column; border-left:1px solid var(--line);
+    overflow:hidden; border-radius:0 3px 3px 0;
+  }
+  .tab{
+    flex:1; display:flex; align-items:center; justify-content:center;
+    writing-mode:vertical-rl; text-orientation:mixed;
+    font-family:'Shippori Mincho', serif; font-weight:700; font-size:12.5px; letter-spacing:.1em;
+    color:#fff; cursor:pointer; border-bottom:1px solid rgba(255,255,255,.28);
+    opacity:.55; transition:opacity .18s ease, flex .18s ease; padding:8px 0;
+  }
+  .tab:last-child{border-bottom:none;}
+  .tab.active{opacity:1; flex:1.7;}
+  .tab:hover{opacity:.85;}
+
+  .eyebrow{font-size:11.5px; letter-spacing:.16em; color:var(--muted); font-weight:700; margin-bottom:6px;}
+  .lead{font-family:'Shippori Mincho', serif; font-size:25px; font-weight:800; line-height:1.55; margin:0 0 14px;}
+  .lead .accent{color:var(--teal);}
+  .desc{font-size:14px; line-height:1.9; color:#544d42; margin-bottom:26px;}
+
+  .catgrid{display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:26px;}
+  .catcard{
+    border:1px solid var(--line); border-radius:8px; padding:12px 14px; cursor:pointer;
+    background:#fff; display:flex; align-items:center; gap:10px;
+    transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+  }
+  .catcard:hover{transform:translateY(-1px); box-shadow:0 6px 16px -10px rgba(43,38,32,.4);}
+  .catcard.selected{border-color:var(--ink); box-shadow:0 0 0 1.5px var(--ink) inset;}
+  .catcard .dot{width:11px; height:11px; border-radius:50%; flex:none;}
+  .catcard .name{font-size:13.5px; font-weight:700;}
+  .catcard .cnt{font-size:11px; color:var(--muted); margin-top:1px;}
+
+  .startbtn{
+    width:100%; background:var(--ink); color:#fff; border:none; border-radius:8px; padding:15px;
+    font-family:'Shippori Mincho', serif; font-size:16px; font-weight:700; letter-spacing:.06em;
+    cursor:pointer; transition:background .15s ease;
+  }
+  .startbtn:hover{background:#171310;}
+
+  .qmeta{display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;}
+  .qtag{font-size:11px; font-weight:700; letter-spacing:.08em; color:#fff; padding:4px 10px; border-radius:100px;}
+  .qcount{font-size:12.5px; color:var(--muted); font-weight:500;}
+
+  .progress-track{width:100%; height:6px; background:#EAE0C4; border-radius:100px; overflow:hidden; margin-bottom:26px;}
+  .progress-fill{height:100%; background:linear-gradient(90deg, var(--teal), #4bb0ad); border-radius:100px; transition:width .25s ease;}
+
+  .qtype{font-size:11px; color:var(--muted); font-weight:700; letter-spacing:.1em; margin-bottom:8px;}
+  .qtext{font-family:'Shippori Mincho', serif; font-size:19px; font-weight:700; line-height:1.75; margin-bottom:22px;}
+
+  .choices{display:flex; flex-direction:column; gap:10px;}
+  .choice{
+    text-align:left; background:#fff; border:1.5px solid var(--line); border-radius:8px; padding:13px 16px;
+    font-size:14.5px; font-family:'Zen Kaku Gothic New', sans-serif; color:var(--ink); cursor:pointer;
+    display:flex; gap:10px; align-items:flex-start; transition:border-color .12s ease, background .12s ease;
+  }
+  .choice .mark{
+    flex:none; width:22px; height:22px; border-radius:50%; border:1.5px solid var(--line);
+    font-size:12px; display:flex; align-items:center; justify-content:center; font-weight:700; color:var(--muted);
+  }
+  .choice:hover:not(.locked){border-color:var(--ink);}
+  .choice.locked{cursor:default;}
+  .choice.correct{border-color:var(--moss); background:#EFF2E7;}
+  .choice.correct .mark{background:var(--moss); border-color:var(--moss); color:#fff;}
+  .choice.wrong{border-color:var(--shu); background:#FBEDEA;}
+  .choice.wrong .mark{background:var(--shu); border-color:var(--shu); color:#fff;}
+  .choice.dim{opacity:.5;}
+
+  .feedback{margin-top:20px; padding:14px 16px; border-radius:8px; font-size:13.5px; line-height:1.85; display:none;}
+  .feedback.show{display:block;}
+  .feedback.correct{background:#EFF2E7; border:1px solid #d0d9bf; color:#2f3a21;}
+  .feedback.wrong{background:#FBEDEA; border:1px solid #f0cec8; color:#6e2019;}
+  .feedback .label{font-weight:800; margin-bottom:4px; display:block;}
+
+  .nextbtn{
+    margin-top:22px; width:100%; background:var(--ink); color:#fff; border:none; border-radius:8px; padding:14px;
+    font-family:'Shippori Mincho', serif; font-size:15px; font-weight:700; letter-spacing:.05em;
+    cursor:pointer; display:none;
+  }
+  .nextbtn.show{display:block;}
+  .nextbtn:hover{background:#171310;}
+
+  .resulthead{text-align:center; margin-bottom:8px;}
+  .sealBig{
+    width:118px; height:118px; border-radius:10px; margin:0 auto 10px; background:var(--teal); color:#fff;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    font-family:'Shippori Mincho', serif; box-shadow:0 8px 20px -6px rgba(46,125,123,.5);
+  }
+  .sealBig .n{font-size:40px; font-weight:800; line-height:1;}
+  .sealBig .d{font-size:12px; margin-top:4px; opacity:.9;}
+  .scoreLine{text-align:center; font-size:13.5px; color:var(--muted); margin-bottom:26px;}
+
+  .reviewlist{display:flex; flex-direction:column; gap:10px; margin-bottom:24px;}
+  .revitem{border:1px solid var(--line); border-radius:8px; padding:12px 14px; background:#FBF6EA;}
+  .revitem .revq{font-size:13.5px; font-weight:700; margin-bottom:5px; line-height:1.6;}
+  .revitem .reva{font-size:12.5px; color:#54443c; line-height:1.7;}
+  .revitem .reva b{color:var(--moss);}
+  .noneright{text-align:center; font-size:13.5px; color:var(--muted); padding:20px 0 26px;}
+
+  .resultbtns{display:flex; gap:10px;}
+  .resultbtns button{
+    flex:1; border-radius:8px; padding:13px; font-family:'Shippori Mincho', serif;
+    font-size:14px; font-weight:700; cursor:pointer; border:1.5px solid var(--ink);
+  }
+  .resultbtns .primary{background:var(--ink); color:#fff;}
+  .resultbtns .ghost{background:#fff; color:var(--ink);}
+
+  .footnote{text-align:center; font-size:11px; color:var(--muted); margin-top:18px; letter-spacing:.04em;}
+
+  @media (max-width:520px){
+    .page{padding:24px 20px 24px 20px; padding-right:50px;}
+    .tabstrip{width:30px;}
+    .tab{font-size:10.5px;}
+    .lead{font-size:20px;}
+    .catgrid{grid-template-columns:1fr;}
+    .qtext{font-size:17px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="masthead">
+    <div class="titleblock">
+      <div class="seal">近代<br>史</div>
+      <h1>近代以降の産業・文化史<small>MODERN JAPAN DRILL &nbsp;/&nbsp; 社会・歴史 一問一答</small></h1>
+    </div>
+    <div class="stat" id="masthead-stat"></div>
+  </div>
+
+  <div class="page">
+    <div class="tabstrip" id="tabstrip"></div>
+    <div id="screen"></div>
+  </div>
+
+  <div class="footnote">明治の産業と教育・明治の文化と社会問題・大正時代・昭和戦前と戦中・戦後の経済成長 — 全項目対応／すべて四択形式</div>
+</div>
+
+<script>
+/* ---------------------------------------------------------
+   Data
+--------------------------------------------------------- */
+const CATS = [
+  {id:'meiji_sangyo', label:'明治の産業と教育', color:'var(--moss)'},
+  {id:'meiji_bunka',  label:'明治の文化と社会', color:'var(--shu)'},
+  {id:'taisho',       label:'大正時代',         color:'var(--plum)'},
+  {id:'showa_zenzen', label:'昭和 戦前・戦中',  color:'var(--khaki)'},
+  {id:'sengo',        label:'戦後の経済成長',   color:'var(--teal)'},
+];
+
+const Q = [
+/* 明治の産業と教育 */
+{cat:'meiji_sangyo', q:'1872年に定められ、6歳以上の男女すべてが教育を受けることを定めた制度は何か。', choices:['学制','教育勅語','学校令','国民学校令'], a:0,
+  ex:'学制は明治政府が1872年に公布した制度で、国民全員に教育を受けさせることを目指し、全国に小学校が設立されるきっかけとなりました。'},
+{cat:'meiji_sangyo', q:'群馬県に建てられ、フランス人技術者の指導のもとで生糸の生産が行われた官営模範工場は何か。', choices:['富岡製糸場','大阪紡績会社','八幡製鉄所','横須賀造船所'], a:0,
+  ex:'富岡製糸場は殖産興業政策の一環として建てられた官営模範工場で、フランスの技術を導入し、日本の製糸業の発展に大きく貢献しました。'},
+{cat:'meiji_sangyo', q:'1871年に郵便制度を整えたことで知られる人物は誰か。', choices:['前島密','渋沢栄一','福沢諭吉','大久保利通'], a:0,
+  ex:'前島密は全国均一料金の郵便制度を整備し、「郵便の父」とよばれています。'},
+{cat:'meiji_sangyo', q:'「学問のすゝめ」を著し、人間の平等と実学の大切さを説いた人物は誰か。', choices:['福沢諭吉','中江兆民','新渡戸稲造','森鴎外'], a:0,
+  ex:'福沢諭吉は「天は人の上に人を造らず」の一節で知られる「学問のすゝめ」を著し、学問の重要性を説きました。'},
+{cat:'meiji_sangyo', q:'官営工場の払い下げを受け、大阪紡績会社などを設立して日本の産業発展に大きく貢献した人物は誰か。', choices:['渋沢栄一','岩崎弥太郎','前島密','大隈重信'], a:0,
+  ex:'渋沢栄一は「日本資本主義の父」とよばれ、多くの企業の設立にかかわり、紡績業をはじめとする近代産業の発展を支えました。'},
+{cat:'meiji_sangyo', q:'1890年に発布され、忠君愛国など国民が身につけるべき道徳の基準を示したものを何というか。', choices:['教育勅語','大日本帝国憲法','五箇条の御誓文','学制'], a:0,
+  ex:'教育勅語は1890年に発布され、忠君愛国をはじめとする国民道徳の基準として、その後の学校教育に大きな影響を与えました。'},
+{cat:'meiji_sangyo', q:'1886年ごろに定められた、小学校の就学期間を義務教育として定めた制度を何というか。', choices:['義務教育制度','学制','教育勅語','国民学校制度'], a:0,
+  ex:'当初4年間であった小学校の義務教育期間は、その後6年間に延長され、就学率も次第に向上していきました。'},
+{cat:'meiji_sangyo', q:'栃木県の足尾銅山から流出した鉱毒によって、渡良瀬川流域に大きな被害をもたらした公害事件を何というか。', choices:['足尾銅山鉱毒事件','水俣病事件','イタイイタイ病事件','四日市ぜんそく事件'], a:0,
+  ex:'足尾銅山鉱毒事件は日本で最初の公害問題ともいわれ、渡良瀬川流域の魚や農作物に深刻な被害をもたらしました。'},
+{cat:'meiji_sangyo', q:'足尾銅山鉱毒事件の解決を求めて活動し、のちに明治天皇へ直訴を試みたことでも知られる衆議院議員は誰か。', choices:['田中正造','渋沢栄一','大隈重信','板垣退助'], a:0,
+  ex:'田中正造は栃木県選出の衆議院議員で、足尾銅山鉱毒事件の解決を政府に強く訴え続けた人物として知られています。'},
+
+/* 明治の文化と社会 */
+{cat:'meiji_bunka', q:'明治時代初期、都市を中心に洋服や牛なべなど西洋風の生活様式が広まった風潮を何というか。', choices:['文明開化','殖産興業','富国強兵','脱亜入欧'], a:0,
+  ex:'文明開化のころ、都市部ではざんぎり頭や洋服、ガス灯、鉄道馬車など、西洋の文化や技術が急速に取り入れられました。'},
+{cat:'meiji_bunka', q:'文明開化のころ、都市の道路に見られるようになった、馬に引かせて人を運ぶ乗り物を何というか。', choices:['鉄道馬車','路面電車','人力車のみ','乗合バスのみ'], a:0,
+  ex:'鉄道馬車は文明開化を象徴する乗り物のひとつで、都市の道路にレールを敷いて馬に客車を引かせました。'},
+{cat:'meiji_bunka', q:'話し言葉に近い文体（言文一致体）で小説を書き、「浮雲」を著した人物は誰か。', choices:['二葉亭四迷','樋口一葉','与謝野晶子','夏目漱石'], a:0,
+  ex:'二葉亭四迷は言文一致体という新しい文体を確立し、「浮雲」を著したことで知られています。'},
+{cat:'meiji_bunka', q:'「たけくらべ」を著した明治時代の女性作家は誰か。', choices:['樋口一葉','与謝野晶子','二葉亭四迷','平塚らいてう'], a:0,
+  ex:'樋口一葉は「たけくらべ」などの作品で、明治時代の庶民の暮らしをいきいきと描きました。'},
+{cat:'meiji_bunka', q:'歌集「みだれ髪」を著し、情熱的な短歌で知られる明治時代の歌人は誰か。', choices:['与謝野晶子','樋口一葉','平塚らいてう','津田梅子'], a:0,
+  ex:'与謝野晶子は歌集「みだれ髪」で自由な感情を大胆に表現し、多くの人々に影響を与えました。'},
+{cat:'meiji_bunka', q:'「荒城の月」などの作曲で知られる明治時代の音楽家は誰か。', choices:['滝廉太郎','北里柴三郎','野口英世','岡倉天心'], a:0,
+  ex:'滝廉太郎は西洋音楽を取り入れた作曲家で、「荒城の月」など日本を代表する唱歌を数多く生み出しました。'},
+{cat:'meiji_bunka', q:'伝染病研究所を設立し、破傷風の血清療法を発見した明治の細菌学者は誰か。', choices:['北里柴三郎','野口英世','滝廉太郎','志賀潔'], a:0,
+  ex:'北里柴三郎は破傷風の血清療法を発見するなど、細菌学の分野で世界的な業績を残しました。'},
+{cat:'meiji_bunka', q:'アメリカで黄熱病の研究に取り組んだ、明治から昭和にかけて活躍した細菌学者は誰か。', choices:['野口英世','北里柴三郎','志賀潔','鈴木梅太郎'], a:0,
+  ex:'野口英世はアフリカや南米で黄熱病の研究に取り組み、世界的に高く評価された細菌学者です。'},
+{cat:'meiji_bunka', q:'アメリカ人研究者フェノロサとともに、日本の伝統的な美術の価値を見直す運動に取り組んだ人物は誰か。', choices:['岡倉天心','黒田清輝','高橋由一','横山大観のみ'], a:0,
+  ex:'岡倉天心はフェノロサとともに日本美術の価値を再評価する運動を進め、東京美術学校の設立にもかかわりました。'},
+
+/* 大正時代 */
+{cat:'taisho', q:'1914年に始まった第一次世界大戦の影響で、日本の輸出が輸入を大きく上回り好景気となったことを何というか。', choices:['大戦景気','バブル景気','昭和恐慌','特需景気'], a:0,
+  ex:'大戦景気は第一次世界大戦中、ヨーロッパ諸国の生産力が低下したことで日本の工業製品の輸出が急増し、好景気となったことをいいます。'},
+{cat:'taisho', q:'大戦景気によって重工業とともに発展した、三井・三菱などの大企業をまとめて何というか。', choices:['財閥','藩閥','政党','五大老'], a:0,
+  ex:'財閥は特定の家族や同族によって複数の企業が支配される大規模な企業集団で、日本の重工業の発展を支えました。'},
+{cat:'taisho', q:'1923年9月1日に発生し、東京・横浜を中心に大きな被害をもたらした災害は何か。', choices:['関東大震災','濃尾地震','阪神・淡路大震災','東日本大震災'], a:0,
+  ex:'関東大震災は関東地方を襲った大地震で、多くの建物が倒壊・焼失し、その後の東京の都市計画にも大きな影響を与えました。'},
+{cat:'taisho', q:'大正時代に始まった、音声を家庭に届ける新しいメディアは何か。', choices:['ラジオ放送','テレビ放送','新聞','映画のみ'], a:0,
+  ex:'ラジオ放送は1925年に開始され、新聞に加えて情報を広く伝える手段として急速に普及しました。'},
+{cat:'taisho', q:'「青鞜社」を設立し、女性の地位向上を求める運動の先頭に立った人物は誰か。', choices:['平塚らいてう','与謝野晶子','樋口一葉','津田梅子'], a:0,
+  ex:'平塚らいてうは雑誌「青鞜」を発行する青鞜社を設立し、女性の権利拡大を求める運動を進めました。'},
+{cat:'taisho', q:'大正時代、バスガイドやタイピストなど都市で働く女性が増えたことを何というか。', choices:['女性の社会進出','殖産興業','労働争議','文明開化'], a:0,
+  ex:'大正時代には、都市化や産業の発展にともない、職業を持って働く女性が増え、女性の社会進出が進みました。'},
+{cat:'taisho', q:'「羅生門」などの作品で知られる大正時代の小説家は誰か。', choices:['芥川龍之介','二葉亭四迷','夏目漱石','森鴎外'], a:0,
+  ex:'芥川龍之介は「羅生門」など人間の心理を鋭く描いた短編小説で知られる大正時代を代表する作家です。'},
+{cat:'taisho', q:'大正時代に見られた、自由主義・民主主義を求める社会の風潮を何というか。', choices:['大正デモクラシー','文明開化','大戦景気','昭和恐慌'], a:0,
+  ex:'大正デモクラシーとは、大正時代に高まった政治や社会における自由・平等・民主主義を求める風潮のことをいいます。'},
+{cat:'taisho', q:'大正時代、女性は「良妻賢母」であるべきという固定観念に対して社会に広がっていった意識は何か。', choices:['女性差別への問題意識','殖産興業への期待','大戦景気への期待','文明開化への反発'], a:0,
+  ex:'女性の地位や役割についての固定観念に疑問を持つ人が増え、女性差別を問題視する意識が社会に広がっていきました。'},
+
+/* 昭和 戦前・戦中 */
+{cat:'showa_zenzen', q:'1929年にアメリカで始まり、世界的な不景気を引き起こした出来事を何というか。', choices:['世界恐慌','大戦景気','バブル景気','特需景気'], a:0,
+  ex:'世界恐慌は1929年にアメリカで始まった株価の大暴落をきっかけとする世界的な不景気で、日本経済にも深刻な影響をおよぼしました。'},
+{cat:'showa_zenzen', q:'世界恐慌の影響を受け、日本経済がさらに落ち込んだ昭和初期の不景気を何というか。', choices:['昭和恐慌','大戦景気','高度経済成長','バブル景気'], a:0,
+  ex:'昭和恐慌により、農村では農作物の価格が暴落し、都市でも失業者が増えるなど深刻な社会問題が広がりました。'},
+{cat:'showa_zenzen', q:'昭和恐慌の影響で農村の生活が苦しくなり、農家の子どもが働きに出されることが多くなったのはどこか。', choices:['工場','役所','商店のみ','学校のみ'], a:0,
+  ex:'農作物価格の暴落によって農家の収入が大きく減り、生活のために子どもが工場などへ働きに出されることが多くなりました。'},
+{cat:'showa_zenzen', q:'太平洋戦争中、労働力不足を補うために学生が授業を受けられず工場などで働かされたことを何というか。', choices:['学徒動員','集団疎開','配給制','徴兵制'], a:0,
+  ex:'学徒動員により、多くの学生が学業を中断させられ、軍需工場などで働くことを強いられました。'},
+{cat:'showa_zenzen', q:'太平洋戦争末期、都市部の児童が空襲を避けるために地方へ移り住んだことを何というか。', choices:['集団疎開','学徒動員','配給制','満蒙開拓'], a:0,
+  ex:'集団疎開により、都市の学童は空襲の危険から逃れるため、学校単位で地方の農村などへ移り住みました。'},
+{cat:'showa_zenzen', q:'1941年に米が制限され、決まった量しか手に入らなくなった制度を何というか。', choices:['配給制','学徒動員','集団疎開','統制経済のみ'], a:0,
+  ex:'戦争が長期化する中で食料や日用品が不足し、米などの生活必需品は配給制によって決まった量しか手に入らなくなりました。'},
+{cat:'showa_zenzen', q:'戦時中、衣類や日用品などが自由に手に入らなくなり、決まった量だけが割り当てられる制度を何というか。', choices:['配給制','学徒動員','集団疎開','供出制のみ'], a:0,
+  ex:'配給制のもとでは衣類なども自由に購入することができなくなり、国民の生活は厳しく統制されました。'},
+{cat:'showa_zenzen', q:'戦時中、都市部で電灯の明かりが外にもれないように行われた対策を何というか。', choices:['灯火管制','配給制','疎開','徴用'], a:0,
+  ex:'灯火管制は、夜間の空襲から都市を守るため、電灯の明かりが外にもれないよう覆いをかけるなどの対策のことをいいます。'},
+
+/* 戦後の経済成長 */
+{cat:'sengo', q:'戦後の日本で行われた、三井・三菱などの大企業グループを解体して経済の民主化を進めた改革を何というか。', choices:['財閥解体','農地改革','学制改革','教育改革'], a:0,
+  ex:'財閥解体はGHQの指導のもとで行われた改革で、特定の家族に支配されていた巨大企業グループを解体し、経済の民主化を進めました。'},
+{cat:'sengo', q:'戦後、地主から農地を買い上げて小作人に安く売り渡し、自作農を増やした改革を何というか。', choices:['農地改革','財閥解体','土地改革のみ','地租改正'], a:0,
+  ex:'農地改革によって多くの小作人が自分の農地を持つ自作農となり、農村の社会が大きく変化しました。'},
+{cat:'sengo', q:'1950年に始まった戦争の影響で、日本は軍需物資の生産などにより好景気となったが、これを何というか。', choices:['特需景気','大戦景気','バブル景気','高度経済成長'], a:0,
+  ex:'特需景気は朝鮮戦争にともなうアメリカ軍からの軍需物資の注文などにより、日本経済が好景気となったことをいいます。'},
+{cat:'sengo', q:'1950年代半ばから1973年ごろまで続いた、日本経済が急速に発展した時期を何というか。', choices:['高度経済成長','大戦景気','特需景気','バブル景気'], a:0,
+  ex:'高度経済成長期には工業生産が急速に拡大し、国民の生活水準も大きく向上しました。'},
+{cat:'sengo', q:'高度経済成長期に各家庭へ普及した、白黒テレビ・電気洗濯機・冷蔵庫の3つをまとめて何というか。', choices:['三種の神器','新三種の神器（3C）','耐久消費財のみ','家庭電化製品のみ'], a:0,
+  ex:'三種の神器とよばれた白黒テレビ・電気洗濯機・冷蔵庫は、高度経済成長期に多くの家庭に普及し、生活を大きく変えました。'},
+{cat:'sengo', q:'高度経済成長期後半に普及した、自動車・クーラー・カラーテレビの3つをまとめて何というか。', choices:['新三種の神器（3C）','三種の神器','耐久消費財のみ','文明開化の三品'], a:0,
+  ex:'新三種の神器（3C）は自動車（カー）・クーラー・カラーテレビの頭文字をとってよばれ、さらなる生活の豊かさの象徴となりました。'},
+{cat:'sengo', q:'1964年に開催され、東海道新幹線の開通とともに日本の高度経済成長を象徴する出来事となったものは何か。', choices:['東京オリンピック','大阪万博','札幌オリンピック','サッカーワールドカップ'], a:0,
+  ex:'東京オリンピックの開催に合わせて東海道新幹線が開通し、日本の技術力と経済発展を世界に示す機会となりました。'},
+{cat:'sengo', q:'1970年に大阪で開催され、多くの人々が来場した国際的な博覧会を何というか。', choices:['日本万国博覧会（大阪万博）','東京オリンピック','沖縄海洋博覧会','愛知万博'], a:0,
+  ex:'大阪万博（日本万国博覧会）は1970年に開催され、高度経済成長期の日本の発展を象徴するイベントとなりました。'},
+{cat:'sengo', q:'1973年の第四次中東戦争をきっかけとする石油価格の急上昇によって、日本の高度経済成長が終わるきっかけとなった出来事を何というか。', choices:['オイルショック（石油危機）','世界恐慌','バブル崩壊','特需景気'], a:0,
+  ex:'オイルショックにより原油価格が急上昇し、物価の高騰や不景気を招いたことで、日本の高度経済成長は終わりを迎えました。'},
+{cat:'sengo', q:'1980年代後半、土地や株の価格が実際の価値以上に高騰した好景気を何というか。', choices:['バブル景気','高度経済成長','特需景気','大戦景気'], a:0,
+  ex:'バブル景気は1980年代後半に起こった好景気で、地価や株価が実体経済とかけ離れて高騰しましたが、1991年に崩壊しました。'},
+];
+
+/* ---------------------------------------------------------
+   State
+--------------------------------------------------------- */
+const TOTAL_ROUNDS = 3;
+let selectedCat = 'all';
+let pool = [];
+let queue = [];
+let idx = 0;
+let score = 0;
+let wrongLog = [];
+let locked = false;
+let round = 1;
+let roundResults = [];
+
+const screenEl = document.getElementById('screen');
+const tabstripEl = document.getElementById('tabstrip');
+const mastheadStat = document.getElementById('masthead-stat');
+
+function countFor(catId){ return catId==='all' ? Q.length : Q.filter(q=>q.cat===catId).length; }
+
+function buildTabs(){
+  tabstripEl.innerHTML = '';
+  CATS.forEach(c=>{
+    const t = document.createElement('div');
+    t.className = 'tab' + (selectedCat===c.id ? ' active' : '');
+    t.style.background = c.color;
+    t.textContent = c.label;
+    t.onclick = ()=>{ selectedCat = c.id; renderStart(); };
+    tabstripEl.appendChild(t);
+  });
+}
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+/* ---------------------------------------------------------
+   Start screen
+--------------------------------------------------------- */
+function renderStart(){
+  buildTabs();
+  mastheadStat.textContent = '';
+  const n = countFor(selectedCat);
+  screenEl.innerHTML = `
+    <div class="eyebrow">単元をえらんで挑戦</div>
+    <h2 class="lead">近代日本の<span class="accent">歩み</span>を<br>とことん確認しよう。</h2>
+    <p class="desc">明治の産業と教育・明治の文化と社会・大正時代・昭和戦前と戦中・戦後の経済成長の5単元、全${Q.length}問。すべて四択形式で、一問ごとに正誤が表示されます。同じ範囲を<b>3周</b>して定着させましょう（毎周、出題順はシャッフルされます）。</p>
+    <div class="catgrid" id="catgrid"></div>
+    <button class="startbtn" id="startbtn">${selectedCat==='all' ? 'すべての単元（'+n+'問×3周）ではじめる' : CATS.find(c=>c.id===selectedCat).label+'（'+n+'問×3周）ではじめる'}</button>
+  `;
+  const grid = document.getElementById('catgrid');
+  const allCard = document.createElement('div');
+  allCard.className = 'catcard' + (selectedCat==='all' ? ' selected' : '');
+  allCard.innerHTML = `<span class="dot" style="background:var(--ink)"></span><div><div class="name">すべての単元</div><div class="cnt">${Q.length}問</div></div>`;
+  allCard.onclick = ()=>{ selectedCat='all'; renderStart(); };
+  grid.appendChild(allCard);
+  CATS.forEach(c=>{
+    const card = document.createElement('div');
+    card.className = 'catcard' + (selectedCat===c.id ? ' selected' : '');
+    card.innerHTML = `<span class="dot" style="background:${c.color}"></span><div><div class="name">${c.label}</div><div class="cnt">${countFor(c.id)}問</div></div>`;
+    card.onclick = ()=>{ selectedCat=c.id; renderStart(); };
+    grid.appendChild(card);
+  });
+  document.getElementById('startbtn').onclick = startQuiz;
+}
+
+/* ---------------------------------------------------------
+   Quiz flow
+--------------------------------------------------------- */
+function startQuiz(){
+  pool = selectedCat==='all' ? Q : Q.filter(q=>q.cat===selectedCat);
+  round = 1;
+  roundResults = [];
+  startRound();
+}
+
+function startRound(){
+  queue = shuffle(pool).map(item=>{
+    const order = shuffle([0,1,2,3]);
+    const choices = order.map(i=>item.choices[i]);
+    const a = order.indexOf(item.a);
+    return Object.assign({}, item, {choices, a});
+  });
+  idx = 0; score = 0; wrongLog = [];
+  renderQuestion();
+}
+
+function catInfo(id){ return CATS.find(c=>c.id===id); }
+
+function renderQuestion(){
+  locked = false;
+  buildTabs();
+  const item = queue[idx];
+  const ci = catInfo(item.cat);
+  mastheadStat.innerHTML = `<b>${score}</b> / ${idx} 正解中　·　${round}周目 / ${TOTAL_ROUNDS}`;
+
+  const pct = Math.round((idx/queue.length)*100);
+
+  let choicesHtml = '';
+  item.choices.forEach((c,i)=>{
+    choicesHtml += `
+      <button class="choice" data-i="${i}">
+        <span class="mark">${String.fromCharCode(65+i)}</span>
+        <span>${c}</span>
+      </button>`;
+  });
+
+  screenEl.innerHTML = `
+    <div class="qmeta">
+      <span class="qtag" style="background:${ci.color}">${ci.label}</span>
+      <span class="qcount">${round}周目 / ${TOTAL_ROUNDS}　·　第 ${idx+1} 問 / 全 ${queue.length} 問</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+    <div class="qtype">四択問題</div>
+    <div class="qtext">${item.q}</div>
+    <div class="choices">${choicesHtml}</div>
+    <div class="feedback" id="feedback"></div>
+    <button class="nextbtn" id="nextbtn">${idx===queue.length-1 ? (round<TOTAL_ROUNDS ? 'この周の結果を見る' : '最終結果を見る') : '次の問題へ'}</button>
+  `;
+
+  document.querySelectorAll('.choice').forEach(btn=>{
+    btn.onclick = ()=> selectChoice(parseInt(btn.dataset.i), item);
+  });
+  document.getElementById('nextbtn').onclick = ()=>{
+    idx++;
+    if(idx>=queue.length){ finishRound(); } else { renderQuestion(); }
+  };
+}
+
+function finishRound(){
+  roundResults.push({round, score, total:queue.length, wrongLog:wrongLog.slice()});
+  if(round<TOTAL_ROUNDS){ renderRoundComplete(); } else { renderFinalResult(); }
+}
+
+function selectChoice(i, item){
+  if(locked) return;
+  locked = true;
+  const correct = i===item.a;
+  if(correct) score++; else wrongLog.push(item);
+
+  document.querySelectorAll('.choice').forEach((btn,bi)=>{
+    btn.classList.add('locked');
+    if(bi===item.a) btn.classList.add('correct');
+    else if(bi===i) btn.classList.add('wrong');
+    else btn.classList.add('dim');
+  });
+
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback show ' + (correct ? 'correct' : 'wrong');
+  fb.innerHTML = `<span class="label">${correct ? '正解！' : '不正解 — 正しい答え：' + item.choices[item.a]}</span>${item.ex}`;
+
+  document.getElementById('nextbtn').classList.add('show');
+  mastheadStat.innerHTML = `<b>${score}</b> / ${idx+1} 正解中`;
+}
+
+/* ---------------------------------------------------------
+   Round-complete screen (rounds 1〜2 of 3)
+--------------------------------------------------------- */
+function renderRoundComplete(){
+  buildTabs();
+  const total = queue.length;
+  const pct = Math.round((score/total)*100);
+  mastheadStat.textContent = '';
+
+  let reviewHtml = '';
+  if(wrongLog.length===0){
+    reviewHtml = `<div class="noneright">この周は全問正解です。見事な達成です！</div>`;
+  } else {
+    reviewHtml = `<div class="reviewlist">` + wrongLog.map(item=>`
+      <div class="revitem">
+        <div class="revq">${item.q}</div>
+        <div class="reva">正解：<b>${item.choices[item.a]}</b><br>${item.ex}</div>
+      </div>
+    `).join('') + `</div>`;
+  }
+
+  screenEl.innerHTML = `
+    <div class="resulthead">
+      <div class="eyebrow">${round}周目 / ${TOTAL_ROUNDS} 終了</div>
+      <div class="sealBig"><div class="n">${score}/${total}</div><div class="d">正解</div></div>
+    </div>
+    <div class="scoreLine">正答率 ${pct}%　${pct===100 ? '－ パーフェクト！' : pct>=80 ? '－ よくできました' : pct>=50 ? '－ もう少し復習しよう' : '－ 見直しが必要です'}</div>
+    <div class="eyebrow" style="margin-bottom:10px;">${wrongLog.length>0 ? 'この周で間違えた問題のふりかえり' : ''}</div>
+    ${reviewHtml}
+    <div class="resultbtns">
+      <button class="primary" id="nextRoundBtn">第${round+1}周へ進む（問題をシャッフル）</button>
+    </div>
+  `;
+  document.getElementById('nextRoundBtn').onclick = ()=>{ round++; startRound(); };
+}
+
+/* ---------------------------------------------------------
+   Final result screen (after all 3 rounds)
+--------------------------------------------------------- */
+function renderFinalResult(){
+  buildTabs();
+  mastheadStat.textContent = '';
+
+  const totalQ = roundResults.reduce((s,r)=>s+r.total,0);
+  const totalCorrect = roundResults.reduce((s,r)=>s+r.score,0);
+  const overallPct = Math.round((totalCorrect/totalQ)*100);
+
+  const roundRows = roundResults.map(r=>{
+    const p = Math.round((r.score/r.total)*100);
+    return `<div class="revitem" style="display:flex; justify-content:space-between; align-items:center;">
+      <div class="revq" style="margin-bottom:0;">${r.round}周目</div>
+      <div class="reva" style="text-align:right;"><b>${r.score}</b> / ${r.total} 問正解（${p}%）</div>
+    </div>`;
+  }).join('');
+
+  // words wrong on the final (3rd) round only, as the "still needs review" list
+  const finalWrong = roundResults[roundResults.length-1].wrongLog;
+  let reviewHtml = '';
+  if(finalWrong.length===0){
+    reviewHtml = `<div class="noneright">最後の周（3周目）はすべて正解でした。3周分の学習、お疲れさまでした！</div>`;
+  } else {
+    reviewHtml = `<div class="reviewlist">` + finalWrong.map(item=>`
+      <div class="revitem">
+        <div class="revq">${item.q}</div>
+        <div class="reva">正解：<b>${item.choices[item.a]}</b><br>${item.ex}</div>
+      </div>
+    `).join('') + `</div>`;
+  }
+
+  screenEl.innerHTML = `
+    <div class="resulthead">
+      <div class="eyebrow">3周分の学習が完了しました</div>
+      <div class="sealBig"><div class="n">${overallPct}%</div><div class="d">総合正答率</div></div>
+    </div>
+    <div class="scoreLine">全${TOTAL_ROUNDS}周合計 ${totalCorrect} / ${totalQ} 問正解</div>
+    <div class="reviewlist" style="margin-bottom:20px;">${roundRows}</div>
+    <div class="eyebrow" style="margin-bottom:10px;">3周目でまだ間違えた問題（要復習）</div>
+    ${reviewHtml}
+    <div class="resultbtns">
+      <button class="ghost" id="retryBtn">もう一度 3周する</button>
+      <button class="primary" id="homeBtn">単元選択にもどる</button>
+    </div>
+  `;
+  document.getElementById('retryBtn').onclick = startQuiz;
+  document.getElementById('homeBtn').onclick = renderStart;
+}
+
+/* init */
+renderStart();
+</script>
+</body>
+</html>
