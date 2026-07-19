@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>中世の産業・文化史 一問一答 - 中学受験社会</title>
+<style>
+  * { box-sizing: border-box; margin:0; padding:0; }
+  body {
+    font-family: "Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",sans-serif;
+    background: linear-gradient(135deg,#fef6e4 0%,#fde2e4 50%,#e2ece9 100%);
+    min-height: 100vh;
+    padding: 16px;
+    color: #3a2e2e;
+  }
+  .wrap { max-width: 560px; margin: 0 auto; }
+  header {
+    text-align:center;
+    margin-bottom: 16px;
+  }
+  header h1 {
+    font-size: 20px;
+    color: #a0522d;
+    line-height:1.4;
+  }
+  header p { font-size: 13px; color:#7a6a5f; margin-top:4px; }
+
+  .card {
+    background: #fffdf8;
+    border-radius: 18px;
+    box-shadow: 0 6px 18px rgba(160,82,45,0.15);
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+
+  .round-badge {
+    display:inline-block;
+    background:#f4a261;
+    color:#fff;
+    font-size:13px;
+    font-weight:bold;
+    padding:4px 14px;
+    border-radius:20px;
+    margin-bottom:10px;
+  }
+  .progress-bar-outer {
+    background:#eee;
+    border-radius:20px;
+    height:10px;
+    overflow:hidden;
+    margin: 10px 0 16px;
+  }
+  .progress-bar-inner {
+    background: linear-gradient(90deg,#f4a261,#e76f51);
+    height:100%;
+    width:0%;
+    transition: width 0.3s ease;
+  }
+  .q-count { text-align:right; font-size:12px; color:#999; margin-bottom:4px; }
+
+  .question-text {
+    font-size: 17px;
+    line-height:1.7;
+    margin-bottom: 18px;
+    font-weight:bold;
+    white-space:pre-wrap;
+  }
+  .choice-btn {
+    display:block;
+    width:100%;
+    text-align:left;
+    background:#fff;
+    border: 2px solid #e8d5c4;
+    border-radius:12px;
+    padding: 13px 16px;
+    margin-bottom:10px;
+    font-size:16px;
+    color:#3a2e2e;
+    cursor:pointer;
+    transition: all 0.15s;
+  }
+  .choice-btn:active { transform: scale(0.98); }
+  .choice-btn.correct { background:#d8f3dc; border-color:#52b788; }
+  .choice-btn.wrong { background:#ffd6d6; border-color:#e63946; }
+  .choice-btn.disabled { pointer-events:none; opacity:0.75; }
+
+  .explain-box {
+    display:none;
+    margin-top:14px;
+    background:#f1f8f5;
+    border-left: 4px solid #52b788;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size:14px;
+    line-height:1.6;
+  }
+  .next-btn {
+    display:none;
+    width:100%;
+    margin-top:14px;
+    background:#e76f51;
+    color:#fff;
+    border:none;
+    border-radius:12px;
+    padding:14px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+  }
+
+  .start-btn, .primary-btn {
+    display:block;
+    width:100%;
+    background:#e76f51;
+    color:#fff;
+    border:none;
+    border-radius:14px;
+    padding:16px;
+    font-size:17px;
+    font-weight:bold;
+    cursor:pointer;
+    margin-top: 8px;
+  }
+  .secondary-btn {
+    display:block;
+    width:100%;
+    background:#fff;
+    color:#e76f51;
+    border:2px solid #e76f51;
+    border-radius:14px;
+    padding:14px;
+    font-size:15px;
+    font-weight:bold;
+    cursor:pointer;
+    margin-top:10px;
+  }
+
+  .stage-list { font-size:14px; line-height:2; color:#5a4a3f; }
+  .result-score {
+    text-align:center;
+    font-size: 40px;
+    font-weight:bold;
+    color:#e76f51;
+    margin: 10px 0;
+  }
+  .weak-list {
+    background:#fff5f0;
+    border-radius:10px;
+    padding: 12px 14px;
+    margin-top: 12px;
+    font-size:14px;
+    line-height:1.9;
+  }
+  .weak-list b { color:#c1440e; }
+  footer { text-align:center; font-size:11px; color:#aaa; margin-top:20px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>中世の産業・文化史<small><br>MEDIEVAL JAPAN DRILL &nbsp;/&nbsp; 社会・歴史 一問一答</small></h1>
+    <p>3周してしっかり定着させよう！</p>
+  </header>
+
+  <div id="app"></div>
+
+  <footer>第7回 中世の産業・文化史 対応</footer>
+</div>
+
+<script>
+const QUESTIONS = [
+  {q:"鎌倉時代に始まった、稲刈りのあとに麦を蒔く農業を何というか。", choices:["二毛作","三毛作","輪作","促成栽培"], answer:0, note:"同じ土地で1年に米と麦の二種類の作物を作る農法。"},
+  {q:"鎌倉時代は月に3回、室町時代は月に6回開かれた、商品売買の場を何というか。", choices:["座","定期市","楽市","問丸"], answer:1, note:"人が集まりやすい寺社の門前や交通の要地で開かれた。"},
+  {q:"商業を独占して利益をあげていた同業者組合を何というか。", choices:["惣","座","株仲間","講"], answer:1, note:"公家や寺社に税を納める代わりに営業を独占した。"},
+  {q:"物資を定期市などに運ぶための陸上輸送業者を何というか。", choices:["問(問丸)","馬借","飛脚","廻船"], answer:1, note:"馬を使って物資を運んだ陸上運送業者。"},
+  {q:"京都で自治の中心となった富裕な商工業者を何というか。", choices:["町衆","惣百姓","地侍","国人"], answer:0, note:"応仁の乱で中断していた祇園祭を復興させたことでも知られる。"},
+  {q:"農村の自治組織を何というか。", choices:["座","惣(惣村)","国","五人組"], answer:1, note:"寄合を開いて村のおきてを定め、自治をおこなった。"},
+  {q:"織田信長が城下町で自由に商売をおこなえるようにした経済政策を何というか。", choices:["太閤検地","楽市・楽座","刀狩","参勤交代"], answer:1, note:"座の特権を廃止し、市での税を免除して商業を活発にした。"},
+  {q:"豊臣秀吉がおこなった全国的な土地の調査を何というか。", choices:["刀狩","太閤検地","地租改正","班田収授"], answer:1, note:"ものさしやますを統一し、田畑の面積や収穫量を調べた。"},
+  {q:"東大寺の南大門に見られる、力強く写実的な建築様式を何というか。", choices:["寝殿造","大仏様","書院造","唐様"], answer:1, note:"宋の建築様式を取り入れた鎌倉時代の代表的な建築。"},
+  {q:"中国(明)に渡って絵画の技法を学び、日本の水墨画を大成したのはだれか。", choices:["雪舟","狩野永徳","運慶","観阿弥"], answer:0, note:"墨の濃淡だけで自然を描く水墨画を日本独自の様式に発展させた。"},
+  {q:"「南無阿弥陀仏」と念仏を唱えれば救われると説き、浄土宗を開いたのはだれか。", choices:["日蓮","法然","一遍","栄西"], answer:1, note:"のちに弟子の親鸞が浄土真宗(一向宗)を開いた。"},
+  {q:"念仏の教えを広めながら諸国を回り、時宗を広めたのはだれか。", choices:["一遍","法然","日蓮","栄西"], answer:0, note:"踊念仏によって多くの人々に教えを広めた。"},
+  {q:"猿楽や田楽をもとにして大成された、面をつけて演じる芸能を何というか。", choices:["狂言","歌舞伎","能(能楽)","浄瑠璃"], answer:2, note:"足利義満の保護を受けて大成された。"},
+  {q:"能を大成した父子はだれとだれか。", choices:["世阿弥・観阿弥","雪舟・狩野永徳","千利休・出雲阿国","運慶・快慶"], answer:0, note:"観阿弥・世阿弥父子は足利義満の保護のもと能を芸術として確立した。"},
+  {q:"足利義満が京都の北山に建てた、寝殿造と禅宗様を合わせた建物を何というか。", choices:["銀閣","金閣","法隆寺","東求堂"], answer:1, note:"北山文化を代表する建物。"},
+  {q:"足利義政が京都の東山に建てた、簡素で落ち着いた建物を何というか。", choices:["金閣","銀閣","天守閣","本丸御殿"], answer:1, note:"東山文化を代表する建物で、書院造の代表例でもある。"},
+  {q:"床の間やふすま、たたみを用いた、現代の和風建築のもとになった建築様式を何というか。", choices:["寝殿造","書院造","大仏様","数寄屋造"], answer:1, note:"銀閣に付属する東求堂同仁斎が代表的な例。"},
+  {q:"豊臣秀吉のころに栄えた、豪華で雄大な文化を何というか。", choices:["国風文化","桃山文化","元禄文化","化政文化"], answer:1, note:"大名や大商人の権力・富を反映した豪華な文化。"},
+  {q:"質素なわびの精神を重んじる茶道(わび茶)を大成したのはだれか。", choices:["千利休","出雲阿国","狩野永徳","小堀遠州"], answer:0, note:"豊臣秀吉に仕え、簡素な茶室でおこなう茶の湯を完成させた。"},
+  {q:"出雲阿国が始めた、後の歌舞伎のもとになった踊りを何というか。", choices:["念仏踊り","かぶき踊り(歌舞伎踊り)","盆踊り","阿波踊り"], answer:1, note:"京都でかぶき踊りを始め、江戸時代の歌舞伎へと発展した。"},
+  {q:"安土城や大阪城などに見られる、城の中心にそびえる高い建物を何というか。", choices:["天守(天守閣)","本丸","石垣","櫓"], answer:0, note:"城の権威を示す象徴的な建築物。"},
+  {q:"室町時代、定期市などで使用された貨幣は何か。", choices:["和同開珎","銅銭(明銭)","金貨","米"], answer:1, note:"日明貿易で輸入された明の銅銭が広く使われた。"},
+  {q:"室町時代に貨幣の流通がさかんになって金貸しをおこなった、酒屋を兼ねる金融業者を何というか。", choices:["座","土倉","問丸","飛脚"], answer:1, note:"質を取ってお金を貸す高利貸し業者。"},
+  {q:"惣(惣村)で村のおきてを定めたり自治について話し合ったりする会議を何というか。", choices:["寄合","評定","座談","談合"], answer:0, note:"惣村の農民たちが集まって開いた自治の話し合い。"},
+  {q:"織田信長が、商人や物資が自由に行き来できるように各地で廃止したものは何か。", choices:["座","関所","惣","市"], answer:1, note:"通行税を取る関所を廃止し、流通を活発にした。"},
+  {q:"『徒然草』を著した人物はだれか。", choices:["吉田兼好(兼好法師)","鴨長明","紀貫之","清少納言"], answer:0, note:"鎌倉時代末期に書かれた随筆。"},
+  {q:"宋(中国)から禅宗の一派である臨済宗を伝えたのはだれか。", choices:["栄西","法然","日蓮","親鸞"], answer:0, note:"茶を飲む習慣を日本に広めたことでも知られる。"},
+  {q:"「南無妙法蓮華経」と題目を唱えることを説き、日蓮宗(法華宗)を開いたのはだれか。", choices:["日蓮","法然","一遍","栄西"], answer:0, note:"法華経の教えを重んじる宗派を開いた。"},
+  {q:"足利義満が京都の室町に建てた邸宅を何というか。", choices:["花の御所","二条城","伏見城","本能寺"], answer:0, note:"「室町幕府」の名の由来となった邸宅。"},
+  {q:"能の合間に演じられる、こっけいな寸劇を何というか。", choices:["狂言","浄瑠璃","歌舞伎","雅楽"], answer:0, note:"庶民の生活を題材にした喜劇的な芸能。"},
+  {q:"禅宗の影響を受けて作られた、石や砂で自然を表現する庭園様式を何というか。", choices:["枯山水","回遊式庭園","浄土庭園","借景庭園"], answer:0, note:"龍安寺の石庭などが代表的。"},
+  {q:"室町時代に地方にも広まった、寺院などで開かれた学問所を何というか。", choices:["足利学校","寺子屋","藩校","国学"], answer:0, note:"下野国(栃木県)にあり、多くの学者が集まった。"},
+  {q:"桃山文化のころ、ヨーロッパ人との貿易や交流を通して伝わった文化を何というか。", choices:["南蛮文化","北方文化","唐文化","国風文化"], answer:0, note:"ポルトガル人やスペイン人との貿易(南蛮貿易)を通じて伝わった。"},
+  {q:"南蛮文化とともに伝わった、パンやカステラなどの語源になった国の言葉は何語か。", choices:["ポルトガル語","オランダ語","フランス語","スペイン語"], answer:0, note:"ポルトガルとの貿易を通じて多くの言葉が日本語に取り入れられた。"},
+  {q:"狩野永徳が描いた、金箔を使ったはなやかな絵を何というか。", choices:["水墨画","障壁画(金碧障壁画)","浮世絵","大和絵"], answer:1, note:"城の内部を飾るために描かれた、桃山文化を代表する絵画。"},
+  {q:"室町幕府が明との間でおこなった、正式な貿易船と倭寇を区別するための証明書を用いた貿易を何というか。", choices:["朱印船貿易","勘合貿易","南蛮貿易","日宋貿易"], answer:1, note:"勘合という合い札を用いたことからこう呼ばれる。"},
+  {q:"室町幕府の3代将軍で、日明貿易(勘合貿易)を始めたのはだれか。", choices:["足利尊氏","足利義満","足利義政","足利義昭"], answer:1, note:"北山文化を築き、金閣を建てた人物でもある。"},
+  {q:"室町幕府の8代将軍で、東山文化を築き、銀閣を建てたのはだれか。", choices:["足利義満","足利義政","足利尊氏","足利義教"], answer:1, note:"応仁の乱が起こったころの将軍でもある。"},
+];
+
+let order = [];
+let round = 1;
+let idx = 0;
+let wrongThisRound = [];
+let wrongCounts = {}; // key: question text, count of wrong answers total
+let currentPool = [];
+let answeredCorrectlyOnFirstTry = new Set();
+
+const app = document.getElementById('app');
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function shuffleChoices(q){
+  const idxs = q.choices.map((c,i)=>i);
+  const shuffled = shuffle(idxs);
+  return {
+    text: q.q,
+    note: q.note,
+    choices: shuffled.map(i=>q.choices[i]),
+    answerIndex: shuffled.indexOf(q.answer),
+    origIndex: QUESTIONS.indexOf(q)
+  };
+}
+
+function renderStart(){
+  app.innerHTML = `
+    <div class="card">
+      <div class="stage-list">
+        📘 全${QUESTIONS.length}問<br>
+        🔁 3周してしっかり覚える方式<br>
+        1周目：まず全問チャレンジ<br>
+        2周目：間違えた問題を中心に復習<br>
+        3周目：最終チェック（まだ怪しい問題）
+      </div>
+      <button class="start-btn" onclick="startRound(1)">1周目スタート！</button>
+    </div>
+  `;
+}
+
+function startRound(r){
+  round = r;
+  idx = 0;
+  wrongThisRound = [];
+  if(r===1){
+    currentPool = shuffle(QUESTIONS.slice());
+  } else {
+    currentPool = shuffle(wrongCounts.__poolForRound || []);
+  }
+  if(currentPool.length===0){
+    finishRound();
+    return;
+  }
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const raw = currentPool[idx];
+  const q = shuffleChoices(raw);
+  const total = currentPool.length;
+  const pct = Math.round((idx/total)*100);
+
+  app.innerHTML = `
+    <div class="card">
+      <span class="round-badge">${round}周目</span>
+      <div class="q-count">${idx+1} / ${total} 問</div>
+      <div class="progress-bar-outer"><div class="progress-bar-inner" style="width:${pct}%"></div></div>
+      <div class="question-text">${q.text}</div>
+      <div id="choices"></div>
+      <div class="explain-box" id="explainBox"></div>
+      <button class="next-btn" id="nextBtn">次へ →</button>
+    </div>
+  `;
+
+  const choicesDiv = document.getElementById('choices');
+  q.choices.forEach((c,i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    btn.textContent = c;
+    btn.onclick = ()=>selectAnswer(i, q, raw);
+    choicesDiv.appendChild(btn);
+  });
+}
+
+function selectAnswer(i, q, raw){
+  const buttons = document.querySelectorAll('.choice-btn');
+  buttons.forEach(b=>b.classList.add('disabled'));
+  const correct = i===q.answerIndex;
+
+  buttons[q.answerIndex].classList.add('correct');
+  if(!correct){
+    buttons[i].classList.add('wrong');
+    wrongThisRound.push(raw);
+    wrongCounts[raw.q] = (wrongCounts[raw.q]||0)+1;
+  } else {
+    if(round===1) answeredCorrectlyOnFirstTry.add(raw.q);
+  }
+
+  const explainBox = document.getElementById('explainBox');
+  explainBox.style.display = 'block';
+  explainBox.innerHTML = (correct ? '✅ 正解！ ' : '❌ 不正解… 正解は「'+q.choices[q.answerIndex]+'」') + '<br>' + (q.note||'');
+
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.style.display = 'block';
+  nextBtn.textContent = (idx+1<currentPool.length) ? '次へ →' : `${round}周目の結果を見る`;
+  nextBtn.onclick = ()=>{
+    idx++;
+    if(idx<currentPool.length){
+      renderQuestion();
+    } else {
+      finishRound();
+    }
+  };
+}
+
+function finishRound(){
+  const wrongUnique = [...new Map(wrongThisRound.map(q=>[q.q,q])).values()];
+  wrongCounts.__poolForRound = wrongUnique;
+  wrongCounts.__lastPoolSize = currentPool.length;
+
+  const correctCount = currentPool.length - wrongUnique.length;
+
+  if(round<3 && wrongUnique.length>0){
+    app.innerHTML = `
+      <div class="card" style="text-align:center;">
+        <h2 style="color:#e76f51;">${round}周目 おつかれさま！</h2>
+        <div class="result-score">${correctCount} / ${currentPool.length}</div>
+        <p style="margin-bottom:14px;">間違えた ${wrongUnique.length} 問を中心に、次の周でもう一度チェックしよう！</p>
+        <button class="primary-btn" onclick="startRound(${round+1})">${round+1}周目へ進む</button>
+      </div>
+    `;
+  } else if(round<3 && wrongUnique.length===0){
+    app.innerHTML = `
+      <div class="card" style="text-align:center;">
+        <h2 style="color:#52b788;">${round}周目 パーフェクト！🎉</h2>
+        <p>間違いなし！このまま最後まで確認しよう。</p>
+        <button class="primary-btn" onclick="startRound(${round+1})">${round+1}周目へ進む</button>
+      </div>
+    `;
+  } else {
+    renderFinalResult(wrongUnique, correctCount);
+  }
+}
+
+function renderFinalResult(wrongUnique, correctCount){
+  let weakHtml = '';
+  if(wrongUnique.length>0){
+    weakHtml = `<div class="weak-list"><b>まだ怪しい問題（もう一回見直そう）</b><br>` +
+      wrongUnique.map(q=>'・'+q.q).join('<br>') + `</div>`;
+  } else {
+    weakHtml = `<div class="weak-list">🎉 弱点なし！バッチリ覚えられたで！</div>`;
+  }
+
+  app.innerHTML = `
+    <div class="card" style="text-align:center;">
+      <h2 style="color:#e76f51;">3周 完了！お疲れさま🎊</h2>
+      <div class="result-score">${correctCount} / ${(wrongCounts.__lastPoolSize||QUESTIONS.length)}</div>
+      ${weakHtml}
+      <button class="primary-btn" onclick="resetAll()">もう一度最初から</button>
+    </div>
+  `;
+}
+
+function resetAll(){
+  wrongCounts = {};
+  answeredCorrectlyOnFirstTry = new Set();
+  renderStart();
+}
+
+renderStart();
+</script>
+</body>
+</html>
