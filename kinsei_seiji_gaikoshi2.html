@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>近世の政治・外交史(2) 〜徳川綱吉から大政奉還まで〜</title>
+<style>
+  * { box-sizing: border-box; margin:0; padding:0; }
+  body {
+    font-family: "Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",sans-serif;
+    background: linear-gradient(135deg,#fef6e4 0%,#fde2e4 50%,#e2ece9 100%);
+    min-height: 100vh;
+    padding: 16px;
+    color: #3a2e2e;
+  }
+  .wrap { max-width: 560px; margin: 0 auto; }
+  header {
+    text-align:center;
+    margin-bottom: 16px;
+  }
+  header h1 {
+    font-size: 20px;
+    color: #a0522d;
+    line-height:1.4;
+  }
+  header p { font-size: 13px; color:#7a6a5f; margin-top:4px; }
+
+  .card {
+    background: #fffdf8;
+    border-radius: 18px;
+    box-shadow: 0 6px 18px rgba(160,82,45,0.15);
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+
+  /* Start screen */
+  .round-badge {
+    display:inline-block;
+    background:#f4a261;
+    color:#fff;
+    font-size:13px;
+    font-weight:bold;
+    padding:4px 14px;
+    border-radius:20px;
+    margin-bottom:10px;
+  }
+  .progress-bar-outer {
+    background:#eee;
+    border-radius:20px;
+    height:10px;
+    overflow:hidden;
+    margin: 10px 0 16px;
+  }
+  .progress-bar-inner {
+    background: linear-gradient(90deg,#f4a261,#e76f51);
+    height:100%;
+    width:0%;
+    transition: width 0.3s ease;
+  }
+  .q-count { text-align:right; font-size:12px; color:#999; margin-bottom:4px; }
+
+  .question-text {
+    font-size: 17px;
+    line-height:1.7;
+    margin-bottom: 18px;
+    font-weight:bold;
+    white-space:pre-wrap;
+  }
+  .choice-btn {
+    display:block;
+    width:100%;
+    text-align:left;
+    background:#fff;
+    border: 2px solid #e8d5c4;
+    border-radius:12px;
+    padding: 13px 16px;
+    margin-bottom:10px;
+    font-size:16px;
+    color:#3a2e2e;
+    cursor:pointer;
+    transition: all 0.15s;
+  }
+  .choice-btn:active { transform: scale(0.98); }
+  .choice-btn.correct { background:#d8f3dc; border-color:#52b788; }
+  .choice-btn.wrong { background:#ffd6d6; border-color:#e63946; }
+  .choice-btn.disabled { pointer-events:none; opacity:0.75; }
+
+  .explain-box {
+    display:none;
+    margin-top:14px;
+    background:#f1f8f5;
+    border-left: 4px solid #52b788;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size:14px;
+    line-height:1.6;
+  }
+  .next-btn {
+    display:none;
+    width:100%;
+    margin-top:14px;
+    background:#e76f51;
+    color:#fff;
+    border:none;
+    border-radius:12px;
+    padding:14px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+  }
+
+  .start-btn, .primary-btn {
+    display:block;
+    width:100%;
+    background:#e76f51;
+    color:#fff;
+    border:none;
+    border-radius:14px;
+    padding:16px;
+    font-size:17px;
+    font-weight:bold;
+    cursor:pointer;
+    margin-top: 8px;
+  }
+  .secondary-btn {
+    display:block;
+    width:100%;
+    background:#fff;
+    color:#e76f51;
+    border:2px solid #e76f51;
+    border-radius:14px;
+    padding:14px;
+    font-size:15px;
+    font-weight:bold;
+    cursor:pointer;
+    margin-top:10px;
+  }
+
+  .stage-list { font-size:14px; line-height:2; color:#5a4a3f; }
+  .result-score {
+    text-align:center;
+    font-size: 40px;
+    font-weight:bold;
+    color:#e76f51;
+    margin: 10px 0;
+  }
+  .weak-list {
+    background:#fff5f0;
+    border-radius:10px;
+    padding: 12px 14px;
+    margin-top: 12px;
+    font-size:14px;
+    line-height:1.9;
+  }
+  .weak-list b { color:#c1440e; }
+  footer { text-align:center; font-size:11px; color:#aaa; margin-top:20px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>近世の政治・外交史(2)<br>〜徳川綱吉から大政奉還まで〜</h1>
+    <p>3周してしっかり定着させよう！</p>
+  </header>
+
+  <div id="app"></div>
+
+  <footer>第9回 近世の政治・外交史(2) 対応</footer>
+</div>
+
+<script>
+const QUESTIONS = [
+  {q:"江戸幕府5代将軍徳川綱吉が出した、生き物の殺生を禁じた法令を何というか。", choices:["生類憐みの令","公事方御定書","上米の制","囲米"], answer:0, note:"極端な動物愛護令で、庶民の生活を圧迫した。"},
+  {q:"徳川綱吉のもとで、将軍の側近として重く用いられ政治をおこなった役職を何というか。", choices:["老中","側用人","大老","若年寄"], answer:1, note:"柳沢吉保などが有名。将軍との距離の近さを利用して権力をふるった。"},
+  {q:"新田開発や年貢増徴で幕府財政を立て直した徳川吉宗は、その政策から何と呼ばれたか。", choices:["米将軍","鎖国将軍","天下将軍","改革将軍"], answer:0, note:"上米の制や年貢率の引き上げで幕府の収入を増やした。"},
+  {q:"老中田沼意次のように、株仲間を公認して営業税(運上・冥加)をとる政治を進めた人物は誰か。", choices:["水野忠邦","田沼意次","松平定信","井伊直弼"], answer:1, note:"商業を重視した政治で幕府財政を立て直そうとした。"},
+  {q:"幕末の貿易で、日本から外国へ最も多く輸出された品物は何か。", choices:["生糸","米","茶","綿織物"], answer:0, note:"横浜港などから盛んに輸出され、国内では品不足で物価が上がった。"},
+  {q:"6代・7代将軍を補佐した新井白石がおこなった政治を何というか。", choices:["寛政の改革","天保の改革","正徳の治","享保の改革"], answer:2, note:"儒学者の新井白石による文治政治。"},
+  {q:"8代将軍徳川吉宗がおこなった改革を何というか。", choices:["享保の改革","寛政の改革","天保の改革","安政の改革"], answer:0, note:"財政再建や新田開発、目安箱の設置などをおこなった。"},
+  {q:"徳川吉宗が定めた、裁判の基準となる法律を何というか。", choices:["武家諸法度","公事方御定書","禁中並公家諸法度","撰銭令"], answer:1, note:"裁判の公正化をはかった。"},
+  {q:"徳川吉宗が大名に米を献上させる代わりに参勤交代の負担を軽くした制度を何というか。", choices:["上米の制","囲米","棄捐令","株仲間"], answer:0, note:"財政難を補うための制度。"},
+  {q:"徳川吉宗が庶民の意見を政治に反映させるために設置したものは何か。", choices:["寺子屋","目安箱","評定所","町奉行所"], answer:1, note:"庶民の投書箱。小石川養生所の設立にもつながった。"},
+  {q:"老中田沼意次が奨励した、商人の同業者組合を何というか。", choices:["株仲間","五人組","座","講"], answer:0, note:"営業の独占を認める代わりに税(運上・冥加)を取った。"},
+  {q:"田沼意次が新田開発のために干拓を進めようとした沼はどこか。", choices:["霞ケ浦","印旛沼","琵琶湖","諏訪湖"], answer:1, note:"利根川流域の新田開発をめざした。"},
+  {q:"老中松平定信がおこなった改革を何というか。", choices:["享保の改革","寛政の改革","天保の改革","正徳の治"], answer:1, note:"質素倹約や旧里帰農令などをおこなった。"},
+  {q:"松平定信が凶作やききんに備えて大名に米を蓄えさせた政策を何というか。", choices:["囲米","上米の制","株仲間","五公五民"], answer:0, note:"寛政の改革の一つ。"},
+  {q:"松平定信が旗本・御家人の札差からの借金を帳消しにした政策を何というか。", choices:["棄捐令","上知令","異国船打払令","人返しの法"], answer:0, note:"旗本・御家人の生活救済策。"},
+  {q:"1792年、ロシア使節ラクスマンが通商を求めて来航した地はどこか。", choices:["長崎","浦賀","根室","下田"], answer:2, note:"漂流民の大黒屋光太夫を送り届けるために来航した。"},
+  {q:"1804年、ロシア使節レザノフが通商を求めて来航した地はどこか。", choices:["長崎","根室","浦賀","函館"], answer:0, note:"幕府はこれを拒否した。"},
+  {q:"1825年、幕府が出した、日本に近づく外国船を撃退せよという命令を何というか。", choices:["異国船打払令","薪水給与令","武家諸法度","五榜の掲示"], answer:0, note:"外国船打払令ともいう。"},
+  {q:"モリソン号事件を批判し、幕府に処罰された蘭学者(渡辺崋山・高野長英ら)の事件を何というか。", choices:["安政の大獄","蛮社の獄","文治政治","大塩平八郎の乱"], answer:1, note:"幕府の対外政策を批判したことで弾圧された。"},
+  {q:"大阪町奉行所の元与力で、天保のききんの際に貧民救済を訴え反乱を起こした人物は誰か。", choices:["大塩平八郎","水野忠邦","高野長英","井伊直弼"], answer:0, note:"1837年、大阪で反乱を起こした(大塩平八郎の乱)。"},
+  {q:"老中水野忠邦がおこなった改革を何というか。", choices:["享保の改革","寛政の改革","天保の改革","正徳の治"], answer:2, note:"株仲間の解散や上知令などをおこなった。"},
+  {q:"水野忠邦が物価の引き下げをねらって株仲間に対しておこなったことは何か。", choices:["株仲間の解散","株仲間の公認","株仲間への課税強化","株仲間の統合"], answer:0, note:"かえって流通が混乱し失敗に終わった。"},
+  {q:"水野忠邦が江戸・大阪周辺の土地を幕府の直轄地にしようとして大名らの反対で失敗した法令を何というか。", choices:["上知令","異国船打払令","囲米","人返しの法"], answer:0, note:"大名・旗本の強い反対で撤回された。"},
+  {q:"1853年、アメリカ使節として浦賀に来航し開国を求めた人物は誰か。", choices:["ハリス","ペリー","ラクスマン","レザノフ"], answer:1, note:"軍艦(黒船)を率いて来航し、幕府に開国を迫った。"},
+  {q:"1854年に結ばれ、鎖国政策を終わらせるきっかけとなった条約を何というか。", choices:["日米和親条約","日米修好通商条約","下関条約","日英通商条約"], answer:0, note:"日本とアメリカの間で結ばれた最初の条約。"},
+  {q:"日米和親条約で開港することになった2つの港はどこか。", choices:["横浜・神戸","下田・函館","長崎・新潟","浦賀・大阪"], answer:1, note:"薪水・食料の補給地として開かれた。"},
+  {q:"日米和親条約の後、下田に着任し、通商条約の締結を求めたアメリカ総領事は誰か。", choices:["ペリー","ハリス","タウンゼント","ロッシュ"], answer:1, note:"のちに日米修好通商条約の締結を主導した。"},
+  {q:"1858年、朝廷の許可を得ないまま結ばれた条約を何というか。", choices:["日米和親条約","日米修好通商条約","樺太千島交換条約","下関条約"], answer:1, note:"函館・新潟・横浜・神戸・長崎の5港を開いた。"},
+  {q:"日米修好通商条約を朝廷の許可なく結んだ、江戸幕府の大老は誰か。", choices:["水野忠邦","松平定信","井伊直弼","徳川慶喜"], answer:2, note:"強引な条約締結や将軍継嗣問題で反発を招いた。"},
+  {q:"日米修好通商条約で、外国人が日本で罪をおかしてもその国の領事が裁判をおこなう権利を何というか。", choices:["関税自主権","領事裁判権","治外法権の放棄","最恵国待遇"], answer:1, note:"日本にとって不利な、不平等条約の内容の一つ。"},
+  {q:"日米修好通商条約で、日本に認められなかった、輸入品の関税を自国で自由に決める権利を何というか。", choices:["関税自主権","領事裁判権","最恵国待遇","治外法権"], answer:0, note:"これも不平等条約の内容の一つ。改正には長い年月を要した。"},
+  {q:"井伊直弼が、条約締結や将軍継嗣問題に反対した大名や公家、志士らを厳しく処罰した事件を何というか。", choices:["蛮社の獄","安政の大獄","文久の改革","戊辰戦争"], answer:1, note:"吉田松陰らが処刑された。"},
+  {q:"1860年、安政の大獄に反発した水戸藩士らによって井伊直弼が江戸城門外で暗殺された事件を何というか。", choices:["生麦事件","桜田門外の変","禁門の変","池田屋事件"], answer:1, note:"幕府の権威が大きく揺らぐきっかけとなった。"},
+  {q:"天皇を尊び、外国勢力を追い払おうとする幕末の運動を何というか。", choices:["尊王攘夷運動","自由民権運動","王政復古","開国和親"], answer:0, note:"諸藩の下級武士らを中心に広がった。"},
+  {q:"生麦事件をきっかけに、1863年にイギリスと薩摩藩の間で起こった戦いを何というか。", choices:["薩英戦争","下関戦争","戊辰戦争","西南戦争"], answer:0, note:"薩摩藩はこの敗北から攘夷の困難さを痛感した。"},
+  {q:"下関で外国船を砲撃し、後に英・米・仏・蘭の4か国艦隊の報復攻撃を受けた藩はどこか。", choices:["薩摩藩","長州藩","土佐藩","会津藩"], answer:1, note:"下関戦争で敗れ、開国路線に転じた。"},
+  {q:"1866年、坂本龍馬らの仲介によって薩摩藩と長州藩が結んだ同盟を何というか。", choices:["薩長同盟","薩土盟約","日英同盟","三国同盟"], answer:0, note:"倒幕へ向けた大きな転機となった。"},
+  {q:"1867年、江戸幕府第15代将軍徳川慶喜が、政権を朝廷に返上したことを何というか。", choices:["王政復古の大号令","大政奉還","廃藩置県","五箇条の御誓文"], answer:1, note:"これにより約260年続いた江戸幕府が終わった。"},
+];
+
+let order = [];
+let round = 1;
+let idx = 0;
+let wrongThisRound = [];
+let wrongCounts = {}; // key: question text, count of wrong answers total
+let currentPool = [];
+let answeredCorrectlyOnFirstTry = new Set();
+
+const app = document.getElementById('app');
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function shuffleChoices(q){
+  const idxs = q.choices.map((c,i)=>i);
+  const shuffled = shuffle(idxs);
+  return {
+    text: q.q,
+    note: q.note,
+    choices: shuffled.map(i=>q.choices[i]),
+    answerIndex: shuffled.indexOf(q.answer),
+    origIndex: QUESTIONS.indexOf(q)
+  };
+}
+
+function renderStart(){
+  app.innerHTML = `
+    <div class="card">
+      <div class="stage-list">
+        📘 全${QUESTIONS.length}問<br>
+        🔁 3周してしっかり覚える方式<br>
+        1周目：まず全問チャレンジ<br>
+        2周目：間違えた問題を中心に復習<br>
+        3周目：最終チェック（まだ怪しい問題）
+      </div>
+      <button class="start-btn" onclick="startRound(1)">1周目スタート！</button>
+    </div>
+  `;
+}
+
+function startRound(r){
+  round = r;
+  idx = 0;
+  wrongThisRound = [];
+  if(r===1){
+    currentPool = shuffle(QUESTIONS.slice());
+  } else {
+    currentPool = shuffle(wrongCounts.__poolForRound || []);
+  }
+  if(currentPool.length===0){
+    // nothing to review, skip to result of that round
+    finishRound();
+    return;
+  }
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const raw = currentPool[idx];
+  const q = shuffleChoices(raw);
+  const total = currentPool.length;
+  const pct = Math.round((idx/total)*100);
+
+  app.innerHTML = `
+    <div class="card">
+      <span class="round-badge">${round}周目</span>
+      <div class="q-count">${idx+1} / ${total} 問</div>
+      <div class="progress-bar-outer"><div class="progress-bar-inner" style="width:${pct}%"></div></div>
+      <div class="question-text">${q.text}</div>
+      <div id="choices"></div>
+      <div class="explain-box" id="explainBox"></div>
+      <button class="next-btn" id="nextBtn">次へ →</button>
+    </div>
+  `;
+
+  const choicesDiv = document.getElementById('choices');
+  q.choices.forEach((c,i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    btn.textContent = c;
+    btn.onclick = ()=>selectAnswer(i, q, raw);
+    choicesDiv.appendChild(btn);
+  });
+}
+
+function selectAnswer(i, q, raw){
+  const buttons = document.querySelectorAll('.choice-btn');
+  buttons.forEach(b=>b.classList.add('disabled'));
+  const correct = i===q.answerIndex;
+
+  buttons[q.answerIndex].classList.add('correct');
+  if(!correct){
+    buttons[i].classList.add('wrong');
+    wrongThisRound.push(raw);
+    wrongCounts[raw.q] = (wrongCounts[raw.q]||0)+1;
+  } else {
+    if(round===1) answeredCorrectlyOnFirstTry.add(raw.q);
+  }
+
+  const explainBox = document.getElementById('explainBox');
+  explainBox.style.display = 'block';
+  explainBox.innerHTML = (correct ? '✅ 正解！ ' : '❌ 不正解… 正解は「'+q.choices[q.answerIndex]+'」') + '<br>' + (q.note||'');
+
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.style.display = 'block';
+  nextBtn.textContent = (idx+1<currentPool.length) ? '次へ →' : `${round}周目の結果を見る`;
+  nextBtn.onclick = ()=>{
+    idx++;
+    if(idx<currentPool.length){
+      renderQuestion();
+    } else {
+      finishRound();
+    }
+  };
+}
+
+function finishRound(){
+  const total = (round===1) ? QUESTIONS.length : (wrongCounts.__lastPoolSize||0);
+  const wrongUnique = [...new Map(wrongThisRound.map(q=>[q.q,q])).values()];
+  wrongCounts.__poolForRound = wrongUnique;
+  wrongCounts.__lastPoolSize = currentPool.length;
+
+  const correctCount = currentPool.length - wrongUnique.length;
+
+  if(round<3 && wrongUnique.length>0){
+    app.innerHTML = `
+      <div class="card" style="text-align:center;">
+        <h2 style="color:#e76f51;">${round}周目 おつかれさま！</h2>
+        <div class="result-score">${correctCount} / ${currentPool.length}</div>
+        <p style="margin-bottom:14px;">間違えた ${wrongUnique.length} 問を中心に、次の周でもう一度チェックしよう！</p>
+        <button class="primary-btn" onclick="startRound(${round+1})">${round+1}周目へ進む</button>
+      </div>
+    `;
+  } else if(round<3 && wrongUnique.length===0){
+    app.innerHTML = `
+      <div class="card" style="text-align:center;">
+        <h2 style="color:#52b788;">${round}周目 パーフェクト！🎉</h2>
+        <p>間違いなし！このまま最後まで確認しよう。</p>
+        <button class="primary-btn" onclick="startRound(${round+1})">${round+1}周目へ進む</button>
+      </div>
+    `;
+  } else {
+    // round 3 finished, or nothing left to review
+    renderFinalResult(wrongUnique, correctCount);
+  }
+}
+
+function renderFinalResult(wrongUnique, correctCount){
+  let weakHtml = '';
+  if(wrongUnique.length>0){
+    weakHtml = `<div class="weak-list"><b>まだ怪しい問題（もう一回見直そう）</b><br>` +
+      wrongUnique.map(q=>'・'+q.q).join('<br>') + `</div>`;
+  } else {
+    weakHtml = `<div class="weak-list">🎉 弱点なし！バッチリ覚えられたで！</div>`;
+  }
+
+  app.innerHTML = `
+    <div class="card" style="text-align:center;">
+      <h2 style="color:#e76f51;">3周 完了！お疲れさま🎊</h2>
+      <div class="result-score">${correctCount} / ${(wrongCounts.__lastPoolSize||QUESTIONS.length)}</div>
+      ${weakHtml}
+      <button class="primary-btn" onclick="resetAll()">もう一度最初から</button>
+    </div>
+  `;
+}
+
+function resetAll(){
+  wrongCounts = {};
+  answeredCorrectlyOnFirstTry = new Set();
+  renderStart();
+}
+
+renderStart();
+</script>
+</body>
+</html>
