@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>中世の政治・外交史(2) 〜信長・秀吉の全国統一〜</title>
+<style>
+  * { box-sizing: border-box; margin:0; padding:0; }
+  body {
+    font-family: "Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",sans-serif;
+    background: linear-gradient(135deg,#fef6e4 0%,#fde2e4 50%,#e2ece9 100%);
+    min-height: 100vh;
+    padding: 16px;
+    color: #3a2e2e;
+  }
+  .wrap { max-width: 560px; margin: 0 auto; }
+  header {
+    text-align:center;
+    margin-bottom: 16px;
+  }
+  header h1 {
+    font-size: 20px;
+    color: #a0522d;
+    line-height:1.4;
+  }
+  header p { font-size: 13px; color:#7a6a5f; margin-top:4px; }
+
+  .card {
+    background: #fffdf8;
+    border-radius: 18px;
+    box-shadow: 0 6px 18px rgba(160,82,45,0.15);
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+
+  .round-badge {
+    display:inline-block;
+    background:#f4a261;
+    color:#fff;
+    font-size:13px;
+    font-weight:bold;
+    padding:4px 14px;
+    border-radius:20px;
+    margin-bottom:10px;
+  }
+  .progress-bar-outer {
+    background:#eee;
+    border-radius:20px;
+    height:10px;
+    overflow:hidden;
+    margin: 10px 0 16px;
+  }
+  .progress-bar-inner {
+    background: linear-gradient(90deg,#f4a261,#e76f51);
+    height:100%;
+    width:0%;
+    transition: width 0.3s ease;
+  }
+  .q-count { text-align:right; font-size:12px; color:#999; margin-bottom:4px; }
+
+  .question-text {
+    font-size: 17px;
+    line-height:1.7;
+    margin-bottom: 18px;
+    font-weight:bold;
+    white-space:pre-wrap;
+  }
+  .choice-btn {
+    display:block;
+    width:100%;
+    text-align:left;
+    background:#fff;
+    border: 2px solid #e8d5c4;
+    border-radius:12px;
+    padding: 13px 16px;
+    margin-bottom:10px;
+    font-size:16px;
+    color:#3a2e2e;
+    cursor:pointer;
+    transition: all 0.15s;
+  }
+  .choice-btn:active { transform: scale(0.98); }
+  .choice-btn.correct { background:#d8f3dc; border-color:#52b788; }
+  .choice-btn.wrong { background:#ffd6d6; border-color:#e63946; }
+  .choice-btn.disabled { pointer-events:none; opacity:0.75; }
+
+  .explain-box {
+    display:none;
+    margin-top:14px;
+    background:#f1f8f5;
+    border-left: 4px solid #52b788;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size:14px;
+    line-height:1.6;
+  }
+  .next-btn {
+    display:none;
+    width:100%;
+    margin-top:14px;
+    background:#e76f51;
+    color:#fff;
+    border:none;
+    border-radius:12px;
+    padding:14px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+  }
+
+  .start-btn, .primary-btn {
+    display:block;
+    width:100%;
+    background:#e76f51;
+    color:#fff;
+    border:none;
+    border-radius:14px;
+    padding:16px;
+    font-size:17px;
+    font-weight:bold;
+    cursor:pointer;
+    margin-top: 8px;
+  }
+  .secondary-btn {
+    display:block;
+    width:100%;
+    background:#fff;
+    color:#e76f51;
+    border:2px solid #e76f51;
+    border-radius:14px;
+    padding:14px;
+    font-size:15px;
+    font-weight:bold;
+    cursor:pointer;
+    margin-top:10px;
+  }
+
+  .stage-list { font-size:14px; line-height:2; color:#5a4a3f; }
+  .result-score {
+    text-align:center;
+    font-size: 40px;
+    font-weight:bold;
+    color:#e76f51;
+    margin: 10px 0;
+  }
+  .weak-list {
+    background:#fff5f0;
+    border-radius:10px;
+    padding: 12px 14px;
+    margin-top: 12px;
+    font-size:14px;
+    line-height:1.9;
+  }
+  .weak-list b { color:#c1440e; }
+  footer { text-align:center; font-size:11px; color:#aaa; margin-top:20px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>中世の政治・外交史(2)<br>〜信長・秀吉の全国統一〜</h1>
+    <p>3周してしっかり定着させよう！</p>
+  </header>
+
+  <div id="app"></div>
+
+  <footer>第6回 中世の政治・外交史(2) 対応</footer>
+</div>
+
+<script>
+const QUESTIONS = [
+  {q:"桶狭間の戦いで織田信長に敗れた大名はだれか。", choices:["今川義元","武田勝頼","豊臣秀吉","足利義昭"], answer:0, note:"1560年、織田信長は奇襲によって今川義元を破った。"},
+  {q:"織田信長が城下町でおこなった、座の特権を廃止し自由な商売を認めた政策を何というか。", choices:["太閤検地","楽市・楽座","刀狩","参勤交代"], answer:1, note:"商業を活発にし、経済力を高めるための政策。"},
+  {q:"1575年、織田信長・徳川家康の連合軍が鉄砲を有効に使い、武田勝頼の騎馬隊を破った戦いを何というか。", choices:["桶狭間の戦い","関ヶ原の戦い","長篠の戦い","山崎の戦い"], answer:2, note:"鉄砲の集団戦法が効果を発揮した戦いとして知られる。"},
+  {q:"織田信長が琵琶湖のほとりに築いた、天守を持つ壮大な城を何というか。", choices:["安土城","大阪城","姫路城","江戸城"], answer:0, note:"城下では楽市・楽座もおこなわれた。"},
+  {q:"1573年、織田信長によって京都を追放され、滅んだ幕府は何か。", choices:["鎌倉幕府","室町幕府","江戸幕府","南北朝"], answer:1, note:"最後の将軍は足利義昭であった。"},
+  {q:"織田信長が仏教勢力をおさえるために焼き討ちにした、比叡山にある寺はどこか。", choices:["東大寺","延暦寺","法隆寺","金閣寺"], answer:1, note:"比叡山延暦寺は当時大きな勢力を持つ仏教勢力であった。"},
+  {q:"1582年、家臣の明智光秀にそむかれ、織田信長が自害した事件を何というか。", choices:["応仁の乱","本能寺の変","桜田門外の変","関ヶ原の戦い"], answer:1, note:"信長はこの事件によって天下統一を目前に倒れた。"},
+  {q:"本能寺の変ののち、山崎の戦いで明智光秀を破った人物はだれか。", choices:["徳川家康","豊臣秀吉","柴田勝家","石田三成"], answer:1, note:"信長の後継者として全国統一を進めていった。"},
+  {q:"豊臣秀吉がおこなった、統一したものさしやますを用いて全国の田畑を調査した政策を何というか。", choices:["刀狩","太閤検地","地租改正","検地帳"], answer:1, note:"田畑の面積や収穫量を調べ、年貢の基準を統一した。"},
+  {q:"豊臣秀吉が一揆を防止するために、農民や寺社から武器を取り上げた政策を何というか。", choices:["太閤検地","刀狩","楽市・楽座","バテレン追放令"], answer:1, note:"没収した武器は大仏をつくる釘などに使うとされた。"},
+  {q:"太閤検地と刀狩によって、武士と農民の身分の区別が明確になったことを何というか。", choices:["兵農分離","士農工商","四民平等","身分制度"], answer:0, note:"武士は城下町に住み、農民は農業に専念するようになった。"},
+  {q:"1585年、豊臣秀吉が朝廷から与えられた最高の官職は何か。", choices:["征夷大将軍","関白","太政大臣","摂政"], answer:1, note:"のちに太閤ともよばれた。"},
+  {q:"豊臣秀吉がキリスト教の宣教師を国外に追放するために出した命令を何というか。", choices:["禁教令","バテレン追放令","異国船打払令","武家諸法度"], answer:1, note:"1587年に出されたが、貿易は禁止しなかった。"},
+  {q:"天正遣欧使節としてローマ教皇のもとへ派遣された4人の少年を何というか。", choices:["天正遣欧少年使節","朝鮮通信使","遣唐使","勘合使節"], answer:0, note:"九州のキリシタン大名たちによってヨーロッパに派遣された。"},
+  {q:"天正遣欧使節を派遣した、九州のキリスト教を信仰する大名たちを何というか。", choices:["外様大名","キリシタン大名","譜代大名","守護大名"], answer:1, note:"大友義鎮(宗麟)らが少年使節をローマに送った。"},
+  {q:"豊臣秀吉が1592年におこなった、朝鮮への1度目の出兵を何というか。", choices:["慶長の役","文禄の役","元寇","西南戦争"], answer:1, note:"明の征服を目指し、朝鮮に大軍を派遣した。"},
+  {q:"豊臣秀吉が1597年におこなった、朝鮮への2度目の出兵を何というか。", choices:["文禄の役","慶長の役","応仁の乱","保元の乱"], answer:1, note:"秀吉の死によって日本軍は撤退した。"},
+];
+
+let order = [];
+let round = 1;
+let idx = 0;
+let wrongThisRound = [];
+let wrongCounts = {}; // key: question text, count of wrong answers total
+let currentPool = [];
+let answeredCorrectlyOnFirstTry = new Set();
+
+const app = document.getElementById('app');
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function shuffleChoices(q){
+  const idxs = q.choices.map((c,i)=>i);
+  const shuffled = shuffle(idxs);
+  return {
+    text: q.q,
+    note: q.note,
+    choices: shuffled.map(i=>q.choices[i]),
+    answerIndex: shuffled.indexOf(q.answer),
+    origIndex: QUESTIONS.indexOf(q)
+  };
+}
+
+function renderStart(){
+  app.innerHTML = `
+    <div class="card">
+      <div class="stage-list">
+        📘 全${QUESTIONS.length}問<br>
+        🔁 3周してしっかり覚える方式<br>
+        1周目：まず全問チャレンジ<br>
+        2周目：間違えた問題を中心に復習<br>
+        3周目：最終チェック（まだ怪しい問題）
+      </div>
+      <button class="start-btn" onclick="startRound(1)">1周目スタート！</button>
+    </div>
+  `;
+}
+
+function startRound(r){
+  round = r;
+  idx = 0;
+  wrongThisRound = [];
+  if(r===1){
+    currentPool = shuffle(QUESTIONS.slice());
+  } else {
+    currentPool = shuffle(wrongCounts.__poolForRound || []);
+  }
+  if(currentPool.length===0){
+    finishRound();
+    return;
+  }
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const raw = currentPool[idx];
+  const q = shuffleChoices(raw);
+  const total = currentPool.length;
+  const pct = Math.round((idx/total)*100);
+
+  app.innerHTML = `
+    <div class="card">
+      <span class="round-badge">${round}周目</span>
+      <div class="q-count">${idx+1} / ${total} 問</div>
+      <div class="progress-bar-outer"><div class="progress-bar-inner" style="width:${pct}%"></div></div>
+      <div class="question-text">${q.text}</div>
+      <div id="choices"></div>
+      <div class="explain-box" id="explainBox"></div>
+      <button class="next-btn" id="nextBtn">次へ →</button>
+    </div>
+  `;
+
+  const choicesDiv = document.getElementById('choices');
+  q.choices.forEach((c,i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    btn.textContent = c;
+    btn.onclick = ()=>selectAnswer(i, q, raw);
+    choicesDiv.appendChild(btn);
+  });
+}
+
+function selectAnswer(i, q, raw){
+  const buttons = document.querySelectorAll('.choice-btn');
+  buttons.forEach(b=>b.classList.add('disabled'));
+  const correct = i===q.answerIndex;
+
+  buttons[q.answerIndex].classList.add('correct');
+  if(!correct){
+    buttons[i].classList.add('wrong');
+    wrongThisRound.push(raw);
+    wrongCounts[raw.q] = (wrongCounts[raw.q]||0)+1;
+  } else {
+    if(round===1) answeredCorrectlyOnFirstTry.add(raw.q);
+  }
+
+  const explainBox = document.getElementById('explainBox');
+  explainBox.style.display = 'block';
+  explainBox.innerHTML = (correct ? '✅ 正解！ ' : '❌ 不正解… 正解は「'+q.choices[q.answerIndex]+'」') + '<br>' + (q.note||'');
+
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.style.display = 'block';
+  nextBtn.textContent = (idx+1<currentPool.length) ? '次へ →' : `${round}周目の結果を見る`;
+  nextBtn.onclick = ()=>{
+    idx++;
+    if(idx<currentPool.length){
+      renderQuestion();
+    } else {
+      finishRound();
+    }
+  };
+}
+
+function finishRound(){
+  const wrongUnique = [...new Map(wrongThisRound.map(q=>[q.q,q])).values()];
+  wrongCounts.__poolForRound = wrongUnique;
+  wrongCounts.__lastPoolSize = currentPool.length;
+
+  const correctCount = currentPool.length - wrongUnique.length;
+
+  if(round<3 && wrongUnique.length>0){
+    app.innerHTML = `
+      <div class="card" style="text-align:center;">
+        <h2 style="color:#e76f51;">${round}周目 おつかれさま！</h2>
+        <div class="result-score">${correctCount} / ${currentPool.length}</div>
+        <p style="margin-bottom:14px;">間違えた ${wrongUnique.length} 問を中心に、次の周でもう一度チェックしよう！</p>
+        <button class="primary-btn" onclick="startRound(${round+1})">${round+1}周目へ進む</button>
+      </div>
+    `;
+  } else if(round<3 && wrongUnique.length===0){
+    app.innerHTML = `
+      <div class="card" style="text-align:center;">
+        <h2 style="color:#52b788;">${round}周目 パーフェクト！🎉</h2>
+        <p>間違いなし！このまま最後まで確認しよう。</p>
+        <button class="primary-btn" onclick="startRound(${round+1})">${round+1}周目へ進む</button>
+      </div>
+    `;
+  } else {
+    renderFinalResult(wrongUnique, correctCount);
+  }
+}
+
+function renderFinalResult(wrongUnique, correctCount){
+  let weakHtml = '';
+  if(wrongUnique.length>0){
+    weakHtml = `<div class="weak-list"><b>まだ怪しい問題（もう一回見直そう）</b><br>` +
+      wrongUnique.map(q=>'・'+q.q).join('<br>') + `</div>`;
+  } else {
+    weakHtml = `<div class="weak-list">🎉 弱点なし！バッチリ覚えられたで！</div>`;
+  }
+
+  app.innerHTML = `
+    <div class="card" style="text-align:center;">
+      <h2 style="color:#e76f51;">3周 完了！お疲れさま🎊</h2>
+      <div class="result-score">${correctCount} / ${(wrongCounts.__lastPoolSize||QUESTIONS.length)}</div>
+      ${weakHtml}
+      <button class="primary-btn" onclick="resetAll()">もう一度最初から</button>
+    </div>
+  `;
+}
+
+function resetAll(){
+  wrongCounts = {};
+  answeredCorrectlyOnFirstTry = new Set();
+  renderStart();
+}
+
+renderStart();
+</script>
+</body>
+</html>
