@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>近世の政治・外交史(1) 〜関ヶ原の戦いから鎖国体制の確立まで〜</title>
+<style>
+  * { box-sizing: border-box; margin:0; padding:0; }
+  body {
+    font-family: "Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",sans-serif;
+    background: linear-gradient(135deg,#fef6e4 0%,#fde2e4 50%,#e2ece9 100%);
+    min-height: 100vh;
+    padding: 16px;
+    color: #3a2e2e;
+  }
+  .wrap { max-width: 560px; margin: 0 auto; }
+  header {
+    text-align:center;
+    margin-bottom: 16px;
+  }
+  header h1 {
+    font-size: 20px;
+    color: #a0522d;
+    line-height:1.4;
+  }
+  header p { font-size: 13px; color:#7a6a5f; margin-top:4px; }
+
+  .card {
+    background: #fffdf8;
+    border-radius: 18px;
+    box-shadow: 0 6px 18px rgba(160,82,45,0.15);
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+
+  .round-badge {
+    display:inline-block;
+    background:#f4a261;
+    color:#fff;
+    font-size:13px;
+    font-weight:bold;
+    padding:4px 14px;
+    border-radius:20px;
+    margin-bottom:10px;
+  }
+  .progress-bar-outer {
+    background:#eee;
+    border-radius:20px;
+    height:10px;
+    overflow:hidden;
+    margin: 10px 0 16px;
+  }
+  .progress-bar-inner {
+    background: linear-gradient(90deg,#f4a261,#e76f51);
+    height:100%;
+    width:0%;
+    transition: width 0.3s ease;
+  }
+  .q-count { text-align:right; font-size:12px; color:#999; margin-bottom:4px; }
+
+  .question-text {
+    font-size: 17px;
+    line-height:1.7;
+    margin-bottom: 18px;
+    font-weight:bold;
+    white-space:pre-wrap;
+  }
+  .choice-btn {
+    display:block;
+    width:100%;
+    text-align:left;
+    background:#fff;
+    border: 2px solid #e8d5c4;
+    border-radius:12px;
+    padding: 13px 16px;
+    margin-bottom:10px;
+    font-size:16px;
+    color:#3a2e2e;
+    cursor:pointer;
+    transition: all 0.15s;
+  }
+  .choice-btn:active { transform: scale(0.98); }
+  .choice-btn.correct { background:#d8f3dc; border-color:#52b788; }
+  .choice-btn.wrong { background:#ffd6d6; border-color:#e63946; }
+  .choice-btn.disabled { pointer-events:none; opacity:0.75; }
+
+  .explain-box {
+    display:none;
+    margin-top:14px;
+    background:#f1f8f5;
+    border-left: 4px solid #52b788;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size:14px;
+    line-height:1.6;
+  }
+  .next-btn {
+    display:none;
+    width:100%;
+    margin-top:14px;
+    background:#e76f51;
+    color:#fff;
+    border:none;
+    border-radius:12px;
+    padding:14px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+  }
+
+  .start-btn, .primary-btn {
+    display:block;
+    width:100%;
+    background:#e76f51;
+    color:#fff;
+    border:none;
+    border-radius:14px;
+    padding:16px;
+    font-size:17px;
+    font-weight:bold;
+    cursor:pointer;
+    margin-top: 8px;
+  }
+  .secondary-btn {
+    display:block;
+    width:100%;
+    background:#fff;
+    color:#e76f51;
+    border:2px solid #e76f51;
+    border-radius:14px;
+    padding:14px;
+    font-size:15px;
+    font-weight:bold;
+    cursor:pointer;
+    margin-top:10px;
+  }
+
+  .stage-list { font-size:14px; line-height:2; color:#5a4a3f; }
+  .result-score {
+    text-align:center;
+    font-size: 40px;
+    font-weight:bold;
+    color:#e76f51;
+    margin: 10px 0;
+  }
+  .weak-list {
+    background:#fff5f0;
+    border-radius:10px;
+    padding: 12px 14px;
+    margin-top: 12px;
+    font-size:14px;
+    line-height:1.9;
+  }
+  .weak-list b { color:#c1440e; }
+  footer { text-align:center; font-size:11px; color:#aaa; margin-top:20px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>近世の政治・外交史(1)<br>〜関ヶ原の戦いから鎖国体制の確立まで〜</h1>
+    <p>3周してしっかり定着させよう！</p>
+  </header>
+
+  <div id="app"></div>
+
+  <footer>第8回 近世の政治・外交史(1) 対応</footer>
+</div>
+
+<script>
+const QUESTIONS = [
+  {q:"1600年に起こった、「天下分け目の戦い」といわれた戦乱を何というか。", choices:["関ヶ原の戦い","桶狭間の戦い","大阪の陣","川中島の戦い"], answer:0, note:"徳川家康が石田三成らを破り、天下の実権をにぎった。"},
+  {q:"関ヶ原の戦いに勝利し、1603年に征夷大将軍に任じられて幕府を開いた人物は誰か。", choices:["豊臣秀吉","徳川家康","徳川家光","織田信長"], answer:1, note:"江戸に幕府を開き、約260年続く江戸時代が始まった。"},
+  {q:"徳川家康が1603年に開いた幕府を何というか。", choices:["鎌倉幕府","室町幕府","江戸幕府","安土幕府"], answer:2, note:"1615年の大阪の陣で豊臣氏を滅ぼし、支配を確立した。"},
+  {q:"将軍を補佐する江戸幕府の役職を何というか。", choices:["大老","老中","若年寄","町奉行"], answer:1, note:"幕府の政治を実際に動かす常設の最高職。"},
+  {q:"非常時に置かれる江戸幕府の最高の職を何というか。", choices:["老中","大老","執権","関白"], answer:1, note:"常設ではなく、必要なときだけ置かれた。"},
+  {q:"関ヶ原の戦い以前から徳川家に仕えていた大名を何というか。", choices:["外様大名","譜代大名","親藩","旗本"], answer:1, note:"要地や幕府の重要な役職に配置された。"},
+  {q:"関ヶ原の戦い以後に徳川家に従うようになった大名を何というか。", choices:["譜代大名","親藩","外様大名","旗本"], answer:2, note:"江戸から遠い地域に配置され、警戒された。"},
+  {q:"大名を統制するために1615年に制定された法令を何というか。", choices:["御成敗式目","武家諸法度","公事方御定書","禁中並公家諸法度"], answer:1, note:"違反すると領地没収などの厳しい処分を受けた。"},
+  {q:"3代将軍徳川家光が武家諸法度に追加した、大名に1年おきに江戸と領地を往復させた制度を何というか。", choices:["上米の制","参勤交代","五公五民","石高制"], answer:1, note:"大名の経済力を弱める効果もあった。"},
+  {q:"百姓に年貢納入と犯罪防止の連帯責任を負わせるために組織させたものを何というか。", choices:["五人組","株仲間","惣","講"], answer:0, note:"近隣の5戸を1組として互いに監視・助け合わせた。"},
+  {q:"江戸幕府が朱印状を与えて東南アジア方面との貿易を許可した貿易を何というか。", choices:["南蛮貿易","勘合貿易","朱印船貿易","日宋貿易"], answer:2, note:"徳川家光の頃まで盛んにおこなわれていた。"},
+  {q:"江戸幕府が海外との交流を厳しく制限した体制を何というか。", choices:["攘夷","鎖国","開国","海禁"], answer:1, note:"貿易相手や窓口を幕府が厳しく限定した。"},
+  {q:"1637年に九州で起こった、キリスト教徒を中心とする大規模な一揆を何というか。", choices:["応仁の乱","島原・天草一揆","加賀の一向一揆","正長の土一揆"], answer:1, note:"重い年貢とキリスト教弾圧への反発から起こった。"},
+  {q:"島原・天草一揆の中心となった少年は誰か。", choices:["石田三成","天草四郎","豊臣秀頼","伊達政宗"], answer:1, note:"益田時貞ともいい、一揆軍の総大将となった。"},
+  {q:"幕府がキリスト教徒を発見するために、キリストやマリアの像を踏ませた方法を何というか。", choices:["絵踏み","五人組","検地","刀狩"], answer:0, note:"踏めない者はキリスト教徒として摘発された。"},
+  {q:"鎖国のもとでも貿易が許されたヨーロッパの国はどこか。", choices:["スペイン","ポルトガル","オランダ","イギリス"], answer:2, note:"キリスト教布教をおこなわなかったため貿易を許された。"},
+  {q:"オランダ商館が移された、長崎につくられた人工の島を何というか。", choices:["出島","対馬","択捉島","五島列島"], answer:0, note:"幕府が貿易と情報を管理するための窓口となった。"},
+  {q:"将軍の代がわりごとに朝鮮から派遣された使節を何というか。", choices:["遣唐使","朝鮮通信使","勘合使節","琉球使節"], answer:1, note:"対馬藩(宗氏)を通じて朝鮮との国交が保たれた。"},
+  {q:"琉球王国を征服し、支配下に置いた藩はどこか。", choices:["松前藩","対馬藩","薩摩藩","肥前藩"], answer:2, note:"琉球王国は中国との貿易も続け、幕府に利益をもたらした。"},
+  {q:"蝦夷地でアイヌの人々との交易を独占的に認められていた藩はどこか。", choices:["薩摩藩","松前藩","対馬藩","仙台藩"], answer:1, note:"1669年にはアイヌのシャクシャインが不満から戦いを起こした。"},
+];
+
+let order = [];
+let round = 1;
+let idx = 0;
+let wrongThisRound = [];
+let wrongCounts = {}; // key: question text, count of wrong answers total
+let currentPool = [];
+let answeredCorrectlyOnFirstTry = new Set();
+
+const app = document.getElementById('app');
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function shuffleChoices(q){
+  const idxs = q.choices.map((c,i)=>i);
+  const shuffled = shuffle(idxs);
+  return {
+    text: q.q,
+    note: q.note,
+    choices: shuffled.map(i=>q.choices[i]),
+    answerIndex: shuffled.indexOf(q.answer),
+    origIndex: QUESTIONS.indexOf(q)
+  };
+}
+
+function renderStart(){
+  app.innerHTML = `
+    <div class="card">
+      <div class="stage-list">
+        📘 全${QUESTIONS.length}問<br>
+        🔁 3周してしっかり覚える方式<br>
+        1周目：まず全問チャレンジ<br>
+        2周目：間違えた問題を中心に復習<br>
+        3周目：最終チェック（まだ怪しい問題）
+      </div>
+      <button class="start-btn" onclick="startRound(1)">1周目スタート！</button>
+    </div>
+  `;
+}
+
+function startRound(r){
+  round = r;
+  idx = 0;
+  wrongThisRound = [];
+  if(r===1){
+    currentPool = shuffle(QUESTIONS.slice());
+  } else {
+    currentPool = shuffle(wrongCounts.__poolForRound || []);
+  }
+  if(currentPool.length===0){
+    finishRound();
+    return;
+  }
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const raw = currentPool[idx];
+  const q = shuffleChoices(raw);
+  const total = currentPool.length;
+  const pct = Math.round((idx/total)*100);
+
+  app.innerHTML = `
+    <div class="card">
+      <span class="round-badge">${round}周目</span>
+      <div class="q-count">${idx+1} / ${total} 問</div>
+      <div class="progress-bar-outer"><div class="progress-bar-inner" style="width:${pct}%"></div></div>
+      <div class="question-text">${q.text}</div>
+      <div id="choices"></div>
+      <div class="explain-box" id="explainBox"></div>
+      <button class="next-btn" id="nextBtn">次へ →</button>
+    </div>
+  `;
+
+  const choicesDiv = document.getElementById('choices');
+  q.choices.forEach((c,i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    btn.textContent = c;
+    btn.onclick = ()=>selectAnswer(i, q, raw);
+    choicesDiv.appendChild(btn);
+  });
+}
+
+function selectAnswer(i, q, raw){
+  const buttons = document.querySelectorAll('.choice-btn');
+  buttons.forEach(b=>b.classList.add('disabled'));
+  const correct = i===q.answerIndex;
+
+  buttons[q.answerIndex].classList.add('correct');
+  if(!correct){
+    buttons[i].classList.add('wrong');
+    wrongThisRound.push(raw);
+    wrongCounts[raw.q] = (wrongCounts[raw.q]||0)+1;
+  } else {
+    if(round===1) answeredCorrectlyOnFirstTry.add(raw.q);
+  }
+
+  const explainBox = document.getElementById('explainBox');
+  explainBox.style.display = 'block';
+  explainBox.innerHTML = (correct ? '✅ 正解！ ' : '❌ 不正解… 正解は「'+q.choices[q.answerIndex]+'」') + '<br>' + (q.note||'');
+
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.style.display = 'block';
+  nextBtn.textContent = (idx+1<currentPool.length) ? '次へ →' : `${round}周目の結果を見る`;
+  nextBtn.onclick = ()=>{
+    idx++;
+    if(idx<currentPool.length){
+      renderQuestion();
+    } else {
+      finishRound();
+    }
+  };
+}
+
+function finishRound(){
+  const wrongUnique = [...new Map(wrongThisRound.map(q=>[q.q,q])).values()];
+  wrongCounts.__poolForRound = wrongUnique;
+  wrongCounts.__lastPoolSize = currentPool.length;
+
+  const correctCount = currentPool.length - wrongUnique.length;
+
+  if(round<3 && wrongUnique.length>0){
+    app.innerHTML = `
+      <div class="card" style="text-align:center;">
+        <h2 style="color:#e76f51;">${round}周目 おつかれさま！</h2>
+        <div class="result-score">${correctCount} / ${currentPool.length}</div>
+        <p style="margin-bottom:14px;">間違えた ${wrongUnique.length} 問を中心に、次の周でもう一度チェックしよう！</p>
+        <button class="primary-btn" onclick="startRound(${round+1})">${round+1}周目へ進む</button>
+      </div>
+    `;
+  } else if(round<3 && wrongUnique.length===0){
+    app.innerHTML = `
+      <div class="card" style="text-align:center;">
+        <h2 style="color:#52b788;">${round}周目 パーフェクト！🎉</h2>
+        <p>間違いなし！このまま最後まで確認しよう。</p>
+        <button class="primary-btn" onclick="startRound(${round+1})">${round+1}周目へ進む</button>
+      </div>
+    `;
+  } else {
+    renderFinalResult(wrongUnique, correctCount);
+  }
+}
+
+function renderFinalResult(wrongUnique, correctCount){
+  let weakHtml = '';
+  if(wrongUnique.length>0){
+    weakHtml = `<div class="weak-list"><b>まだ怪しい問題（もう一回見直そう）</b><br>` +
+      wrongUnique.map(q=>'・'+q.q).join('<br>') + `</div>`;
+  } else {
+    weakHtml = `<div class="weak-list">🎉 弱点なし！バッチリ覚えられたで！</div>`;
+  }
+
+  app.innerHTML = `
+    <div class="card" style="text-align:center;">
+      <h2 style="color:#e76f51;">3周 完了！お疲れさま🎊</h2>
+      <div class="result-score">${correctCount} / ${(wrongCounts.__lastPoolSize||QUESTIONS.length)}</div>
+      ${weakHtml}
+      <button class="primary-btn" onclick="resetAll()">もう一度最初から</button>
+    </div>
+  `;
+}
+
+function resetAll(){
+  wrongCounts = {};
+  answeredCorrectlyOnFirstTry = new Set();
+  renderStart();
+}
+
+renderStart();
+</script>
+</body>
+</html>
