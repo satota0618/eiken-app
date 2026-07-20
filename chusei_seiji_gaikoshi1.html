@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>中世の政治・外交史(1) 〜鎌倉幕府の成立から応仁の乱まで〜</title>
+<style>
+  * { box-sizing: border-box; margin:0; padding:0; }
+  body {
+    font-family: "Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",sans-serif;
+    background: linear-gradient(135deg,#fef6e4 0%,#fde2e4 50%,#e2ece9 100%);
+    min-height: 100vh;
+    padding: 16px;
+    color: #3a2e2e;
+  }
+  .wrap { max-width: 560px; margin: 0 auto; }
+  header {
+    text-align:center;
+    margin-bottom: 16px;
+  }
+  header h1 {
+    font-size: 20px;
+    color: #a0522d;
+    line-height:1.4;
+  }
+  header p { font-size: 13px; color:#7a6a5f; margin-top:4px; }
+
+  .card {
+    background: #fffdf8;
+    border-radius: 18px;
+    box-shadow: 0 6px 18px rgba(160,82,45,0.15);
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+
+  .round-badge {
+    display:inline-block;
+    background:#f4a261;
+    color:#fff;
+    font-size:13px;
+    font-weight:bold;
+    padding:4px 14px;
+    border-radius:20px;
+    margin-bottom:10px;
+  }
+  .progress-bar-outer {
+    background:#eee;
+    border-radius:20px;
+    height:10px;
+    overflow:hidden;
+    margin: 10px 0 16px;
+  }
+  .progress-bar-inner {
+    background: linear-gradient(90deg,#f4a261,#e76f51);
+    height:100%;
+    width:0%;
+    transition: width 0.3s ease;
+  }
+  .q-count { text-align:right; font-size:12px; color:#999; margin-bottom:4px; }
+
+  .question-text {
+    font-size: 17px;
+    line-height:1.7;
+    margin-bottom: 18px;
+    font-weight:bold;
+    white-space:pre-wrap;
+  }
+  .choice-btn {
+    display:block;
+    width:100%;
+    text-align:left;
+    background:#fff;
+    border: 2px solid #e8d5c4;
+    border-radius:12px;
+    padding: 13px 16px;
+    margin-bottom:10px;
+    font-size:16px;
+    color:#3a2e2e;
+    cursor:pointer;
+    transition: all 0.15s;
+  }
+  .choice-btn:active { transform: scale(0.98); }
+  .choice-btn.correct { background:#d8f3dc; border-color:#52b788; }
+  .choice-btn.wrong { background:#ffd6d6; border-color:#e63946; }
+  .choice-btn.disabled { pointer-events:none; opacity:0.75; }
+
+  .explain-box {
+    display:none;
+    margin-top:14px;
+    background:#f1f8f5;
+    border-left: 4px solid #52b788;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size:14px;
+    line-height:1.6;
+  }
+  .next-btn {
+    display:none;
+    width:100%;
+    margin-top:14px;
+    background:#e76f51;
+    color:#fff;
+    border:none;
+    border-radius:12px;
+    padding:14px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+  }
+
+  .start-btn, .primary-btn {
+    display:block;
+    width:100%;
+    background:#e76f51;
+    color:#fff;
+    border:none;
+    border-radius:14px;
+    padding:16px;
+    font-size:17px;
+    font-weight:bold;
+    cursor:pointer;
+    margin-top: 8px;
+  }
+  .secondary-btn {
+    display:block;
+    width:100%;
+    background:#fff;
+    color:#e76f51;
+    border:2px solid #e76f51;
+    border-radius:14px;
+    padding:14px;
+    font-size:15px;
+    font-weight:bold;
+    cursor:pointer;
+    margin-top:10px;
+  }
+
+  .stage-list { font-size:14px; line-height:2; color:#5a4a3f; }
+  .result-score {
+    text-align:center;
+    font-size: 40px;
+    font-weight:bold;
+    color:#e76f51;
+    margin: 10px 0;
+  }
+  .weak-list {
+    background:#fff5f0;
+    border-radius:10px;
+    padding: 12px 14px;
+    margin-top: 12px;
+    font-size:14px;
+    line-height:1.9;
+  }
+  .weak-list b { color:#c1440e; }
+  footer { text-align:center; font-size:11px; color:#aaa; margin-top:20px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>中世の政治・外交史(1)<br>〜鎌倉幕府の成立から応仁の乱まで〜</h1>
+    <p>3周してしっかり定着させよう！</p>
+  </header>
+
+  <div id="app"></div>
+
+  <footer>第5回 中世の政治・外交史(1) 対応</footer>
+</div>
+
+<script>
+const QUESTIONS = [
+  {q:"1185年、源氏が平氏を滅亡させた戦いを何というか。", choices:["壇ノ浦の戦い","屋島の戦い","一ノ谷の戦い","富士川の戦い"], answer:0, note:"この戦いで平氏は滅亡した。"},
+  {q:"源氏の棟梁の弟で、壇ノ浦の戦いなど源平の戦いで活躍したのはだれか。", choices:["源頼朝","源義経","源義仲","北条時政"], answer:1, note:"後に兄頼朝と対立し、追われる身となった。"},
+  {q:"鎌倉幕府のしくみのうち、国ごとに置かれ、国内の軍事・警察の仕事をおこなう役職を何というか。", choices:["地頭","守護","執権","管領"], answer:1, note:"源頼朝が国ごとに設置した。"},
+  {q:"御恩と奉公の関係で将軍と結ばれた、将軍の家来である武士たちを何というか。", choices:["守護","地頭","御家人","国人"], answer:2, note:"将軍から領地を保障される代わりに、軍役などの奉公をおこなった。"},
+  {q:"1221年、後鳥羽上皇が幕府をたおすために起こした戦いを何というか。", choices:["応仁の乱","保元の乱","承久の乱","壬申の乱"], answer:2, note:"北条政子の演説もあり、幕府軍が勝利した。"},
+  {q:"1232年、北条泰時が武士のために初めて定めた武家法を何というか。", choices:["御成敗式目(貞永式目)","武家諸法度","律令","建武式目"], answer:0, note:"武士の慣習にもとづいてつくられた法律。"},
+  {q:"元寇を引き起こした、チンギス・ハンの孫が築いた国を何というか。", choices:["高麗","モンゴル帝国","明","宋"], answer:1, note:"フビライ・ハンが日本に服属を求めてきた。"},
+  {q:"元寇後の1297年、幕府が御家人の借金を帳消しにするために出した命令を何というか。", choices:["武家諸法度","(永仁の)徳政令","楽市令","刀狩令"], answer:1, note:"元寇の恩賞が不十分だった御家人の生活苦を救うために出された。"},
+  {q:"後醍醐天皇がおこなった、公家中心の政治を何というか。", choices:["院政","建武の新政","摂関政治","太閤政治"], answer:1, note:"武士の不満が高まり、長続きしなかった。"},
+  {q:"室町幕府が始まってから約60年間、京都と吉野に天皇が2人並び立った時代を何というか。", choices:["南北朝(時代)","戦国時代","院政期","院政時代"], answer:0, note:"足利義満のときに合一された。"},
+  {q:"1338年、京都の朝廷から征夷大将軍に任じられ、京都に幕府を開いたのはだれか。", choices:["足利義満","足利尊氏","足利義政","足利義昭"], answer:1, note:"室町幕府の初代将軍。"},
+  {q:"室町幕府の全盛期を築き、日明貿易を始めた3代将軍はだれか。", choices:["足利尊氏","足利義政","足利義満","足利義昭"], answer:2, note:"南北朝を合一し、金閣を建てた人物でもある。"},
+  {q:"鎌倉幕府で御家人の統率や軍事・警察をになった中央の役所を何というか。", choices:["政所","侍所","問注所","六波羅探題"], answer:1, note:"御家人を統率し軍事・警察をになう機関。"},
+  {q:"15世紀に沖縄を統一して成立した王国を何というか。", choices:["琉球王国","蝦夷王国","南蛮王国","高麗王国"], answer:0, note:"中継貿易で栄えた。"},
+  {q:"足利義満が明との間で始めた、勘合を用いた貿易を何というか。", choices:["南蛮貿易","朱印船貿易","勘合貿易","日宋貿易"], answer:2, note:"正式な貿易船と倭寇の船を区別するために勘合が用いられた。"},
+  {q:"琉球王国が日本・中国・朝鮮・東南アジアの間でおこなった貿易を何というか。", choices:["朱印船貿易","中継貿易","勘合貿易","南蛮貿易"], answer:1, note:"他国の産物を仲介して利益を得る貿易。"},
+  {q:"鎌倉幕府で将軍を補佐し、北条氏が代々受け継いだ役職を何というか。", choices:["管領","執権","関白","老中"], answer:1, note:"北条氏はこの地位を独占して幕府の実権をにぎった。"},
+  {q:"鎌倉幕府のしくみのうち、荘園や公領ごとに置かれ、年貢の取り立てなどをおこなった役職を何というか。", choices:["守護","地頭","国司","郡司"], answer:1, note:"荘園・公領の管理や年貢の徴収を担った。"},
+  {q:"日明貿易で、正式な貿易船と倭寇の船を区別するために用いられた証明書を何というか。", choices:["朱印状","勘合","割符","過所"], answer:1, note:"合い札の形をした証明書。"},
+  {q:"将軍が御家人の働きに応じて土地などをあたえたことを何というか。", choices:["奉公","御恩","封建","知行"], answer:1, note:"御家人はこれに対して奉公で応えた。"},
+  {q:"1185年、平氏が滅んだ戦いがおこなわれた場所はどこか。", choices:["壇ノ浦(壇の浦)","屋島","一ノ谷","富士川"], answer:0, note:"現在の山口県下関市にあたる場所。"},
+  {q:"鎌倉幕府のしくみのうち、国ごとに置かれ、軍事・警察をになった役職を何というか。", choices:["地頭","守護","国司","郡司"], answer:1, note:"のちに一国を支配する守護大名へと成長する者もあらわれた。"},
+  {q:"鎌倉幕府のしくみのうち、荘園や公領ごとに置かれた役職を何というか。", choices:["守護","地頭","代官","荘官"], answer:1, note:"年貢の取り立てなどをおこなった。"},
+  {q:"幕府が御家人の借金を帳消しにするために出した命令を何というか。", choices:["刀狩令","(永仁の)徳政令","楽市令","禁教令"], answer:1, note:"効果は一時的で、かえって混乱を招いたとされる。"},
+  {q:"京都と吉野に2つの朝廷が並び立った時代を何というか。", choices:["南北朝(時代)","院政期","戦国時代","飛鳥時代"], answer:0, note:"足利義満によって統一された。"},
+  {q:"後醍醐天皇がおこなった公家中心の政治を何というか。", choices:["摂関政治","院政","建武の新政","執権政治"], answer:2, note:"武士の不満をまねき、足利尊氏に倒された。"},
+  {q:"室町幕府で将軍を補佐する、将軍に次ぐ最高の役職を何というか。", choices:["執権","管領","老中","関白"], answer:1, note:"細川氏・斯波氏・畠山氏が交代で務めた。"},
+  {q:"室町幕府で御家人の統率や軍事・警察をになった役所を何というか。", choices:["政所","侍所","問注所","評定所"], answer:1, note:"鎌倉幕府から引き継がれた機関。"},
+  {q:"元寇で、日本軍が苦しめられた元軍の戦法は、てつはうとあと何を用いた戦法か。", choices:["集団・毒矢","騎馬・弓矢","水軍・大砲","鉄砲・長槍"], answer:0, note:"元軍は集団戦法と毒矢で日本の武士を苦しめた。"},
+  {q:"建武の新政が失敗に終わったのち、後醍醐天皇がのがれた場所はどこか。", choices:["吉野","鎌倉","比叡山","大宰府"], answer:0, note:"奈良県の吉野に南朝を開いた。"},
+  {q:"室町時代、国ごとに置かれた守護が力を強め、一国を支配するようになった大名を何というか。", choices:["国人","守護大名","戦国大名","外様大名"], answer:1, note:"やがて戦国大名へと発展していく者もいた。"},
+  {q:"日明貿易で、正式な貿易船を証明するために用いられた合い札を何というか。", choices:["朱印状","勘合","過所","割符"], answer:1, note:"明から発行され、倭寇との区別に使われた。"},
+  {q:"応仁の乱ののち、各地で一国を支配する力をもつようになった大名を何というか。", choices:["守護大名","国人","譜代大名","外様大名"], answer:0, note:"下剋上の風潮が広まり、戦国大名へとつながった。"},
+  {q:"足利義満が明との間で始めた貿易を何というか。", choices:["南蛮貿易","勘合貿易","朱印船貿易","中継貿易"], answer:1, note:"倭寇の取り締まりを条件に明から認められた。"},
+  {q:"日明貿易で中国から輸入され、日本国内で広く使われた貨幣は何か。", choices:["和同開珎","銅銭(明銭)","富本銭","寛永通宝"], answer:1, note:"各地の定期市などで使用された。"},
+  {q:"1467年、将軍のあとつぎ争いなどから京都で起こった戦乱を何というか。", choices:["応仁の乱","保元の乱","承久の乱","文永の役"], answer:0, note:"11年間続き、下剋上の戦国時代のきっかけとなった。"},
+  {q:"応仁の乱によって、京都の町はどうなったか。", choices:["焼け野原になった","大きく発展した","貿易港になった","無傷であった"], answer:0, note:"多くの建物が焼失し、京都は荒廃した。"},
+];
+
+let order = [];
+let round = 1;
+let idx = 0;
+let wrongThisRound = [];
+let wrongCounts = {}; // key: question text, count of wrong answers total
+let currentPool = [];
+let answeredCorrectlyOnFirstTry = new Set();
+
+const app = document.getElementById('app');
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function shuffleChoices(q){
+  const idxs = q.choices.map((c,i)=>i);
+  const shuffled = shuffle(idxs);
+  return {
+    text: q.q,
+    note: q.note,
+    choices: shuffled.map(i=>q.choices[i]),
+    answerIndex: shuffled.indexOf(q.answer),
+    origIndex: QUESTIONS.indexOf(q)
+  };
+}
+
+function renderStart(){
+  app.innerHTML = `
+    <div class="card">
+      <div class="stage-list">
+        📘 全${QUESTIONS.length}問<br>
+        🔁 3周してしっかり覚える方式<br>
+        1周目：まず全問チャレンジ<br>
+        2周目：間違えた問題を中心に復習<br>
+        3周目：最終チェック（まだ怪しい問題）
+      </div>
+      <button class="start-btn" onclick="startRound(1)">1周目スタート！</button>
+    </div>
+  `;
+}
+
+function startRound(r){
+  round = r;
+  idx = 0;
+  wrongThisRound = [];
+  if(r===1){
+    currentPool = shuffle(QUESTIONS.slice());
+  } else {
+    currentPool = shuffle(wrongCounts.__poolForRound || []);
+  }
+  if(currentPool.length===0){
+    finishRound();
+    return;
+  }
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const raw = currentPool[idx];
+  const q = shuffleChoices(raw);
+  const total = currentPool.length;
+  const pct = Math.round((idx/total)*100);
+
+  app.innerHTML = `
+    <div class="card">
+      <span class="round-badge">${round}周目</span>
+      <div class="q-count">${idx+1} / ${total} 問</div>
+      <div class="progress-bar-outer"><div class="progress-bar-inner" style="width:${pct}%"></div></div>
+      <div class="question-text">${q.text}</div>
+      <div id="choices"></div>
+      <div class="explain-box" id="explainBox"></div>
+      <button class="next-btn" id="nextBtn">次へ →</button>
+    </div>
+  `;
+
+  const choicesDiv = document.getElementById('choices');
+  q.choices.forEach((c,i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    btn.textContent = c;
+    btn.onclick = ()=>selectAnswer(i, q, raw);
+    choicesDiv.appendChild(btn);
+  });
+}
+
+function selectAnswer(i, q, raw){
+  const buttons = document.querySelectorAll('.choice-btn');
+  buttons.forEach(b=>b.classList.add('disabled'));
+  const correct = i===q.answerIndex;
+
+  buttons[q.answerIndex].classList.add('correct');
+  if(!correct){
+    buttons[i].classList.add('wrong');
+    wrongThisRound.push(raw);
+    wrongCounts[raw.q] = (wrongCounts[raw.q]||0)+1;
+  } else {
+    if(round===1) answeredCorrectlyOnFirstTry.add(raw.q);
+  }
+
+  const explainBox = document.getElementById('explainBox');
+  explainBox.style.display = 'block';
+  explainBox.innerHTML = (correct ? '✅ 正解！ ' : '❌ 不正解… 正解は「'+q.choices[q.answerIndex]+'」') + '<br>' + (q.note||'');
+
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.style.display = 'block';
+  nextBtn.textContent = (idx+1<currentPool.length) ? '次へ →' : `${round}周目の結果を見る`;
+  nextBtn.onclick = ()=>{
+    idx++;
+    if(idx<currentPool.length){
+      renderQuestion();
+    } else {
+      finishRound();
+    }
+  };
+}
+
+function finishRound(){
+  const wrongUnique = [...new Map(wrongThisRound.map(q=>[q.q,q])).values()];
+  wrongCounts.__poolForRound = wrongUnique;
+  wrongCounts.__lastPoolSize = currentPool.length;
+
+  const correctCount = currentPool.length - wrongUnique.length;
+
+  if(round<3 && wrongUnique.length>0){
+    app.innerHTML = `
+      <div class="card" style="text-align:center;">
+        <h2 style="color:#e76f51;">${round}周目 おつかれさま！</h2>
+        <div class="result-score">${correctCount} / ${currentPool.length}</div>
+        <p style="margin-bottom:14px;">間違えた ${wrongUnique.length} 問を中心に、次の周でもう一度チェックしよう！</p>
+        <button class="primary-btn" onclick="startRound(${round+1})">${round+1}周目へ進む</button>
+      </div>
+    `;
+  } else if(round<3 && wrongUnique.length===0){
+    app.innerHTML = `
+      <div class="card" style="text-align:center;">
+        <h2 style="color:#52b788;">${round}周目 パーフェクト！🎉</h2>
+        <p>間違いなし！このまま最後まで確認しよう。</p>
+        <button class="primary-btn" onclick="startRound(${round+1})">${round+1}周目へ進む</button>
+      </div>
+    `;
+  } else {
+    renderFinalResult(wrongUnique, correctCount);
+  }
+}
+
+function renderFinalResult(wrongUnique, correctCount){
+  let weakHtml = '';
+  if(wrongUnique.length>0){
+    weakHtml = `<div class="weak-list"><b>まだ怪しい問題（もう一回見直そう）</b><br>` +
+      wrongUnique.map(q=>'・'+q.q).join('<br>') + `</div>`;
+  } else {
+    weakHtml = `<div class="weak-list">🎉 弱点なし！バッチリ覚えられたで！</div>`;
+  }
+
+  app.innerHTML = `
+    <div class="card" style="text-align:center;">
+      <h2 style="color:#e76f51;">3周 完了！お疲れさま🎊</h2>
+      <div class="result-score">${correctCount} / ${(wrongCounts.__lastPoolSize||QUESTIONS.length)}</div>
+      ${weakHtml}
+      <button class="primary-btn" onclick="resetAll()">もう一度最初から</button>
+    </div>
+  `;
+}
+
+function resetAll(){
+  wrongCounts = {};
+  answeredCorrectlyOnFirstTry = new Set();
+  renderStart();
+}
+
+renderStart();
+</script>
+</body>
+</html>
