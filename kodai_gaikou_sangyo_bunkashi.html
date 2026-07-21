@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>古代の外交・産業・文化史 〜渡来人から摂関政治まで〜</title>
+<style>
+  * { box-sizing: border-box; margin:0; padding:0; }
+  body {
+    font-family: "Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",sans-serif;
+    background: linear-gradient(135deg,#fef6e4 0%,#fde2e4 50%,#e2ece9 100%);
+    min-height: 100vh;
+    padding: 16px;
+    color: #3a2e2e;
+  }
+  .wrap { max-width: 560px; margin: 0 auto; }
+  header {
+    text-align:center;
+    margin-bottom: 16px;
+  }
+  header h1 {
+    font-size: 20px;
+    color: #a0522d;
+    line-height:1.4;
+  }
+  header p { font-size: 13px; color:#7a6a5f; margin-top:4px; }
+
+  .card {
+    background: #fffdf8;
+    border-radius: 18px;
+    box-shadow: 0 6px 18px rgba(160,82,45,0.15);
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+
+  .round-badge {
+    display:inline-block;
+    background:#f4a261;
+    color:#fff;
+    font-size:13px;
+    font-weight:bold;
+    padding:4px 14px;
+    border-radius:20px;
+    margin-bottom:10px;
+  }
+  .progress-bar-outer {
+    background:#eee;
+    border-radius:20px;
+    height:10px;
+    overflow:hidden;
+    margin: 10px 0 16px;
+  }
+  .progress-bar-inner {
+    background: linear-gradient(90deg,#f4a261,#e76f51);
+    height:100%;
+    width:0%;
+    transition: width 0.3s ease;
+  }
+  .q-count { text-align:right; font-size:12px; color:#999; margin-bottom:4px; }
+
+  .question-text {
+    font-size: 17px;
+    line-height:1.7;
+    margin-bottom: 18px;
+    font-weight:bold;
+    white-space:pre-wrap;
+  }
+  .choice-btn {
+    display:block;
+    width:100%;
+    text-align:left;
+    background:#fff;
+    border: 2px solid #e8d5c4;
+    border-radius:12px;
+    padding: 13px 16px;
+    margin-bottom:10px;
+    font-size:16px;
+    color:#3a2e2e;
+    cursor:pointer;
+    transition: all 0.15s;
+  }
+  .choice-btn:active { transform: scale(0.98); }
+  .choice-btn.correct { background:#d8f3dc; border-color:#52b788; }
+  .choice-btn.wrong { background:#ffd6d6; border-color:#e63946; }
+  .choice-btn.disabled { pointer-events:none; opacity:0.75; }
+
+  .explain-box {
+    display:none;
+    margin-top:14px;
+    background:#f1f8f5;
+    border-left: 4px solid #52b788;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size:14px;
+    line-height:1.6;
+  }
+  .next-btn {
+    display:none;
+    width:100%;
+    margin-top:14px;
+    background:#e76f51;
+    color:#fff;
+    border:none;
+    border-radius:12px;
+    padding:14px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+  }
+
+  .start-btn, .primary-btn {
+    display:block;
+    width:100%;
+    background:#e76f51;
+    color:#fff;
+    border:none;
+    border-radius:14px;
+    padding:16px;
+    font-size:17px;
+    font-weight:bold;
+    cursor:pointer;
+    margin-top: 8px;
+  }
+  .secondary-btn {
+    display:block;
+    width:100%;
+    background:#fff;
+    color:#e76f51;
+    border:2px solid #e76f51;
+    border-radius:14px;
+    padding:14px;
+    font-size:15px;
+    font-weight:bold;
+    cursor:pointer;
+    margin-top:10px;
+  }
+
+  .stage-list { font-size:14px; line-height:2; color:#5a4a3f; }
+  .result-score {
+    text-align:center;
+    font-size: 40px;
+    font-weight:bold;
+    color:#e76f51;
+    margin: 10px 0;
+  }
+  .weak-list {
+    background:#fff5f0;
+    border-radius:10px;
+    padding: 12px 14px;
+    margin-top: 12px;
+    font-size:14px;
+    line-height:1.9;
+  }
+  .weak-list b { color:#c1440e; }
+  footer { text-align:center; font-size:11px; color:#aaa; margin-top:20px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>古代の外交・産業・文化史<br>〜渡来人から摂関政治まで〜</h1>
+    <p>3周してしっかり定着させよう！</p>
+  </header>
+
+  <div id="app"></div>
+
+  <footer>第4回 古代の外交・産業・文化史 対応</footer>
+</div>
+
+<script>
+const QUESTIONS = [
+  {q:"4世紀に大和政権(倭)が新羅と戦ったことなどが記されている、高句麗の石碑を何というか。", choices:["好太王碑(広開土王碑)","江田船山古墳出土鉄剣","稲荷山古墳出土鉄剣","風土記"], answer:0, note:"当時の倭と朝鮮半島との関係を伝える貴重な史料。"},
+  {q:"中国や朝鮮半島から日本に移り住み、須恵器や漢字、仏教などの技術・文化を伝えた人々を何というか。", choices:["渡来人","遣唐使","隼人","蝦夷"], answer:0, note:"大和政権に技術者や役人として仕えた人々も多い。"},
+  {q:"大阪府堺市にある、日本最大の前方後円墳を何というか。", choices:["大仙(大山)古墳","高松塚古墳","石舞台古墳","江田船山古墳"], answer:0, note:"仁徳天皇の墓と伝えられる。"},
+  {q:"607年に聖徳太子が遣隋使として中国に派遣したのはだれか。", choices:["小野妹子","阿倍仲麻呂","犬上御田鍬","中臣鎌足"], answer:0, note:"「日出づる処の天子」で始まる国書を持参したとされる。"},
+  {q:"聖徳太子が家柄によらず能力に応じて役人を登用するために定めた制度を何というか。", choices:["冠位十二階","十七条の憲法","大宝律令","班田収授法"], answer:0, note:"603年に定められた。"},
+  {q:"聖徳太子が役人の心構えを示すために定めた法を何というか。", choices:["御成敗式目","十七条の憲法","大宝律令","武家諸法度"], answer:1, note:"「和を以て貴しとなす」で始まることで知られる。"},
+  {q:"645年、中大兄皇子と中臣鎌足が蘇我氏を倒しておこなった政治改革を何というか。", choices:["大化の改新","建武の新政","承久の乱","壬申の乱"], answer:0, note:"公地公民など天皇中心の中央集権国家をめざした改革。"},
+  {q:"663年、日本(倭)が百済の復興を助けるために唐・新羅の連合軍と戦い、敗北した戦いを何というか。", choices:["白村江の戦い","壇ノ浦の戦い","文永の役","刀伊の入寇"], answer:0, note:"この敗北後、日本は防衛のために九州などに施設を整えた。"},
+  {q:"白村江の戦いのあと、3年間九州北部の防衛にあたった兵役を何というか。", choices:["防人","衛士","雑徭","庸"], answer:0, note:"おもに東国の農民が徴発された。"},
+  {q:"天武天皇の時代に整えられた、6歳以上の人々に口分田をあたえる制度を何というか。", choices:["班田収授法","太閤検地","荘園制","墾田永年私財法"], answer:0, note:"戸籍にもとづいて6年ごとに口分田が分けあたえられた。"},
+  {q:"口分田の収穫の約3%を稲でおさめる税を何というか。", choices:["調","庸","租","雑徭"], answer:2, note:"稲を国司のもとにおさめる税。"},
+  {q:"地方の特産物を都に納める税を何というか。", choices:["租","調","庸","防人"], answer:1, note:"布や特産物などを都まで運んで納めた。"},
+  {q:"701年に定められた、律令にもとづく政治のしくみを何というか。", choices:["大宝律令","御成敗式目","十七条の憲法","武家諸法度"], answer:0, note:"唐の律令にならって定められた。"},
+  {q:"710年、奈良に置かれた都を何というか。", choices:["平城京","平安京","藤原京","難波京"], answer:0, note:"唐の長安にならってつくられた。"},
+  {q:"743年、聖武天皇が開墾した土地の永久私有を認めるために出した法を何というか。", choices:["墾田永年私財法","三世一身法","口分田法","班田収授法"], answer:0, note:"この法により、貴族や寺社の私有地(荘園)が広がるきっかけとなった。"},
+  {q:"聖武天皇が仏教の力で国を治めようと、都に建てさせた寺と大仏を何というか。", choices:["東大寺・大仏","法隆寺・釈迦三尊像","唐招提寺・鑑真像","延暦寺・薬師如来像"], answer:0, note:"国ごとに建てられた国分寺・国分尼寺の中心となった。"},
+  {q:"東大寺にある、聖武天皇の遺品などが納められている宝物庫を何というか。", choices:["正倉院","唐招提寺","法隆寺","薬師寺"], answer:0, note:"シルクロードを通じて伝わった品々も収められている。"},
+  {q:"何度も渡航に失敗しながら来日し、唐招提寺を建てた唐の僧はだれか。", choices:["鑑真","空海","最澄","行基"], answer:0, note:"日本に正式な戒律を伝えた。"},
+  {q:"712年に完成した、日本最古の歴史書を何というか。", choices:["古事記","日本書紀","万葉集","風土記"], answer:0, note:"神話の時代から推古天皇までの出来事がまとめられている。"},
+  {q:"720年に完成した、国家事業として編さんされた歴史書を何というか。", choices:["古事記","日本書紀","風土記","万葉集"], answer:1, note:"編年体で書かれた正式な歴史書。"},
+  {q:"現存する日本最古の和歌集で、天皇から農民まで幅広い身分の歌が収められているものを何というか。", choices:["万葉集","古今和歌集","新古今和歌集","古事記"], answer:0, note:"「貧窮問答歌」もこの歌集に収められている。"},
+  {q:"農民の苦しい生活をよんだ「貧窮問答歌」の作者はだれか。", choices:["山上憶良","柿本人麻呂","大伴家持","紀貫之"], answer:0, note:"奈良時代の農民の暮らしを写実的に描いた歌として知られる。"},
+  {q:"聖武天皇のころに栄えた、遣唐使を通じて伝わった国際色豊かな文化を何というか。", choices:["天平文化","国風文化","飛鳥文化","桃山文化"], answer:0, note:"正倉院の宝物にはシルクロードの影響も見られる。"},
+  {q:"794年、桓武天皇が都を移した京都の都を何というか。", choices:["平安京","平城京","藤原京","長岡京"], answer:0, note:"以後、約400年にわたる平安時代が始まった。"},
+  {q:"894年、菅原道真の提案によって停止された、中国への使節を何というか。", choices:["遣唐使","遣隋使","朝鮮通信使","勘合貿易船"], answer:0, note:"唐の衰退や航海の危険を理由に停止が提案された。"},
+  {q:"娘を天皇のきさきにし、天皇が幼いときは摂政、成人後は関白として実権をにぎった政治を何というか。", choices:["摂関政治","院政","執権政治","太閤政治"], answer:0, note:"藤原氏がこの政治で大きな権力をにぎった。"},
+  {q:"摂関政治の全盛期を築き、「この世をば わが世とぞ思ふ」の歌を詠んだ人物はだれか。", choices:["藤原道長","藤原頼通","藤原良房","藤原不比等"], answer:0, note:"4人の娘を天皇のきさきにし、大きな権力をにぎった。"},
+  {q:"藤原道長の子で、宇治に平等院鳳凰堂を建てたのはだれか。", choices:["藤原頼通","藤原道長","藤原良房","藤原基経"], answer:0, note:"極楽浄土をこの世に表そうとした建築とされる。"},
+  {q:"平安時代中期に発達した、日本の風土や生活に合わせた文化を何というか。", choices:["国風文化","天平文化","北山文化","東山文化"], answer:0, note:"かな文字の発達とともに独自の文化が花開いた。"},
+  {q:"漢字をくずしてつくられた、日本独自の文字を何というか。", choices:["かな文字","甲骨文字","楔形文字","篆書"], answer:0, note:"ひらがな・かたかなの発達により、感情を豊かに表現できるようになった。"},
+  {q:"『源氏物語』を著した人物はだれか。", choices:["紫式部","清少納言","小野小町","和泉式部"], answer:0, note:"かな文字を用いて書かれた長編小説。"},
+  {q:"随筆『枕草子』を著した人物はだれか。", choices:["清少納言","紫式部","菅原孝標女","藤原道綱母"], answer:0, note:"宮廷生活の様子を鋭い感性でつづった随筆。"},
+  {q:"阿弥陀仏を信仰し、念仏を唱えて極楽浄土へのおうじょうを願う信仰を何というか。", choices:["浄土信仰(浄土教)","禅宗","真言宗","天台宗"], answer:0, note:"末法思想の広まりとともに貴族の間で流行した。"},
+  {q:"奥州藤原氏が平泉に建てた、金色に輝く阿弥陀堂を何というか。", choices:["中尊寺金色堂","平等院鳳凰堂","毛越寺","延暦寺"], answer:0, note:"奥州藤原氏の繁栄を示す建築物として世界遺産にも登録されている。"},
+  {q:"9世紀、唐で学び、真言宗を開いたのはだれか。", choices:["空海","最澄","鑑真","行基"], answer:0, note:"高野山に金剛峯寺を建てた。"},
+  {q:"9世紀、唐で学び、天台宗を開いたのはだれか。", choices:["最澄","空海","法然","栄西"], answer:0, note:"比叡山に延暦寺を建てた。"},
+];
+
+let order = [];
+let round = 1;
+let idx = 0;
+let wrongThisRound = [];
+let wrongCounts = {}; // key: question text, count of wrong answers total
+let currentPool = [];
+let answeredCorrectlyOnFirstTry = new Set();
+
+const app = document.getElementById('app');
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function shuffleChoices(q){
+  const idxs = q.choices.map((c,i)=>i);
+  const shuffled = shuffle(idxs);
+  return {
+    text: q.q,
+    note: q.note,
+    choices: shuffled.map(i=>q.choices[i]),
+    answerIndex: shuffled.indexOf(q.answer),
+    origIndex: QUESTIONS.indexOf(q)
+  };
+}
+
+function renderStart(){
+  app.innerHTML = `
+    <div class="card">
+      <div class="stage-list">
+        📘 全${QUESTIONS.length}問<br>
+        🔁 3周してしっかり覚える方式<br>
+        1周目：まず全問チャレンジ<br>
+        2周目：間違えた問題を中心に復習<br>
+        3周目：最終チェック（まだ怪しい問題）
+      </div>
+      <button class="start-btn" onclick="startRound(1)">1周目スタート！</button>
+    </div>
+  `;
+}
+
+function startRound(r){
+  round = r;
+  idx = 0;
+  wrongThisRound = [];
+  if(r===1){
+    currentPool = shuffle(QUESTIONS.slice());
+  } else {
+    currentPool = shuffle(wrongCounts.__poolForRound || []);
+  }
+  if(currentPool.length===0){
+    finishRound();
+    return;
+  }
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const raw = currentPool[idx];
+  const q = shuffleChoices(raw);
+  const total = currentPool.length;
+  const pct = Math.round((idx/total)*100);
+
+  app.innerHTML = `
+    <div class="card">
+      <span class="round-badge">${round}周目</span>
+      <div class="q-count">${idx+1} / ${total} 問</div>
+      <div class="progress-bar-outer"><div class="progress-bar-inner" style="width:${pct}%"></div></div>
+      <div class="question-text">${q.text}</div>
+      <div id="choices"></div>
+      <div class="explain-box" id="explainBox"></div>
+      <button class="next-btn" id="nextBtn">次へ →</button>
+    </div>
+  `;
+
+  const choicesDiv = document.getElementById('choices');
+  q.choices.forEach((c,i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    btn.textContent = c;
+    btn.onclick = ()=>selectAnswer(i, q, raw);
+    choicesDiv.appendChild(btn);
+  });
+}
+
+function selectAnswer(i, q, raw){
+  const buttons = document.querySelectorAll('.choice-btn');
+  buttons.forEach(b=>b.classList.add('disabled'));
+  const correct = i===q.answerIndex;
+
+  buttons[q.answerIndex].classList.add('correct');
+  if(!correct){
+    buttons[i].classList.add('wrong');
+    wrongThisRound.push(raw);
+    wrongCounts[raw.q] = (wrongCounts[raw.q]||0)+1;
+  } else {
+    if(round===1) answeredCorrectlyOnFirstTry.add(raw.q);
+  }
+
+  const explainBox = document.getElementById('explainBox');
+  explainBox.style.display = 'block';
+  explainBox.innerHTML = (correct ? '✅ 正解！ ' : '❌ 不正解… 正解は「'+q.choices[q.answerIndex]+'」') + '<br>' + (q.note||'');
+
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.style.display = 'block';
+  nextBtn.textContent = (idx+1<currentPool.length) ? '次へ →' : `${round}周目の結果を見る`;
+  nextBtn.onclick = ()=>{
+    idx++;
+    if(idx<currentPool.length){
+      renderQuestion();
+    } else {
+      finishRound();
+    }
+  };
+}
+
+function finishRound(){
+  const wrongUnique = [...new Map(wrongThisRound.map(q=>[q.q,q])).values()];
+  wrongCounts.__poolForRound = wrongUnique;
+  wrongCounts.__lastPoolSize = currentPool.length;
+
+  const correctCount = currentPool.length - wrongUnique.length;
+
+  if(round<3 && wrongUnique.length>0){
+    app.innerHTML = `
+      <div class="card" style="text-align:center;">
+        <h2 style="color:#e76f51;">${round}周目 おつかれさま！</h2>
+        <div class="result-score">${correctCount} / ${currentPool.length}</div>
+        <p style="margin-bottom:14px;">間違えた ${wrongUnique.length} 問を中心に、次の周でもう一度チェックしよう！</p>
+        <button class="primary-btn" onclick="startRound(${round+1})">${round+1}周目へ進む</button>
+      </div>
+    `;
+  } else if(round<3 && wrongUnique.length===0){
+    app.innerHTML = `
+      <div class="card" style="text-align:center;">
+        <h2 style="color:#52b788;">${round}周目 パーフェクト！🎉</h2>
+        <p>間違いなし！このまま最後まで確認しよう。</p>
+        <button class="primary-btn" onclick="startRound(${round+1})">${round+1}周目へ進む</button>
+      </div>
+    `;
+  } else {
+    renderFinalResult(wrongUnique, correctCount);
+  }
+}
+
+function renderFinalResult(wrongUnique, correctCount){
+  let weakHtml = '';
+  if(wrongUnique.length>0){
+    weakHtml = `<div class="weak-list"><b>まだ怪しい問題（もう一回見直そう）</b><br>` +
+      wrongUnique.map(q=>'・'+q.q).join('<br>') + `</div>`;
+  } else {
+    weakHtml = `<div class="weak-list">🎉 弱点なし！バッチリ覚えられたで！</div>`;
+  }
+
+  app.innerHTML = `
+    <div class="card" style="text-align:center;">
+      <h2 style="color:#e76f51;">3周 完了！お疲れさま🎊</h2>
+      <div class="result-score">${correctCount} / ${(wrongCounts.__lastPoolSize||QUESTIONS.length)}</div>
+      ${weakHtml}
+      <button class="primary-btn" onclick="resetAll()">もう一度最初から</button>
+    </div>
+  `;
+}
+
+function resetAll(){
+  wrongCounts = {};
+  answeredCorrectlyOnFirstTry = new Set();
+  renderStart();
+}
+
+renderStart();
+</script>
+</body>
+</html>
