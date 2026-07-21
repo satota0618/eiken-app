@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>原始時代 〜旧石器・縄文・弥生時代〜</title>
+<style>
+  * { box-sizing: border-box; margin:0; padding:0; }
+  body {
+    font-family: "Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",sans-serif;
+    background: linear-gradient(135deg,#fef6e4 0%,#fde2e4 50%,#e2ece9 100%);
+    min-height: 100vh;
+    padding: 16px;
+    color: #3a2e2e;
+  }
+  .wrap { max-width: 560px; margin: 0 auto; }
+  header {
+    text-align:center;
+    margin-bottom: 16px;
+  }
+  header h1 {
+    font-size: 20px;
+    color: #a0522d;
+    line-height:1.4;
+  }
+  header p { font-size: 13px; color:#7a6a5f; margin-top:4px; }
+
+  .card {
+    background: #fffdf8;
+    border-radius: 18px;
+    box-shadow: 0 6px 18px rgba(160,82,45,0.15);
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+
+  .round-badge {
+    display:inline-block;
+    background:#f4a261;
+    color:#fff;
+    font-size:13px;
+    font-weight:bold;
+    padding:4px 14px;
+    border-radius:20px;
+    margin-bottom:10px;
+  }
+  .progress-bar-outer {
+    background:#eee;
+    border-radius:20px;
+    height:10px;
+    overflow:hidden;
+    margin: 10px 0 16px;
+  }
+  .progress-bar-inner {
+    background: linear-gradient(90deg,#f4a261,#e76f51);
+    height:100%;
+    width:0%;
+    transition: width 0.3s ease;
+  }
+  .q-count { text-align:right; font-size:12px; color:#999; margin-bottom:4px; }
+
+  .question-text {
+    font-size: 17px;
+    line-height:1.7;
+    margin-bottom: 18px;
+    font-weight:bold;
+    white-space:pre-wrap;
+  }
+  .choice-btn {
+    display:block;
+    width:100%;
+    text-align:left;
+    background:#fff;
+    border: 2px solid #e8d5c4;
+    border-radius:12px;
+    padding: 13px 16px;
+    margin-bottom:10px;
+    font-size:16px;
+    color:#3a2e2e;
+    cursor:pointer;
+    transition: all 0.15s;
+  }
+  .choice-btn:active { transform: scale(0.98); }
+  .choice-btn.correct { background:#d8f3dc; border-color:#52b788; }
+  .choice-btn.wrong { background:#ffd6d6; border-color:#e63946; }
+  .choice-btn.disabled { pointer-events:none; opacity:0.75; }
+
+  .explain-box {
+    display:none;
+    margin-top:14px;
+    background:#f1f8f5;
+    border-left: 4px solid #52b788;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size:14px;
+    line-height:1.6;
+  }
+  .next-btn {
+    display:none;
+    width:100%;
+    margin-top:14px;
+    background:#e76f51;
+    color:#fff;
+    border:none;
+    border-radius:12px;
+    padding:14px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+  }
+
+  .start-btn, .primary-btn {
+    display:block;
+    width:100%;
+    background:#e76f51;
+    color:#fff;
+    border:none;
+    border-radius:14px;
+    padding:16px;
+    font-size:17px;
+    font-weight:bold;
+    cursor:pointer;
+    margin-top: 8px;
+  }
+  .secondary-btn {
+    display:block;
+    width:100%;
+    background:#fff;
+    color:#e76f51;
+    border:2px solid #e76f51;
+    border-radius:14px;
+    padding:14px;
+    font-size:15px;
+    font-weight:bold;
+    cursor:pointer;
+    margin-top:10px;
+  }
+
+  .stage-list { font-size:14px; line-height:2; color:#5a4a3f; }
+  .result-score {
+    text-align:center;
+    font-size: 40px;
+    font-weight:bold;
+    color:#e76f51;
+    margin: 10px 0;
+  }
+  .weak-list {
+    background:#fff5f0;
+    border-radius:10px;
+    padding: 12px 14px;
+    margin-top: 12px;
+    font-size:14px;
+    line-height:1.9;
+  }
+  .weak-list b { color:#c1440e; }
+  footer { text-align:center; font-size:11px; color:#aaa; margin-top:20px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>原始時代<br>〜旧石器・縄文・弥生時代〜</h1>
+    <p>3周してしっかり定着させよう！</p>
+  </header>
+
+  <div id="app"></div>
+
+  <footer>第1回 原始時代 対応</footer>
+</div>
+
+<script>
+const QUESTIONS = [
+  {q:"旧石器時代を代表する、石を打ち欠いてつくった道具を何というか。", choices:["打製石器","磨製石器","青銅器","鉄器"], answer:0, note:"表面をするどく打ち欠いてつくった石器。"},
+  {q:"群馬県の岩宿遺跡で打製石器を発見し、日本にも旧石器時代があったことを明らかにした人物はだれか。", choices:["相沢忠洋","モース","シュリーマン","フォッサマグナ"], answer:0, note:"1946年、関東ローム層の中から打製石器を発見した。"},
+  {q:"縄文時代につくられた、表面に縄目の文様がある厚手の土器を何というか。", choices:["弥生土器","縄文土器","須恵器","土師器"], answer:1, note:"縄文時代の名前の由来にもなった土器。"},
+  {q:"縄文時代に、石をみがいてつくられた石器を何というか。", choices:["打製石器","磨製石器","青銅器","鉄器"], answer:1, note:"打製石器に比べて丈夫で使いやすかった。"},
+  {q:"縄文時代の人々が住んだ、地面を掘り下げてつくられた住居を何というか。", choices:["高床倉庫","竪穴住居","校倉造","寝殿造"], answer:1, note:"地面を掘り下げ、柱を立てて屋根をふいた住居。"},
+  {q:"縄文時代の人々が貝がらや魚・動物の骨などを捨てた場所を何というか。", choices:["古墳","貝塚","環濠","高床倉庫"], answer:1, note:"当時の人々の生活の様子を知る手がかりとなる。"},
+  {q:"縄文時代につくられた、豊作や魔よけなどのためにつくられたと考えられている土製の人形を何というか。", choices:["埴輪","土偶","須恵器","銅鐸"], answer:1, note:"女性をかたどったものが多いとされる。"},
+  {q:"縄文時代の大型集落跡で、青森県に位置する遺跡を何というか。", choices:["三内丸山遺跡","登呂遺跡","吉野ヶ里遺跡","板付遺跡"], answer:0, note:"多くの竪穴住居や大型建物のあとが発見された。"},
+  {q:"明治時代に大森貝塚を発見したアメリカ人の学者はだれか。", choices:["モース(エドワード=モース)","フェノロサ","シュリーマン","ペリー"], answer:0, note:"日本の考古学研究のきっかけをつくった人物。"},
+  {q:"弥生時代につくられた、縄文土器よりうすくてかたい土器を何というか。", choices:["縄文土器","弥生土器","須恵器","土師器"], answer:1, note:"稲作の広まりとともに使われるようになった土器。"},
+  {q:"弥生時代、稲穂などを保管するために建てられた、床を高くした倉庫を何というか。", choices:["竪穴住居","高床倉庫","校倉造","正倉院"], answer:1, note:"湿気やねずみの害を防ぐために床が高くつくられた。"},
+  {q:"弥生時代、稲かりに使われた石器を何というか。", choices:["石包丁","打製石器","磨製石斧","石皿"], answer:0, note:"稲の穂先を摘み取るために使われた。"},
+  {q:"弥生時代、祭りの道具として用いられた青銅器を何というか。", choices:["銅鏡","銅鐸","銅剣","銅矛"], answer:1, note:"つり鐘のような形をした青銅器で、豊作を祈る祭りに使われたと考えられている。"},
+  {q:"縄文時代末期から弥生時代初期の水田や集落跡が残っている、静岡県の遺跡を何というか。", choices:["三内丸山遺跡","登呂遺跡","吉野ヶ里遺跡","板付遺跡"], answer:1, note:"弥生時代の水田跡がよく保存されている遺跡。"},
+  {q:"弥生時代の環濠集落跡で、佐賀県に位置する遺跡を何というか。", choices:["三内丸山遺跡","登呂遺跡","吉野ヶ里遺跡","板付遺跡"], answer:2, note:"周囲を堀やさくで囲んだ環濠集落として知られる。"},
+  {q:"奴国の王が中国からさずけられたとされる金印が出土した、福岡県の島はどこか。", choices:["志賀島","対馬","壱岐","種子島"], answer:0, note:"「漢委奴国王」と刻まれた金印が発見された。"},
+  {q:"3世紀ごろ、30ほどの小国を従えていた国を何というか。", choices:["奴国","邪馬台国","伊都国","狗奴国"], answer:1, note:"中国の歴史書『魏志』倭人伝に記されている国。"},
+  {q:"邪馬台国を治めていた女王はだれか。", choices:["卑弥呼","持統天皇","推古天皇","神功皇后"], answer:0, note:"占いやまじないによって政治をおこなったと伝えられる。"},
+];
+
+let order = [];
+let round = 1;
+let idx = 0;
+let wrongThisRound = [];
+let wrongCounts = {}; // key: question text, count of wrong answers total
+let currentPool = [];
+let answeredCorrectlyOnFirstTry = new Set();
+
+const app = document.getElementById('app');
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function shuffleChoices(q){
+  const idxs = q.choices.map((c,i)=>i);
+  const shuffled = shuffle(idxs);
+  return {
+    text: q.q,
+    note: q.note,
+    choices: shuffled.map(i=>q.choices[i]),
+    answerIndex: shuffled.indexOf(q.answer),
+    origIndex: QUESTIONS.indexOf(q)
+  };
+}
+
+function renderStart(){
+  app.innerHTML = `
+    <div class="card">
+      <div class="stage-list">
+        📘 全${QUESTIONS.length}問<br>
+        🔁 3周してしっかり覚える方式<br>
+        1周目：まず全問チャレンジ<br>
+        2周目：間違えた問題を中心に復習<br>
+        3周目：最終チェック（まだ怪しい問題）
+      </div>
+      <button class="start-btn" onclick="startRound(1)">1周目スタート！</button>
+    </div>
+  `;
+}
+
+function startRound(r){
+  round = r;
+  idx = 0;
+  wrongThisRound = [];
+  if(r===1){
+    currentPool = shuffle(QUESTIONS.slice());
+  } else {
+    currentPool = shuffle(wrongCounts.__poolForRound || []);
+  }
+  if(currentPool.length===0){
+    finishRound();
+    return;
+  }
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const raw = currentPool[idx];
+  const q = shuffleChoices(raw);
+  const total = currentPool.length;
+  const pct = Math.round((idx/total)*100);
+
+  app.innerHTML = `
+    <div class="card">
+      <span class="round-badge">${round}周目</span>
+      <div class="q-count">${idx+1} / ${total} 問</div>
+      <div class="progress-bar-outer"><div class="progress-bar-inner" style="width:${pct}%"></div></div>
+      <div class="question-text">${q.text}</div>
+      <div id="choices"></div>
+      <div class="explain-box" id="explainBox"></div>
+      <button class="next-btn" id="nextBtn">次へ →</button>
+    </div>
+  `;
+
+  const choicesDiv = document.getElementById('choices');
+  q.choices.forEach((c,i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    btn.textContent = c;
+    btn.onclick = ()=>selectAnswer(i, q, raw);
+    choicesDiv.appendChild(btn);
+  });
+}
+
+function selectAnswer(i, q, raw){
+  const buttons = document.querySelectorAll('.choice-btn');
+  buttons.forEach(b=>b.classList.add('disabled'));
+  const correct = i===q.answerIndex;
+
+  buttons[q.answerIndex].classList.add('correct');
+  if(!correct){
+    buttons[i].classList.add('wrong');
+    wrongThisRound.push(raw);
+    wrongCounts[raw.q] = (wrongCounts[raw.q]||0)+1;
+  } else {
+    if(round===1) answeredCorrectlyOnFirstTry.add(raw.q);
+  }
+
+  const explainBox = document.getElementById('explainBox');
+  explainBox.style.display = 'block';
+  explainBox.innerHTML = (correct ? '✅ 正解！ ' : '❌ 不正解… 正解は「'+q.choices[q.answerIndex]+'」') + '<br>' + (q.note||'');
+
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.style.display = 'block';
+  nextBtn.textContent = (idx+1<currentPool.length) ? '次へ →' : `${round}周目の結果を見る`;
+  nextBtn.onclick = ()=>{
+    idx++;
+    if(idx<currentPool.length){
+      renderQuestion();
+    } else {
+      finishRound();
+    }
+  };
+}
+
+function finishRound(){
+  const wrongUnique = [...new Map(wrongThisRound.map(q=>[q.q,q])).values()];
+  wrongCounts.__poolForRound = wrongUnique;
+  wrongCounts.__lastPoolSize = currentPool.length;
+
+  const correctCount = currentPool.length - wrongUnique.length;
+
+  if(round<3 && wrongUnique.length>0){
+    app.innerHTML = `
+      <div class="card" style="text-align:center;">
+        <h2 style="color:#e76f51;">${round}周目 おつかれさま！</h2>
+        <div class="result-score">${correctCount} / ${currentPool.length}</div>
+        <p style="margin-bottom:14px;">間違えた ${wrongUnique.length} 問を中心に、次の周でもう一度チェックしよう！</p>
+        <button class="primary-btn" onclick="startRound(${round+1})">${round+1}周目へ進む</button>
+      </div>
+    `;
+  } else if(round<3 && wrongUnique.length===0){
+    app.innerHTML = `
+      <div class="card" style="text-align:center;">
+        <h2 style="color:#52b788;">${round}周目 パーフェクト！🎉</h2>
+        <p>間違いなし！このまま最後まで確認しよう。</p>
+        <button class="primary-btn" onclick="startRound(${round+1})">${round+1}周目へ進む</button>
+      </div>
+    `;
+  } else {
+    renderFinalResult(wrongUnique, correctCount);
+  }
+}
+
+function renderFinalResult(wrongUnique, correctCount){
+  let weakHtml = '';
+  if(wrongUnique.length>0){
+    weakHtml = `<div class="weak-list"><b>まだ怪しい問題（もう一回見直そう）</b><br>` +
+      wrongUnique.map(q=>'・'+q.q).join('<br>') + `</div>`;
+  } else {
+    weakHtml = `<div class="weak-list">🎉 弱点なし！バッチリ覚えられたで！</div>`;
+  }
+
+  app.innerHTML = `
+    <div class="card" style="text-align:center;">
+      <h2 style="color:#e76f51;">3周 完了！お疲れさま🎊</h2>
+      <div class="result-score">${correctCount} / ${(wrongCounts.__lastPoolSize||QUESTIONS.length)}</div>
+      ${weakHtml}
+      <button class="primary-btn" onclick="resetAll()">もう一度最初から</button>
+    </div>
+  `;
+}
+
+function resetAll(){
+  wrongCounts = {};
+  answeredCorrectlyOnFirstTry = new Set();
+  renderStart();
+}
+
+renderStart();
+</script>
+</body>
+</html>
