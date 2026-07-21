@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>古代〜中世の政治史 〜平安京から平氏政権まで〜</title>
+<style>
+  * { box-sizing: border-box; margin:0; padding:0; }
+  body {
+    font-family: "Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",sans-serif;
+    background: linear-gradient(135deg,#fef6e4 0%,#fde2e4 50%,#e2ece9 100%);
+    min-height: 100vh;
+    padding: 16px;
+    color: #3a2e2e;
+  }
+  .wrap { max-width: 560px; margin: 0 auto; }
+  header {
+    text-align:center;
+    margin-bottom: 16px;
+  }
+  header h1 {
+    font-size: 20px;
+    color: #a0522d;
+    line-height:1.4;
+  }
+  header p { font-size: 13px; color:#7a6a5f; margin-top:4px; }
+
+  .card {
+    background: #fffdf8;
+    border-radius: 18px;
+    box-shadow: 0 6px 18px rgba(160,82,45,0.15);
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+
+  .round-badge {
+    display:inline-block;
+    background:#f4a261;
+    color:#fff;
+    font-size:13px;
+    font-weight:bold;
+    padding:4px 14px;
+    border-radius:20px;
+    margin-bottom:10px;
+  }
+  .progress-bar-outer {
+    background:#eee;
+    border-radius:20px;
+    height:10px;
+    overflow:hidden;
+    margin: 10px 0 16px;
+  }
+  .progress-bar-inner {
+    background: linear-gradient(90deg,#f4a261,#e76f51);
+    height:100%;
+    width:0%;
+    transition: width 0.3s ease;
+  }
+  .q-count { text-align:right; font-size:12px; color:#999; margin-bottom:4px; }
+
+  .question-text {
+    font-size: 17px;
+    line-height:1.7;
+    margin-bottom: 18px;
+    font-weight:bold;
+    white-space:pre-wrap;
+  }
+  .choice-btn {
+    display:block;
+    width:100%;
+    text-align:left;
+    background:#fff;
+    border: 2px solid #e8d5c4;
+    border-radius:12px;
+    padding: 13px 16px;
+    margin-bottom:10px;
+    font-size:16px;
+    color:#3a2e2e;
+    cursor:pointer;
+    transition: all 0.15s;
+  }
+  .choice-btn:active { transform: scale(0.98); }
+  .choice-btn.correct { background:#d8f3dc; border-color:#52b788; }
+  .choice-btn.wrong { background:#ffd6d6; border-color:#e63946; }
+  .choice-btn.disabled { pointer-events:none; opacity:0.75; }
+
+  .explain-box {
+    display:none;
+    margin-top:14px;
+    background:#f1f8f5;
+    border-left: 4px solid #52b788;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size:14px;
+    line-height:1.6;
+  }
+  .next-btn {
+    display:none;
+    width:100%;
+    margin-top:14px;
+    background:#e76f51;
+    color:#fff;
+    border:none;
+    border-radius:12px;
+    padding:14px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+  }
+
+  .start-btn, .primary-btn {
+    display:block;
+    width:100%;
+    background:#e76f51;
+    color:#fff;
+    border:none;
+    border-radius:14px;
+    padding:16px;
+    font-size:17px;
+    font-weight:bold;
+    cursor:pointer;
+    margin-top: 8px;
+  }
+  .secondary-btn {
+    display:block;
+    width:100%;
+    background:#fff;
+    color:#e76f51;
+    border:2px solid #e76f51;
+    border-radius:14px;
+    padding:14px;
+    font-size:15px;
+    font-weight:bold;
+    cursor:pointer;
+    margin-top:10px;
+  }
+
+  .stage-list { font-size:14px; line-height:2; color:#5a4a3f; }
+  .result-score {
+    text-align:center;
+    font-size: 40px;
+    font-weight:bold;
+    color:#e76f51;
+    margin: 10px 0;
+  }
+  .weak-list {
+    background:#fff5f0;
+    border-radius:10px;
+    padding: 12px 14px;
+    margin-top: 12px;
+    font-size:14px;
+    line-height:1.9;
+  }
+  .weak-list b { color:#c1440e; }
+  footer { text-align:center; font-size:11px; color:#aaa; margin-top:20px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>古代〜中世の政治史<br>〜平安京から平氏政権まで〜</h1>
+    <p>3周してしっかり定着させよう！</p>
+  </header>
+
+  <div id="app"></div>
+
+  <footer>第3回 古代の政治史 対応</footer>
+</div>
+
+<script>
+const QUESTIONS = [
+  {q:"794年、桓武天皇が京都に移した都を何というか。", choices:["平安京","平城京","藤原京","長岡京"], answer:0, note:"以後、約400年にわたる平安時代が始まった。"},
+  {q:"東北地方に住み、朝廷の支配に従わなかった人々は何とよばれたか。", choices:["蝦夷","隼人","国人","渡来人"], answer:0, note:"坂上田村麻呂らによって朝廷は東北への支配を広げていった。"},
+  {q:"桓武天皇が蝦夷を平定するために坂上田村麻呂を任じた役職を何というか。", choices:["征夷大将軍","関白","太政大臣","摂政"], answer:0, note:"坂上田村麻呂は胆沢城などを築き、東北支配を進めた。"},
+  {q:"唐へ留学し、真言宗を開いた僧はだれか。", choices:["空海","最澄","鑑真","行基"], answer:0, note:"高野山に金剛峯寺を建てた。"},
+  {q:"空海が出身地の讃岐国で改修をおこなった、ため池を何というか。", choices:["満濃池","琵琶湖","猪苗代湖","狭山池"], answer:0, note:"讃岐国(香川県)にある大きなため池。"},
+  {q:"天皇が幼いときに、天皇に代わって政治をおこなう役職を何というか。", choices:["摂政","関白","執権","征夷大将軍"], answer:0, note:"藤原氏がこの役職を独占するようになった。"},
+  {q:"藤原氏がむすめを天皇のきさきにし、摂政・関白として実権をにぎった政治を何というか。", choices:["摂関政治","院政","執権政治","太閤政治"], answer:0, note:"藤原氏はこの政治で大きな権力をにぎった。"},
+  {q:"摂関政治の全盛期を築いた父子のうち、父にあたる人物はだれか。", choices:["藤原道長","藤原頼通","藤原良房","藤原基経"], answer:0, note:"4人のむすめを天皇のきさきにし、大きな権力をにぎった。"},
+  {q:"藤原道長の子で、摂関政治の全盛期を引き継いだ人物はだれか。", choices:["藤原頼通","藤原道長","藤原良房","藤原基経"], answer:0, note:"宇治に平等院鳳凰堂を建てたことでも知られる。"},
+  {q:"自らを「新皇」と名乗り、関東地方で乱を起こしたのはだれか。", choices:["平将門","藤原純友","源義家","平清盛"], answer:0, note:"935年に反乱を起こしたが、まもなくしずめられた。"},
+  {q:"藤原純友が瀬戸内海一帯で起こした反乱をあわせて、平将門の乱と何とよばれているか。", choices:["承平・天慶の乱","保元・平治の乱","前九年・後三年の役","応仁の乱"], answer:0, note:"どちらも武士の力の高まりを示す出来事であった。"},
+  {q:"11世紀に東北地方で起こった戦乱をしずめ、東国で勢力をのばした武士団は何氏か。", choices:["源氏","平氏","藤原氏","橘氏"], answer:0, note:"前九年の役・後三年の役をしずめて東国に勢力を広げた。"},
+  {q:"前九年・後三年の役ののち、東北地方で栄えた一族を何というか。", choices:["奥州藤原氏","蝦夷","国人","守護大名"], answer:0, note:"平泉を拠点に大きな勢力を築いた。"},
+  {q:"1086年、天皇の位をゆずって上皇となり、天皇に代わって政治の実権をにぎった政治形態を何というか。", choices:["院政","摂関政治","執権政治","太閤政治"], answer:0, note:"白河上皇が始めた政治の形態。"},
+  {q:"奥州藤原氏が東北地方で栄えた本拠地はどこか。", choices:["平泉","多賀城","鎌倉","太宰府"], answer:0, note:"中尊寺金色堂が建てられたことで知られる。"},
+  {q:"要求をかかげて大人数で朝廷におしよせ、武装した僧を何というか。", choices:["僧兵","武士","国人","地侍"], answer:0, note:"延暦寺や興福寺などの大寺院が僧兵をかかえた。"},
+  {q:"1156年、鳥羽法皇の死後、上皇と天皇の対立などから京都で起こった戦乱を何というか。", choices:["保元の乱","平治の乱","承久の乱","応仁の乱"], answer:0, note:"この乱に源氏・平氏の武士が動員された。"},
+  {q:"1159年、平治の乱で源義朝を破り、政治の実権をにぎった武士はだれか。", choices:["平清盛","源頼朝","藤原道長","足利尊氏"], answer:0, note:"平治の乱に勝利し、平氏政権を確立した。"},
+  {q:"1167年、平清盛が武士として初めて任じられた、朝廷内の最高の役職を何というか。", choices:["太政大臣","征夷大将軍","関白","摂政"], answer:0, note:"武士として初めてこの職についた。"},
+  {q:"平氏の繁栄と航海の安全を祈願して、平清盛が整備した神社を何というか。", choices:["厳島神社","伊勢神宮","出雲大社","八幡宮"], answer:0, note:"瀬戸内海に浮かぶ神社として知られる。"},
+];
+
+let order = [];
+let round = 1;
+let idx = 0;
+let wrongThisRound = [];
+let wrongCounts = {}; // key: question text, count of wrong answers total
+let currentPool = [];
+let answeredCorrectlyOnFirstTry = new Set();
+
+const app = document.getElementById('app');
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function shuffleChoices(q){
+  const idxs = q.choices.map((c,i)=>i);
+  const shuffled = shuffle(idxs);
+  return {
+    text: q.q,
+    note: q.note,
+    choices: shuffled.map(i=>q.choices[i]),
+    answerIndex: shuffled.indexOf(q.answer),
+    origIndex: QUESTIONS.indexOf(q)
+  };
+}
+
+function renderStart(){
+  app.innerHTML = `
+    <div class="card">
+      <div class="stage-list">
+        📘 全${QUESTIONS.length}問<br>
+        🔁 3周してしっかり覚える方式<br>
+        1周目：まず全問チャレンジ<br>
+        2周目：間違えた問題を中心に復習<br>
+        3周目：最終チェック（まだ怪しい問題）
+      </div>
+      <button class="start-btn" onclick="startRound(1)">1周目スタート！</button>
+    </div>
+  `;
+}
+
+function startRound(r){
+  round = r;
+  idx = 0;
+  wrongThisRound = [];
+  if(r===1){
+    currentPool = shuffle(QUESTIONS.slice());
+  } else {
+    currentPool = shuffle(wrongCounts.__poolForRound || []);
+  }
+  if(currentPool.length===0){
+    finishRound();
+    return;
+  }
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const raw = currentPool[idx];
+  const q = shuffleChoices(raw);
+  const total = currentPool.length;
+  const pct = Math.round((idx/total)*100);
+
+  app.innerHTML = `
+    <div class="card">
+      <span class="round-badge">${round}周目</span>
+      <div class="q-count">${idx+1} / ${total} 問</div>
+      <div class="progress-bar-outer"><div class="progress-bar-inner" style="width:${pct}%"></div></div>
+      <div class="question-text">${q.text}</div>
+      <div id="choices"></div>
+      <div class="explain-box" id="explainBox"></div>
+      <button class="next-btn" id="nextBtn">次へ →</button>
+    </div>
+  `;
+
+  const choicesDiv = document.getElementById('choices');
+  q.choices.forEach((c,i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    btn.textContent = c;
+    btn.onclick = ()=>selectAnswer(i, q, raw);
+    choicesDiv.appendChild(btn);
+  });
+}
+
+function selectAnswer(i, q, raw){
+  const buttons = document.querySelectorAll('.choice-btn');
+  buttons.forEach(b=>b.classList.add('disabled'));
+  const correct = i===q.answerIndex;
+
+  buttons[q.answerIndex].classList.add('correct');
+  if(!correct){
+    buttons[i].classList.add('wrong');
+    wrongThisRound.push(raw);
+    wrongCounts[raw.q] = (wrongCounts[raw.q]||0)+1;
+  } else {
+    if(round===1) answeredCorrectlyOnFirstTry.add(raw.q);
+  }
+
+  const explainBox = document.getElementById('explainBox');
+  explainBox.style.display = 'block';
+  explainBox.innerHTML = (correct ? '✅ 正解！ ' : '❌ 不正解… 正解は「'+q.choices[q.answerIndex]+'」') + '<br>' + (q.note||'');
+
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.style.display = 'block';
+  nextBtn.textContent = (idx+1<currentPool.length) ? '次へ →' : `${round}周目の結果を見る`;
+  nextBtn.onclick = ()=>{
+    idx++;
+    if(idx<currentPool.length){
+      renderQuestion();
+    } else {
+      finishRound();
+    }
+  };
+}
+
+function finishRound(){
+  const wrongUnique = [...new Map(wrongThisRound.map(q=>[q.q,q])).values()];
+  wrongCounts.__poolForRound = wrongUnique;
+  wrongCounts.__lastPoolSize = currentPool.length;
+
+  const correctCount = currentPool.length - wrongUnique.length;
+
+  if(round<3 && wrongUnique.length>0){
+    app.innerHTML = `
+      <div class="card" style="text-align:center;">
+        <h2 style="color:#e76f51;">${round}周目 おつかれさま！</h2>
+        <div class="result-score">${correctCount} / ${currentPool.length}</div>
+        <p style="margin-bottom:14px;">間違えた ${wrongUnique.length} 問を中心に、次の周でもう一度チェックしよう！</p>
+        <button class="primary-btn" onclick="startRound(${round+1})">${round+1}周目へ進む</button>
+      </div>
+    `;
+  } else if(round<3 && wrongUnique.length===0){
+    app.innerHTML = `
+      <div class="card" style="text-align:center;">
+        <h2 style="color:#52b788;">${round}周目 パーフェクト！🎉</h2>
+        <p>間違いなし！このまま最後まで確認しよう。</p>
+        <button class="primary-btn" onclick="startRound(${round+1})">${round+1}周目へ進む</button>
+      </div>
+    `;
+  } else {
+    renderFinalResult(wrongUnique, correctCount);
+  }
+}
+
+function renderFinalResult(wrongUnique, correctCount){
+  let weakHtml = '';
+  if(wrongUnique.length>0){
+    weakHtml = `<div class="weak-list"><b>まだ怪しい問題（もう一回見直そう）</b><br>` +
+      wrongUnique.map(q=>'・'+q.q).join('<br>') + `</div>`;
+  } else {
+    weakHtml = `<div class="weak-list">🎉 弱点なし！バッチリ覚えられたで！</div>`;
+  }
+
+  app.innerHTML = `
+    <div class="card" style="text-align:center;">
+      <h2 style="color:#e76f51;">3周 完了！お疲れさま🎊</h2>
+      <div class="result-score">${correctCount} / ${(wrongCounts.__lastPoolSize||QUESTIONS.length)}</div>
+      ${weakHtml}
+      <button class="primary-btn" onclick="resetAll()">もう一度最初から</button>
+    </div>
+  `;
+}
+
+function resetAll(){
+  wrongCounts = {};
+  answeredCorrectlyOnFirstTry = new Set();
+  renderStart();
+}
+
+renderStart();
+</script>
+</body>
+</html>
