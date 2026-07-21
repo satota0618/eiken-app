@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>国際社会の諸問題 〜世界と日本〜</title>
+<style>
+  * { box-sizing: border-box; margin:0; padding:0; }
+  body {
+    font-family: "Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",sans-serif;
+    background: linear-gradient(135deg,#fef6e4 0%,#fde2e4 50%,#e2ece9 100%);
+    min-height: 100vh;
+    padding: 16px;
+    color: #3a2e2e;
+  }
+  .wrap { max-width: 560px; margin: 0 auto; }
+  header {
+    text-align:center;
+    margin-bottom: 16px;
+  }
+  header h1 {
+    font-size: 20px;
+    color: #a0522d;
+    line-height:1.4;
+  }
+  header p { font-size: 13px; color:#7a6a5f; margin-top:4px; }
+
+  .card {
+    background: #fffdf8;
+    border-radius: 18px;
+    box-shadow: 0 6px 18px rgba(160,82,45,0.15);
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+
+  .round-badge {
+    display:inline-block;
+    background:#f4a261;
+    color:#fff;
+    font-size:13px;
+    font-weight:bold;
+    padding:4px 14px;
+    border-radius:20px;
+    margin-bottom:10px;
+  }
+  .progress-bar-outer {
+    background:#eee;
+    border-radius:20px;
+    height:10px;
+    overflow:hidden;
+    margin: 10px 0 16px;
+  }
+  .progress-bar-inner {
+    background: linear-gradient(90deg,#f4a261,#e76f51);
+    height:100%;
+    width:0%;
+    transition: width 0.3s ease;
+  }
+  .q-count { text-align:right; font-size:12px; color:#999; margin-bottom:4px; }
+
+  .question-text {
+    font-size: 17px;
+    line-height:1.7;
+    margin-bottom: 18px;
+    font-weight:bold;
+    white-space:pre-wrap;
+  }
+  .choice-btn {
+    display:block;
+    width:100%;
+    text-align:left;
+    background:#fff;
+    border: 2px solid #e8d5c4;
+    border-radius:12px;
+    padding: 13px 16px;
+    margin-bottom:10px;
+    font-size:16px;
+    color:#3a2e2e;
+    cursor:pointer;
+    transition: all 0.15s;
+  }
+  .choice-btn:active { transform: scale(0.98); }
+  .choice-btn.correct { background:#d8f3dc; border-color:#52b788; }
+  .choice-btn.wrong { background:#ffd6d6; border-color:#e63946; }
+  .choice-btn.disabled { pointer-events:none; opacity:0.75; }
+
+  .explain-box {
+    display:none;
+    margin-top:14px;
+    background:#f1f8f5;
+    border-left: 4px solid #52b788;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size:14px;
+    line-height:1.6;
+  }
+  .next-btn {
+    display:none;
+    width:100%;
+    margin-top:14px;
+    background:#e76f51;
+    color:#fff;
+    border:none;
+    border-radius:12px;
+    padding:14px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+  }
+
+  .start-btn, .primary-btn {
+    display:block;
+    width:100%;
+    background:#e76f51;
+    color:#fff;
+    border:none;
+    border-radius:14px;
+    padding:16px;
+    font-size:17px;
+    font-weight:bold;
+    cursor:pointer;
+    margin-top: 8px;
+  }
+  .secondary-btn {
+    display:block;
+    width:100%;
+    background:#fff;
+    color:#e76f51;
+    border:2px solid #e76f51;
+    border-radius:14px;
+    padding:14px;
+    font-size:15px;
+    font-weight:bold;
+    cursor:pointer;
+    margin-top:10px;
+  }
+
+  .stage-list { font-size:14px; line-height:2; color:#5a4a3f; }
+  .result-score {
+    text-align:center;
+    font-size: 40px;
+    font-weight:bold;
+    color:#e76f51;
+    margin: 10px 0;
+  }
+  .weak-list {
+    background:#fff5f0;
+    border-radius:10px;
+    padding: 12px 14px;
+    margin-top: 12px;
+    font-size:14px;
+    line-height:1.9;
+  }
+  .weak-list b { color:#c1440e; }
+  footer { text-align:center; font-size:11px; color:#aaa; margin-top:20px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>国際社会の諸問題<br>〜世界と日本〜</h1>
+    <p>3周してしっかり定着させよう！</p>
+  </header>
+
+  <div id="app"></div>
+
+  <footer>第8章 国際社会の諸問題 対応</footer>
+</div>
+
+<script>
+const QUESTIONS = [
+  {q:"湾岸戦争は、イラクがどこの国に侵攻したことがきっかけでおこったか。", choices:["クウェート","サウジアラビア","イラン","シリア"], answer:0, note:"1991年、イラクのクウェート侵攻をきっかけに多国籍軍が介入した。"},
+  {q:"2001年9月に同時多発テロがおこったアメリカが「テロとの戦い」を唱え、同じ年に攻撃した西アジアの国はどこか。", choices:["イラク","アフガニスタン","イラン","シリア"], answer:1, note:"アメリカはテロ組織をかくまったとしてアフガニスタンを攻撃した。"},
+  {q:"核兵器や化学兵器などの大量破壊兵器を廃絶し、戦争や紛争を防いで平和と安全を実現するという取り組みを何というか。", choices:["軍縮(軍備縮小)","集団安全保障","冷戦","非武装中立"], answer:0, note:"核兵器や通常兵器の削減・廃絶を目指す取り組み。"},
+  {q:"アメリカ、ロシア、イギリス、フランス、中国以外の国が核兵器をもつことを禁止した条約を何というか。", choices:["部分的核実験禁止条約","核拡散防止条約(NPT)","包括的核実験禁止条約","中距離核戦力全廃条約"], answer:1, note:"1968年に採択された、核兵器の拡散を防ぐための条約。"},
+  {q:"人間一人一人の生命や人権を大切にする考え方を何というか。", choices:["人間の安全保障","集団的自衛権","基本的人権","国民主権"], answer:0, note:"国家の安全保障だけでなく、個人の視点を重視する考え方。"},
+  {q:"地球の北半球に多い先進国と南半球に多い発展途上国との間に生じている経済格差などの問題を何というか。", choices:["南北問題","南南問題","民族問題","貿易摩擦"], answer:0, note:"先進国と発展途上国の経済格差を表す言葉。"},
+  {q:"発展途上国の中でも、資源によって豊かになった国や工業化が進んだ国と、資源も産業ももたない国との格差が拡大している問題を何というか。", choices:["南北問題","南南問題","貿易摩擦","経済連携"], answer:1, note:"発展途上国どうしの経済格差の問題。"},
+  {q:"たくさんの人・物・お金や情報などの結びつきが強まり、世界の相互依存と一体化が進んでいることを何というか。", choices:["グローバル化","ボーダーレス化","地域主義","多極化"], answer:0, note:"経済や文化などが国境を越えて結びつく現象。"},
+  {q:"発展途上国の人々が生産したものを、その労働に見合う公正な価格で取り引きすることを何というか。", choices:["フェアトレード(公正貿易)","自由貿易","フリートレード","保護貿易"], answer:0, note:"生産者の生活を支えるための公正な取り引き。"},
+  {q:"貧しい人々に少額の資金を貸し出すことを何というか。", choices:["マイクロクレジット(マイクロファイナンス)","フェアトレード","ODA","クラウドファンディング"], answer:0, note:"貧困層の自立を支援するための小口融資。"},
+  {q:"オゾン層破壊の原因となっているおもな気体は何か。", choices:["フロン(ガス)","二酸化炭素","メタン","窒素酸化物"], answer:0, note:"冷蔵庫やエアコンの冷媒などに使われていた化学物質。"},
+  {q:"二酸化炭素やメタンなど、地球温暖化の原因となる気体を総称して何というか。", choices:["フロンガス","温室効果ガス","酸性雨物質","オゾン層破壊物質"], answer:1, note:"大気中に増えることで地球の気温を上昇させる気体。"},
+  {q:"昔の地質時代の生物が地中で炭化してできた、石炭・石油・天然ガスなどの燃料のことを何というか。", choices:["再生可能エネルギー","化石燃料","バイオマス燃料","核燃料"], answer:1, note:"燃焼時に温室効果ガスを排出する、埋蔵量に限りのある燃料。"},
+  {q:"太陽光・風力・地熱・バイオマスなど、くり返し利用できるエネルギーのことを何というか。", choices:["化石燃料","再生可能エネルギー","核エネルギー","天然資源"], answer:1, note:"環境への負担が少なく、枯渇しないエネルギー源。"},
+  {q:"地球環境問題解決のために、将来の世代の幸福と現在の世代の幸福とを両立できる社会の考え方を何というか。", choices:["持続可能な社会","高度経済成長社会","循環型社会(のみ)","福祉国家"], answer:0, note:"「サステナブルな社会」ともよばれる。"},
+  {q:"アメリカ・イギリス・日本など主要な先進国の首脳が集まり、政治・経済問題について話し合う会議を漢字で何というか。", choices:["主要国首脳会議","国際連合総会","安全保障理事会","世界経済フォーラム"], answer:0, note:"サミットともよばれ、G7などが参加する。"},
+  {q:"ODAは何の略称か。", choices:["政府開発援助","非政府組織","国際協力機構","国連開発計画"], answer:0, note:"Official Development Assistanceの略。発展途上国への資金・技術協力。"},
+  {q:"日本のODAの1つとして行われている、発展途上国に教育や保健などの分野でボランティアを派遣する活動を何というか。", choices:["青年海外協力隊","国境なき医師団","赤十字国際委員会","国連平和維持活動"], answer:0, note:"日本の若者が発展途上国で技術支援などをおこなう制度。"},
+  {q:"NGOは何の略称か。", choices:["非政府組織","政府開発援助","国連教育科学文化機関","国際労働機関"], answer:0, note:"Non-Governmental Organizationの略。人権・環境・平和などの活動をおこなう民間団体。"},
+  {q:"2011年以降続いている、中東の国で内戦状態となった紛争を何というか。", choices:["シリア内戦","アフガニスタン紛争","湾岸戦争","イラク戦争"], answer:0, note:"「アラブの春」の影響を受けて発生し、多くの難民を生んだ内戦。"},
+  {q:"1979年から2001年まで続いた、旧ソ連の侵攻をきっかけとする紛争を何というか。", choices:["アフガニスタン紛争","湾岸戦争","イラク戦争","カンボジア紛争"], answer:0, note:"のちにアメリカによる攻撃(2001年)にもつながった地域。"},
+  {q:"1991年、イラクのクウェート侵攻をきっかけに多国籍軍が介入した戦争を何というか。", choices:["湾岸戦争","イラク戦争","アフガニスタン紛争","中東戦争"], answer:0, note:"国連決議にもとづき、多国籍軍がイラクを攻撃した。"},
+  {q:"2003年、大量破壊兵器の保有が疑われたことなどを理由にアメリカなどが攻撃した戦争を何というか。", choices:["イラク戦争","湾岸戦争","アフガニスタン紛争","朝鮮戦争"], answer:0, note:"フセイン政権が倒されたが、その後も国内は混乱した。"},
+  {q:"2001年9月11日、アメリカで発生した事件を何というか。", choices:["同時多発テロ","湾岸戦争","キューバ危機","冷戦の終結"], answer:0, note:"ニューヨークなどで発生し、「テロとの戦い」のきっかけとなった。"},
+  {q:"1992年、地球温暖化を防止することを目的に、国連環境開発会議(地球サミット)で調印された条約を何というか。", choices:["京都議定書","気候変動枠組条約","パリ協定","モントリオール議定書"], answer:1, note:"地球温暖化防止のための国際的な枠組みを定めた条約。"},
+  {q:"1997年、気候変動枠組条約第3回締約国会議で、温室効果ガスの排出量の削減目標を定めた取り決めを何というか。", choices:["気候変動枠組条約","パリ協定","京都議定書","モントリオール議定書"], answer:2, note:"日本の京都で開催された会議で採択された。"},
+  {q:"2015年、発展途上国を含めて、産業革命前からの気温上昇を2度より低くおさえる目標に向けて取り組むことを定めた協定を何というか。", choices:["京都議定書","パリ協定","気候変動枠組条約","モントリオール議定書"], answer:1, note:"先進国・発展途上国を問わずすべての国が参加する枠組み。"},
+  {q:"主要国首脳会議(サミット)には、イギリス・フランス・ドイツ・イタリア・日本・カナダとどこの国が参加しているか(G7の一角)。", choices:["アメリカ","中国","ロシア","インド"], answer:0, note:"G7にEUの首脳も加わり、国際的な政治・経済問題を話し合う。"},
+  {q:"政府開発援助(ODA)の一環で、発展途上国に派遣される人材にあたるものはどれか。", choices:["青年海外協力隊","国境なき医師団","アムネスティ・インターナショナル","赤十字国際委員会"], answer:0, note:"日本のODAでは技術協力・資金援助とあわせて人材派遣もおこなわれる。"},
+  {q:"人権・環境・平和・開発などの活動をおこなう民間の組織(NGO)の例として、医療支援をおこなう国際組織は何か。", choices:["国境なき医師団","青年海外協力隊","主要国首脳会議","政府開発援助"], answer:0, note:"紛争地域や被災地で医療活動をおこなう非政府組織。"},
+];
+
+let order = [];
+let round = 1;
+let idx = 0;
+let wrongThisRound = [];
+let wrongCounts = {}; // key: question text, count of wrong answers total
+let currentPool = [];
+let answeredCorrectlyOnFirstTry = new Set();
+
+const app = document.getElementById('app');
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function shuffleChoices(q){
+  const idxs = q.choices.map((c,i)=>i);
+  const shuffled = shuffle(idxs);
+  return {
+    text: q.q,
+    note: q.note,
+    choices: shuffled.map(i=>q.choices[i]),
+    answerIndex: shuffled.indexOf(q.answer),
+    origIndex: QUESTIONS.indexOf(q)
+  };
+}
+
+function renderStart(){
+  app.innerHTML = `
+    <div class="card">
+      <div class="stage-list">
+        📘 全${QUESTIONS.length}問<br>
+        🔁 3周してしっかり覚える方式<br>
+        1周目：まず全問チャレンジ<br>
+        2周目：間違えた問題を中心に復習<br>
+        3周目：最終チェック（まだ怪しい問題）
+      </div>
+      <button class="start-btn" onclick="startRound(1)">1周目スタート！</button>
+    </div>
+  `;
+}
+
+function startRound(r){
+  round = r;
+  idx = 0;
+  wrongThisRound = [];
+  if(r===1){
+    currentPool = shuffle(QUESTIONS.slice());
+  } else {
+    currentPool = shuffle(wrongCounts.__poolForRound || []);
+  }
+  if(currentPool.length===0){
+    finishRound();
+    return;
+  }
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const raw = currentPool[idx];
+  const q = shuffleChoices(raw);
+  const total = currentPool.length;
+  const pct = Math.round((idx/total)*100);
+
+  app.innerHTML = `
+    <div class="card">
+      <span class="round-badge">${round}周目</span>
+      <div class="q-count">${idx+1} / ${total} 問</div>
+      <div class="progress-bar-outer"><div class="progress-bar-inner" style="width:${pct}%"></div></div>
+      <div class="question-text">${q.text}</div>
+      <div id="choices"></div>
+      <div class="explain-box" id="explainBox"></div>
+      <button class="next-btn" id="nextBtn">次へ →</button>
+    </div>
+  `;
+
+  const choicesDiv = document.getElementById('choices');
+  q.choices.forEach((c,i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    btn.textContent = c;
+    btn.onclick = ()=>selectAnswer(i, q, raw);
+    choicesDiv.appendChild(btn);
+  });
+}
+
+function selectAnswer(i, q, raw){
+  const buttons = document.querySelectorAll('.choice-btn');
+  buttons.forEach(b=>b.classList.add('disabled'));
+  const correct = i===q.answerIndex;
+
+  buttons[q.answerIndex].classList.add('correct');
+  if(!correct){
+    buttons[i].classList.add('wrong');
+    wrongThisRound.push(raw);
+    wrongCounts[raw.q] = (wrongCounts[raw.q]||0)+1;
+  } else {
+    if(round===1) answeredCorrectlyOnFirstTry.add(raw.q);
+  }
+
+  const explainBox = document.getElementById('explainBox');
+  explainBox.style.display = 'block';
+  explainBox.innerHTML = (correct ? '✅ 正解！ ' : '❌ 不正解… 正解は「'+q.choices[q.answerIndex]+'」') + '<br>' + (q.note||'');
+
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.style.display = 'block';
+  nextBtn.textContent = (idx+1<currentPool.length) ? '次へ →' : `${round}周目の結果を見る`;
+  nextBtn.onclick = ()=>{
+    idx++;
+    if(idx<currentPool.length){
+      renderQuestion();
+    } else {
+      finishRound();
+    }
+  };
+}
+
+function finishRound(){
+  const wrongUnique = [...new Map(wrongThisRound.map(q=>[q.q,q])).values()];
+  wrongCounts.__poolForRound = wrongUnique;
+  wrongCounts.__lastPoolSize = currentPool.length;
+
+  const correctCount = currentPool.length - wrongUnique.length;
+
+  if(round<3 && wrongUnique.length>0){
+    app.innerHTML = `
+      <div class="card" style="text-align:center;">
+        <h2 style="color:#e76f51;">${round}周目 おつかれさま！</h2>
+        <div class="result-score">${correctCount} / ${currentPool.length}</div>
+        <p style="margin-bottom:14px;">間違えた ${wrongUnique.length} 問を中心に、次の周でもう一度チェックしよう！</p>
+        <button class="primary-btn" onclick="startRound(${round+1})">${round+1}周目へ進む</button>
+      </div>
+    `;
+  } else if(round<3 && wrongUnique.length===0){
+    app.innerHTML = `
+      <div class="card" style="text-align:center;">
+        <h2 style="color:#52b788;">${round}周目 パーフェクト！🎉</h2>
+        <p>間違いなし！このまま最後まで確認しよう。</p>
+        <button class="primary-btn" onclick="startRound(${round+1})">${round+1}周目へ進む</button>
+      </div>
+    `;
+  } else {
+    renderFinalResult(wrongUnique, correctCount);
+  }
+}
+
+function renderFinalResult(wrongUnique, correctCount){
+  let weakHtml = '';
+  if(wrongUnique.length>0){
+    weakHtml = `<div class="weak-list"><b>まだ怪しい問題（もう一回見直そう）</b><br>` +
+      wrongUnique.map(q=>'・'+q.q).join('<br>') + `</div>`;
+  } else {
+    weakHtml = `<div class="weak-list">🎉 弱点なし！バッチリ覚えられたで！</div>`;
+  }
+
+  app.innerHTML = `
+    <div class="card" style="text-align:center;">
+      <h2 style="color:#e76f51;">3周 完了！お疲れさま🎊</h2>
+      <div class="result-score">${correctCount} / ${(wrongCounts.__lastPoolSize||QUESTIONS.length)}</div>
+      ${weakHtml}
+      <button class="primary-btn" onclick="resetAll()">もう一度最初から</button>
+    </div>
+  `;
+}
+
+function resetAll(){
+  wrongCounts = {};
+  answeredCorrectlyOnFirstTry = new Set();
+  renderStart();
+}
+
+renderStart();
+</script>
+</body>
+</html>
