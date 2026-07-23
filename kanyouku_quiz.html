@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>慣用句・故事成語クイズ 154〜161p</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Zen+Maru+Gothic:wght@400;500;700;900&display=swap');
+
+  :root{
+    --indigo-deep:#1e2f4d;
+    --indigo:#2c4270;
+    --indigo-light:#5673a8;
+    --paper:#f4efe3;
+    --paper-dark:#e8e0cc;
+    --vermilion:#c0432a;
+    --vermilion-light:#e8664a;
+    --gold:#c9a24b;
+    --ink:#20242c;
+    --sumi:#3a3f4b;
+    --correct:#3d7a4f;
+    --wrong:#b23b3b;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Zen Maru Gothic','Hiragino Sans',sans-serif;
+    background:
+      radial-gradient(circle at 15% 10%, rgba(255,255,255,0.05), transparent 40%),
+      linear-gradient(160deg, var(--indigo-deep), #14213a 70%);
+    min-height:100vh;
+    color:var(--paper);
+    display:flex;
+    justify-content:center;
+    padding:24px 14px 60px;
+  }
+  .app{
+    width:100%;
+    max-width:520px;
+  }
+
+  /* ===== Header ===== */
+  .header{
+    text-align:center;
+    margin-bottom:18px;
+    position:relative;
+  }
+  .header .eyebrow{
+    font-size:12px;
+    letter-spacing:.3em;
+    color:var(--gold);
+    font-weight:700;
+  }
+  .header h1{
+    font-family:'Shippori Mincho', serif;
+    font-size:28px;
+    margin:6px 0 2px;
+    letter-spacing:.05em;
+    color:var(--paper);
+    text-shadow: 0 2px 10px rgba(0,0,0,.3);
+  }
+  .header .sub{
+    font-size:12.5px;
+    color:#b9c4de;
+  }
+
+  /* ===== Progress dots for 3 rounds ===== */
+  .round-track{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    margin:14px 0 20px;
+  }
+  .round-chip{
+    padding:5px 14px;
+    border-radius:999px;
+    font-size:12px;
+    font-weight:700;
+    border:1.5px solid rgba(201,162,75,.35);
+    color:#8ea0c6;
+    background:rgba(255,255,255,.03);
+    transition:.25s;
+  }
+  .round-chip.active{
+    background:var(--vermilion);
+    border-color:var(--vermilion);
+    color:#fff;
+    box-shadow:0 4px 14px rgba(192,67,42,.4);
+  }
+  .round-chip.done{
+    color:var(--gold);
+    border-color:var(--gold);
+  }
+
+  /* ===== Card ===== */
+  .card{
+    background:var(--paper);
+    color:var(--ink);
+    border-radius:18px;
+    padding:26px 22px 22px;
+    box-shadow:0 18px 40px rgba(0,0,0,.35), 0 2px 0 rgba(255,255,255,.4) inset;
+    position:relative;
+    overflow:hidden;
+  }
+  .card::before{
+    content:"";
+    position:absolute;
+    top:0;left:0;right:0;height:6px;
+    background:repeating-linear-gradient(90deg, var(--vermilion) 0 18px, var(--gold) 18px 36px);
+    opacity:.85;
+  }
+  .qnum{
+    font-size:11.5px;
+    color:var(--indigo-light);
+    font-weight:700;
+    letter-spacing:.1em;
+    margin-bottom:10px;
+  }
+  .meaning{
+    font-size:15px;
+    line-height:1.75;
+    color:var(--sumi);
+    margin-bottom:16px;
+    background:var(--paper-dark);
+    padding:12px 14px;
+    border-radius:10px;
+    border-left:4px solid var(--indigo-light);
+  }
+  .idiom{
+    font-family:'Shippori Mincho', serif;
+    font-size:26px;
+    text-align:center;
+    letter-spacing:.06em;
+    margin:18px 0 22px;
+    line-height:1.6;
+    color:var(--ink);
+  }
+  .blank{
+    display:inline-block;
+    min-width:2.4em;
+    border-bottom:3px solid var(--vermilion);
+    color:var(--vermilion);
+    font-weight:700;
+    padding:0 4px;
+  }
+  .blank.filled{
+    border-bottom-color:var(--indigo);
+    color:var(--indigo);
+  }
+
+  .choices{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+  }
+  .choice-btn{
+    font-family:'Zen Maru Gothic',sans-serif;
+    font-size:17px;
+    font-weight:700;
+    padding:14px 8px;
+    border-radius:12px;
+    border:2px solid var(--indigo-light);
+    background:#fff;
+    color:var(--indigo-deep);
+    cursor:pointer;
+    transition:.15s;
+  }
+  .choice-btn:active{ transform:scale(.97); }
+  .choice-btn:hover{ background:#eef2fa; }
+  .choice-btn.correct{
+    background:var(--correct);
+    border-color:var(--correct);
+    color:#fff;
+  }
+  .choice-btn.wrong{
+    background:var(--wrong);
+    border-color:var(--wrong);
+    color:#fff;
+  }
+  .choice-btn:disabled{ cursor:default; opacity:.55; }
+  .choice-btn.correct:disabled, .choice-btn.wrong:disabled{ opacity:1; }
+
+  .feedback{
+    margin-top:16px;
+    padding:12px 14px;
+    border-radius:10px;
+    font-size:14px;
+    line-height:1.6;
+    display:none;
+  }
+  .feedback.show{ display:block; animation:pop .25s ease; }
+  .feedback.ok{ background:#e4f2e7; color:var(--correct); border:1.5px solid var(--correct); }
+  .feedback.ng{ background:#fbe7e5; color:var(--wrong); border:1.5px solid var(--wrong); }
+  @keyframes pop{ from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:translateY(0);} }
+
+  .next-btn{
+    margin-top:16px;
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:12px;
+    background:var(--indigo-deep);
+    color:#fff;
+    font-size:16px;
+    font-weight:700;
+    font-family:'Zen Maru Gothic',sans-serif;
+    cursor:pointer;
+    display:none;
+  }
+  .next-btn.show{ display:block; }
+  .next-btn:active{ transform:scale(.98); }
+
+  /* ===== Start / End screens ===== */
+  .center-card{
+    background:var(--paper);
+    color:var(--ink);
+    border-radius:18px;
+    padding:34px 24px;
+    text-align:center;
+    box-shadow:0 18px 40px rgba(0,0,0,.35);
+  }
+  .center-card h2{
+    font-family:'Shippori Mincho',serif;
+    font-size:22px;
+    margin:0 0 10px;
+  }
+  .center-card p{
+    font-size:14px;
+    color:var(--sumi);
+    line-height:1.8;
+    margin-bottom:20px;
+  }
+  .stamp{
+    width:84px;height:84px;
+    border-radius:50%;
+    border:4px solid var(--vermilion);
+    color:var(--vermilion);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Shippori Mincho',serif;
+    font-size:15px;
+    font-weight:700;
+    margin:0 auto 18px;
+    transform:rotate(-8deg);
+  }
+  .big-btn{
+    padding:16px 30px;
+    border:none;
+    border-radius:14px;
+    background:var(--vermilion);
+    color:#fff;
+    font-size:17px;
+    font-weight:700;
+    font-family:'Zen Maru Gothic',sans-serif;
+    cursor:pointer;
+    box-shadow:0 8px 20px rgba(192,67,42,.4);
+  }
+  .big-btn:active{ transform:scale(.97); }
+  .ghost-btn{
+    margin-top:12px;
+    padding:12px 24px;
+    border:2px solid var(--indigo-light);
+    border-radius:14px;
+    background:transparent;
+    color:var(--indigo-deep);
+    font-size:14px;
+    font-weight:700;
+    font-family:'Zen Maru Gothic',sans-serif;
+    cursor:pointer;
+  }
+  .stats-row{
+    display:flex;
+    justify-content:center;
+    gap:22px;
+    margin:20px 0 6px;
+  }
+  .stat{ text-align:center; }
+  .stat .num{
+    font-family:'Shippori Mincho',serif;
+    font-size:28px;
+    color:var(--indigo-deep);
+    font-weight:700;
+  }
+  .stat .lab{ font-size:11px; color:var(--sumi); }
+
+  .footer-note{
+    text-align:center;
+    font-size:11px;
+    color:#7a8bb0;
+    margin-top:18px;
+    letter-spacing:.05em;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="eyebrow">中学受験・国語 資料室 154〜161p</div>
+    <h1>慣用句・故事成語 穴あきクイズ</h1>
+    <div class="sub">意味を読んで、空欄に入ることばを選ぼう</div>
+  </div>
+
+  <div class="round-track" id="roundTrack"></div>
+
+  <div id="stage"></div>
+
+  <div class="footer-note" id="footerNote"></div>
+</div>
+
+<script>
+const DATA = [
+["＿＿をうつ","相手の話に調子を合わせて、うなずいたりする。","あいづち",["あいづち","あくび","あきれ","あこがれ"]],
+["＿＿を立てる","ひどく腹を立てる。かんかんに怒る。","青筋",["青筋","青ざめ","青空","青二才"]],
+["青菜に＿＿","元気がなく、しおれてしまう様子。","塩",["塩","水","火","雨"]],
+["＿＿をかく","のんきに構えている。","あぐら",["あぐら","ひざ","こし","せなか"]],
+["＿＿をとる","人のちょっとした失敗を見つけて言い立てる。","あげ足",["あげ足","足取り","足並み","揚げ物"]],
+["＿＿が落ちる","たいへんおいしい。","あご",["あご","舌","歯","のど"]],
+["＿＿で人を使う","いばって人を使う。","あご",["あご","肩","腰","鼻"]],
+["＿＿を出す","たいへん疲れる。","あご",["あご","舌","息","汗"]],
+["＿＿前","たやすいこと。","朝飯",["朝飯","朝食","朝日","早朝"]],
+["＿＿が出る","予算をこえてお金を使う。","足",["足","手","口","腹"]],
+["＿＿が棒になる","歩いてひどく疲れる。","足",["足","腰","ひざ","手"]],
+["＿＿にまかせる","あてもなく歩きまわる。","足",["足","運","気","身"]],
+["＿＿もとに火がつく","自分に危険がせまる。","足",["足","身","手","目"]],
+["＿＿もとを見る","人の弱みにつけこむ。","足",["足","腹","顔","手"]],
+["＿＿をとられる","動きがとれなくなる。","足",["足","手","身","腰"]],
+["＿＿をしめる","一度うまくいったことが忘れられず、期待する。","味",["味","勝ち","得","実"]],
+["＿＿が上がらない","相手の権力におされて、対等になれない。","頭",["頭","腰","肩","顔"]],
+["＿＿が下がる","感心して、自然に敬う気持ちがわく。","頭",["頭","腰","肩","顔"]],
+["＿＿がはずれる","見こみどおりにならない。","あて",["あて","予定","見こみ","つもり"]],
+["＿＿の祭り","時期がおくれてしまい、どうにもならない。","あと",["あと","先","後日","昔"]],
+["＿＿を引く","その状態が長く続く。","あと",["あと","先","元","後"]],
+["＿＿があったら入りたい","はずかしくてたまらない。","穴",["穴","土","床","地"]],
+["＿＿を売る","むだ話などをして仕事の時間をむだにする。","油",["油","水","油断","汗"]],
+["＿＿をしぼる","失敗などをきびしくしかる。","油",["油","汗","油断","水"]],
+["＿＿がのる","調子が出てはかどる。","あぶら",["あぶら","腰","調子","勢い"]],
+["＿＿の前の静けさ","事件の起こる前の、ぶきみな静けさ。","あらし",["あらし","嵐","台風","雷"]],
+["＿＿が合う","気持ちがぴったり合う。","息",["息","馬","気","心"]],
+["＿＿が切れる","ものごとの途中で弱ってしまう。","息",["息","足","手","力"]],
+["＿＿を殺す","息をするのをやめ、じっとしている。","息",["息","声","音","気"]],
+["＿＿をのむ","思わず息をとめる。ハッとする。","息",["息","声","言葉","音"]],
+["＿＿につく","その仕事や動作にぴったり合う。","板",["板","身","腰","手"]],
+["一挙＿＿得","一つのことをして同時に二つの利益を得る。","両",["両","二","得","再"]],
+["一石＿＿鳥","一つのことをして同時に二つの利益を得る。","二",["二","三","両","四"]],
+["一日＿＿秋の思い","非常に待ちどおしく思うこと。","千",["千","万","百","長"]],
+["一日の＿＿","少しだけ経験が多く、よく知っていること。","長",["長","差","得","先"]],
+["＿＿の道","非常に困難な道を歩んできた人生。","いばら",["いばら","砂","岩","険"]],
+["＿＿を洗う","多くの人でこみ合うこと。","芋",["芋","豆","米","魚"]],
+["＿＿を失う","おそろしくて、顔色が青くなる。","色",["色","声","気","魂"]],
+["＿＿髪をひかれる","あとのことが心配で、心が残る。","うしろ",["うしろ","まえ","あと","よこ"]],
+["＿＿指をさされる","かげで悪口を言われる。","うしろ",["うしろ","ゆび","かげ","かたち"]],
+["うそから出た＿＿","はじめはうそのつもりが、本当のことになる。","まこと",["まこと","実話","真実","本音"]],
+["うそも＿＿","うそも物事のなりゆきでは必要な場合もある。","方便",["方便","理由","道具","言い訳"]],
+["＿＿がなる","腕前を見せたくてはりきる。","うで",["うで","腰","肩","手"]],
+["＿＿によりをかける","十分に準備をして、はりきる。","うで",["うで","身","気","腰"]],
+["＿＿の大木","体が大きくても、何の役にも立たない。","うど",["うど","竹","松","葦"]],
+["＿＿のぼり","勢いよく、どんどん上がる。","うなぎ",["うなぎ","たつ","かに","こい"]],
+["＿＿の目たかの目","注意を集中して、熱心にさがすこと。","鵜",["鵜","鷹","鷲","鳥"]],
+["＿＿が合う","気が合う。","馬",["馬","牛","犬","猫"]],
+["＿＿の耳に風","人の忠告を平気で聞き流す。","馬",["馬","牛","犬","猿"]],
+["＿＿をかく","相手のねらいをくじく。","裏",["裏","表","横","先"]],
+["＿＿の空","ほかのことに心をうばわれて集中できない。","うわ",["うわ","そら","から","むね"]],
+["＿＿を天にまかせる","なりゆきにまかせる。","運",["運","身","命","先"]],
+["＿＿でたいをつる","わずかなものを使って、ねうちのあるものを手に入れる。","えび",["えび","かに","いわし","たこ"]],
+["＿＿の下の力持ち","表面に現れない所で苦労や努力をする。","縁",["縁","床","土台","裏"]],
+["＿＿をにごす","いいかげんにその場をごまかす。","お茶",["お茶","水","話","言葉"]],
+["＿＿に聞く","有名である。名高い。","音",["音","名","声","話"]],
+["おにに＿＿","強い者がさらに強くなる。","金棒",["金棒","刀","鉄砲","盾"]],
+["＿＿をつける","たしかであると保証する。","折り紙",["折り紙","太鼓判","証明","判子"]],
+["恩を＿＿で返す","恩を忘れて、ひどいことをする。","あだ",["あだ","仇","恨み","裏切り"]],
+["＿＿が広い","いろいろな人を知っている。よく知られている。","顔",["顔","名","顔面","顔立ち"]],
+["＿＿から火が出る","とてもはずかしい思いをする。","顔",["顔","頭","耳","首"]],
+["＿＿にどろをぬる","はじをかかせる。","顔",["顔","足","手","名"]],
+["＿＿をたてる","相手の体面をたもつようにする。","顔",["顔","名","義理","恩"]],
+["＿＿で風を切る","いばって歩く。","肩",["肩","胸","顔","腰"]],
+["＿＿をならべる","同じような勢いや力をもつ。","肩",["肩","力","腕","背"]],
+["＿＿をもつ","ひいきをする。","肩",["肩","手","味方","片"]],
+["＿＿が立つ","ものごとがあらあらしくなる。","角",["角","棘","肩","牙"]],
+["＿＿をのむ","いっしんに見守る。","かたず",["かたず","つば","息","声"]],
+["＿＿所に手がとどく","細かい点まで心づかいがゆきとどく。","かゆい",["かゆい","痛い","細かい","狭い"]],
+["＿＿の行水","ふろを簡単にすませること。","からす",["からす","すずめ","つばめ","はと"]],
+["＿＿が気でない","心配していらいらする。","気",["気","心","胸","頭"]],
+["＿＿がとがめる","うしろめたく思う。","気",["気","心","胸","身"]],
+["＿＿をとられる","他のことに注意がむいてしまう。","気",["気","目","心","手"]],
+["＿＿で鼻をくくる","たいへんぶあいそうな返事をする。","木",["木","竹","石","土"]],
+["＿＿に竹をつぐ","ものごとの筋道がとおらないこと。","木",["木","石","土","竹"]],
+["＿＿が太い","ずうずうしく、少しのことに驚かない。","肝",["肝","腹","胆","腸"]],
+["＿＿に銘じる","深く心に感じて忘れない。","肝",["肝","胸","心","腹"]],
+["＿＿をつぶす","たいへんびっくりする。","肝",["肝","腰","腹","魂"]],
+["漁夫の＿＿","第三者が利益を横どりすること。","利",["利","得","益","徳"]],
+["＿＿が重い","ことば数が少なく、あまりものを言わない。","口",["口","舌","唇","声"]],
+["＿＿車に乗る","口先だけのことばにだまされる。","口",["口","舌","話","言"]],
+["＿＿を切る","きっかけをつくる。","口火",["口火","火ぶた","先陣","口"]],
+["＿＿を割る","隠していたことを、しぶしぶ話す。","口",["口","腹","胸","心"]],
+["＿＿をつっこむ","自分からそのことに関係する。","首",["首","足","手","顔"]],
+["＿＿を長くする","待ちこがれる。","首",["首","目","足","手"]],
+["＿＿をつかむ","とらえどころがなく、様子がつかめない。","雲",["雲","霧","風","煙"]],
+["＿＿の子を散らす","多くのものがちりぢりに逃げる。","くも",["くも","あり","はち","とんぼ"]],
+["＿＿雪の功","苦労して学問に努力すること。","蛍",["蛍","月","星","雪"]],
+["＿＿白を争う","正しいかどうかを決める。","黒",["黒","善","是","勝"]],
+["＿＿をいためる","わずらわしく心配する。","心",["心","胸","頭","気"]],
+["＿＿が低い","へりくだった態度をとる。","こし",["こし","あたま","ひざ","かた"]],
+["＿＿を折る","途中でじゃまをする。","こし",["こし","うで","かた","むね"]],
+["＿＿をぬかす","びっくり驚く。","こし",["こし","うで","あご","のど"]],
+["＿＿を投げる","医者が病人を見放す。あきらめる。","さじ",["さじ","はし","わん","つえ"]],
+["＿＿が白ける","その場の雰囲気がさめる。","座",["座","場","気","座敷"]],
+["＿＿を出す","うまく隠していたことがばれる。","しっぽ",["しっぽ","尾","足","馬脚"]],
+["白羽の＿＿が立つ","たくさんの中から、とくに見こまれて選び出される。","矢",["矢","的","弓","刀"]],
+["＿＿馬に乗る","軽はずみに人にしたがう。","しり",["しり","あと","うしろ","先"]],
+["＿＿い目で見る","憎しみをもった態度をとる。","白",["白","青","黒","赤"]],
+["たかを＿＿る","ばかにする。みくびる。","くく",["くく","あな","かこ","せば"]],
+["＿＿の持ちぐされ","すぐれた才能を、うまく使わずにいること。","宝",["宝","財","金","力"]],
+["＿＿足","よけいなもの。よけいなことをすること。","蛇",["蛇","竜","虫","蝶"]],
+["＿＿を落とす","がっかりする。","力",["力","声","腕","足"]],
+["月と＿＿","二つのものの違いが大きいこと。","すっぽん",["すっぽん","かめ","さかな","かに"]],
+["＿＿をやく","始末に困る。","手",["手","頭","腰","身"]],
+["＿＿にくれる","どうしてよいかわからなくなる。","途方",["途方","方法","道","手段"]],
+["＿＿が高い","得意になる。","鼻",["鼻","顔","頭","胸"]],
+["＿＿に花が咲く","話がはずむ。","話",["話","言葉","声","笑い"]],
+["＿＿をすえる","覚悟を決める。","腹",["腹","肚","心","気"]],
+["＿＿を割る","心の中をすっかり打ち明ける。","腹",["腹","胸","心","口"]],
+["＿＿がたつ","文章をつくるのがうまい。","筆",["筆","舌","口","手"]],
+["七ころび＿＿起き","何回失敗してもくじけない。","八",["八","九","十","七"]],
+["＿＿を売る","有名になろうと、自分の名を広める。","名",["名","声","顔","姿"]],
+["＿＿に小判","価値のあるものも、それを知らない者には役に立たない。","猫",["猫","犬","豚","馬"]],
+["＿＿に流す","これまでのわだかまりを忘れる。","水",["水","川","海","湖"]],
+["＿＿坊主","長続きしないこと。","三日",["三日","一日","十日","七日"]],
+["＿＿にたこができる","同じことを何度も聞いてイヤになる。","耳",["耳","頭","口","目"]],
+["＿＿をなでおろす","安心する。","胸",["胸","肩","心","腹"]],
+["＿＿に入れてもいたくない","たいへんかわいく思う。","目",["目","手","心","懐"]],
+["＿＿をぬすむ","こっそりやる。","目",["目","人目","身","姿"]],
+["石に＿＿ついても","どんなに苦しい思いをしても。","かじり",["かじり","しがみ","取り","食らい"]],
+["＿＿石に水","いくら努力しても効き目がない。","焼け",["焼け","冷や","熱","乾"]],
+["＿＿より証拠","あれこれ言うより、実際の証拠を出す方がはっきりする。","論",["論","話","口","議"]],
+["＿＿に船","ちょうどよい機会を得ること。","渡り",["渡り","乗り","出会い","通り"]],
+["世に＿＿","出世する。","出る",["出る","立つ","昇る","育つ"]],
+["＿＿を切る","ものごとが一時にどっと起こる。","せき",["せき","堰","水","波"]],
+["＿＿もとへよせつけない","とても強い。","足",["足","身","手","顔"]],
+["＿＿をうばわれる","乗り物が動かないので行動できない。","足",["足","道","自由","時間"]],
+["＿＿のあくほど見る","じっと見つめる。","穴",["穴","目","傷","窓"]],
+["＿＿か八か","うまくいくかわからないが、やってみること。","一",["一","運","賭","勝"]],
+["＿＿半句","ほんのわずかなことば。","一言",["一言","少々","片言","一句"]],
+["一も＿＿もなく","つべこべ言わず、すぐに。","二",["二","三","四","五"]],
+["＿＿づけ","にわか勉強。","二夜",["二夜","三日","一週間","毎晩"]],
+["犬と＿＿","仲が悪いこと。","さる",["さる","ねこ","とら","きつね"]],
+["＿＿足立つ","逃げごしになる。","浮き",["浮き","逃げ","及び","浮つ"]],
+["＿＿をあげる","じょうずになる。","うで",["うで","こし","かた","て"]],
+["＿＿二つ","二つに割ったように、よく似ている。","うり",["うり","かき","なし","もも"]],
+["＿＿がまわる","順番がまわってくる。","おはち",["おはち","じゅんばん","つき","くじ"]],
+["＿＿になりひなたになり","いろいろ人のために努力する。","陰",["陰","裏","影","内"]],
+["＿＿を冷やす","ひやっとする。恐ろしい思いをする。","肝",["肝","気","胸","心"]],
+["＿＿を切る","はじめに話す。","口",["口","舌","声","話"]],
+["＿＿を入れる","わきから口を出す。","くちばし",["くちばし","口","首","茶々"]],
+["＿＿をひく","人の気持ちを思いやる。","心",["心","気","情け","手"]],
+["＿＿をにごす","あいまいに言う。","ことば",["ことば","声","話","答え"]],
+["＿＿をまく","たいへんにおどろく。","した",["した","ひざ","こし","て"]],
+["＿＿をつかむ","かくしだてをしていたことを見ぬく。","しっぽ",["しっぽ","尾","首","足"]],
+["＿＿をおににする","相手のために、わざとひどくする。","心",["心","気","鬼","顔"]],
+["知らぬが＿＿","知らないので、平気でいられる。","仏",["仏","神","馬鹿","天使"]],
+["＿＿をおす","たしかにまちがいないと請け合う。","太鼓判",["太鼓判","判こ","印","証拠"]],
+["＿＿を割ったよう","さっぱりしている性格。","竹",["竹","木","石","瓜"]],
+["＿＿をつく","反抗する。敵対する。","たて",["たて","こし","つえ","かた"]],
+["＿＿の出るような","ひじょうに苦しい。","血",["血","汗","涙","声"]],
+["＿＿を貸す","手助けをする。","力",["力","手","肩","知恵"]],
+["＿＿につりがね","つり合わないことのたとえ。","ちょうちん",["ちょうちん","あんどん","たいこ","かさ"]],
+["＿＿を曲げる","わざとさからう。","つむじ",["つむじ","へそ","口","気"]],
+["＿＿が切れる","えんがなくなる。","手",["手","縁","糸","足"]],
+["＿＿におえない","もてあます。","手",["手","腕","力","身"]],
+["＿＿をかせぐ","時間を引きのばす。","時",["時","間","日","点"]],
+["＿＿をぬく","ひどくおどろかす。","どぎも",["どぎも","きも","こし","いき"]],
+["＿＿が鳴る","食べたくてしかたがない。","のど",["のど","腹","舌","胸"]],
+["＿＿から手が出る","ほしくてたまらない。","のど",["のど","腹","口","胸"]],
+["＿＿に返す","もとの状態にもどす。","白紙",["白紙","元","最初","ゼロ"]],
+["＿＿を折る","相手のじまんをくじく。","鼻",["鼻","腰","角","歯"]],
+["＿＿にさわる","おそるおそるやる。","はれもの",["はれもの","きずぐち","どろ","かみなり"]],
+["＿＿を進める","乗り気になる。","ひざ",["ひざ","こし","足","肩"]],
+["＿＿をまじえる","うちとけて話し合う。","ひざ",["ひざ","肩","手","腹"]],
+["＿＿を曲げる","きげんを悪くする。","口",["口","鼻","眉","つむじ"]],
+["＿＿をのむ","残念な気持ちをこらえる。","なみだ",["なみだ","ため息","声","思い"]],
+["＿＿をなす","成功する。","名",["名","力","技","芸"]],
+["＿＿の足をふむ","気が進まず、ぐずぐずする。","二",["二","一","三","片"]],
+["＿＿の手も借りたい","たいへんいそがしい。","ねこ",["ねこ","いぬ","うま","とり"]],
+["猫に＿＿","油断できないこと。","鰹節",["鰹節","小判","魚","えさ"]],
+["＿＿のあわ","努力がむだになる。","水",["水","泡","雲","煙"]],
+["＿＿もらさぬ","すき間がなく完全である。","水",["水","すき","音","光"]],
+["＿＿をつける","しくじる。","みそ",["みそ","しょうゆ","塩","こしょう"]],
+["＿＿が早い","人よりも早く聞きつける。","耳",["耳","目","足","口"]],
+["＿＿にはさむ","ちょっと聞く。","耳",["耳","口","目","鼻"]],
+["＿＿にきざむ","忘れないよう、しっかり覚えておく。","胸",["胸","心","頭","肝"]],
+["＿＿をおどらせる","うれしくて心がうきたつ。","胸",["胸","心","気","声"]],
+["＿＿をふくらませる","心が楽しみでいっぱいになる。","胸",["胸","心","気","顔"]],
+["＿＿にもの見せる","こらしめのために、ひどい目にあわせる。","目",["目","手","顔","身"]],
+["＿＿を引く","人の注意をひきつける。","目",["目","気","袖","足"]],
+["＿＿がきく","先を見通すことがうまい。","先",["先","気","目","勘"]],
+["＿＿がつく","おおよその見通しがつく。","目鼻",["目鼻","方向","道筋","予定"]],
+["＿＿をかける","うまくいくことをねがって、あてこむ。","山",["山","運","賭け","的"]],
+["＿＿大敵","気をゆるめるな。","ゆだん",["ゆだん","不覚","失敗","過信"]],
+["＿＿をくわえる","何もしなくて、うらやましがる。","指",["指","口","手","つめ"]],
+["＿＿車をおす","無理だと知りながら、ものごとをおしとおす。","横",["横","無理","強引","力"]],
+["＿＿を入れる","横から口を出し、話のじゃまをする。","横やり",["横やり","茶々","水","口出し"]],
+["＿＿を日についで","夜も昼も続けて急ぐ。","夜",["夜","朝","昼","夕"]],
+["弱り目に＿＿目","運の悪いとき、悪いことが重なる。","たたり",["たたり","泣き","笑い","喜び"]]
+];
+
+// build question objects
+let questions = DATA.map((d,i)=>({
+  id:i, idiom:d[0], meaning:d[1], answer:d[2], choices:d[3]
+}));
+
+function shuffle(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+let state = {
+  round: 1,           // 1,2,3
+  queue: [],           // question ids for current round
+  idx: 0,
+  wrongThisRound: [],
+  correctCount: 0,
+  totalThisRound: 0,
+  answered: false
+};
+
+const stage = document.getElementById('stage');
+const roundTrack = document.getElementById('roundTrack');
+const footerNote = document.getElementById('footerNote');
+
+function renderRoundTrack(){
+  roundTrack.innerHTML = '';
+  const labels = ['1周目','2周目（まちがい直し）','3周目（最終チェック）'];
+  labels.forEach((lab, i)=>{
+    const chip = document.createElement('div');
+    chip.className = 'round-chip';
+    if(i+1 === state.round) chip.classList.add('active');
+    if(i+1 < state.round) chip.classList.add('done');
+    chip.textContent = lab;
+    roundTrack.appendChild(chip);
+  });
+}
+
+function showStart(){
+  roundTrack.innerHTML = '';
+  footerNote.textContent = '';
+  stage.innerHTML = `
+    <div class="center-card">
+      <div class="stamp">全問<br>制覇</div>
+      <h2>準備はいい？</h2>
+      <p>全${questions.length}問。まちがえた問題は次の周にまた出てくるよ。<br>3周してぜんぶ○になったらクリア！</p>
+      <button class="big-btn" id="startBtn">1周目をはじめる</button>
+    </div>
+  `;
+  document.getElementById('startBtn').onclick = ()=>{
+    state = {
+      round:1,
+      queue: shuffle(questions.map(q=>q.id)),
+      idx:0,
+      wrongThisRound: [],
+      correctCount:0,
+      totalThisRound: questions.length,
+      answered:false
+    };
+    renderRoundTrack();
+    renderQuestion();
+  };
+}
+
+function renderQuestion(){
+  renderRoundTrack();
+  if(state.idx >= state.queue.length){
+    return renderRoundEnd();
+  }
+  const q = questions[state.queue[state.idx]];
+  state.answered = false;
+  const choices = shuffle(q.choices);
+
+  const idiomHtml = q.idiom.replace('＿＿', '<span class="blank" id="blankSpan">＿＿</span>');
+
+  stage.innerHTML = `
+    <div class="card">
+      <div class="qnum">第${state.round}周　問題 ${state.idx+1} / ${state.queue.length}</div>
+      <div class="meaning">${q.meaning}</div>
+      <div class="idiom">${idiomHtml}</div>
+      <div class="choices" id="choiceWrap">
+        ${choices.map(c=>`<button class="choice-btn" data-val="${c}">${c}</button>`).join('')}
+      </div>
+      <div class="feedback" id="feedback"></div>
+      <button class="next-btn" id="nextBtn">${state.idx+1 < state.queue.length ? '次の問題へ' : '結果を見る'}</button>
+    </div>
+  `;
+  footerNote.textContent = `正解 ${state.correctCount} / 挑戦済み ${state.idx} 問中`;
+
+  document.querySelectorAll('.choice-btn').forEach(btn=>{
+    btn.onclick = ()=> handleAnswer(btn, q);
+  });
+  document.getElementById('nextBtn').onclick = ()=>{
+    state.idx++;
+    renderQuestion();
+  };
+}
+
+function handleAnswer(btn, q){
+  if(state.answered) return;
+  state.answered = true;
+  const chosen = btn.dataset.val;
+  const isCorrect = chosen === q.answer;
+  const blankSpan = document.getElementById('blankSpan');
+  blankSpan.textContent = q.answer;
+  blankSpan.classList.add('filled');
+
+  document.querySelectorAll('.choice-btn').forEach(b=>{
+    b.disabled = true;
+    if(b.dataset.val === q.answer) b.classList.add('correct');
+    else if(b === btn) b.classList.add('wrong');
+  });
+
+  const fb = document.getElementById('feedback');
+  fb.classList.add('show');
+  if(isCorrect){
+    fb.classList.add('ok');
+    fb.innerHTML = `⭕ 正解！「${q.idiom.replace('＿＿', q.answer)}」`;
+    state.correctCount++;
+  } else {
+    fb.classList.add('ng');
+    fb.innerHTML = `❌ 正解は「${q.answer}」だよ。<br>「${q.idiom.replace('＿＿', q.answer)}」`;
+    state.wrongThisRound.push(q.id);
+  }
+  document.getElementById('nextBtn').classList.add('show');
+}
+
+function renderRoundEnd(){
+  const total = state.totalThisRound;
+  const correct = state.correctCount;
+  const wrongCount = state.wrongThisRound.length;
+  const allClear = wrongCount === 0;
+
+  let title, desc, btnLabel;
+  if(allClear){
+    title = `第${state.round}周 コンプリート！`;
+    desc = `全問正解！すごい！`;
+    btnLabel = state.round < 3 ? 'このまま次の周へ進む（力だめし）' : '最初からもう一度';
+  } else if(state.round >= 3){
+    title = '3周おつかれさま！';
+    desc = `まだ ${wrongCount} 問、あやふやなことばがあるよ。<br>もう一周してしっかり定着させよう。`;
+    btnLabel = 'もう一周する（まちがい直し）';
+  } else {
+    title = `第${state.round}周 終了`;
+    desc = `${wrongCount} 問まちがえたよ。<br>次の周はそのまちがえた問題だけ出るよ。`;
+    btnLabel = `第${state.round+1}周へ進む`;
+  }
+
+  stage.innerHTML = `
+    <div class="center-card">
+      <div class="stamp">${allClear ? '合格' : '再挑戦'}</div>
+      <h2>${title}</h2>
+      <p>${desc}</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">${correct}</div><div class="lab">正解</div></div>
+        <div class="stat"><div class="num">${wrongCount}</div><div class="lab">まちがい</div></div>
+        <div class="stat"><div class="num">${total}</div><div class="lab">出題数</div></div>
+      </div>
+      <button class="big-btn" id="goNext">${btnLabel}</button>
+      <br>
+      <button class="ghost-btn" id="restartAll">全問から最初にもどる</button>
+    </div>
+  `;
+  footerNote.textContent = '';
+
+  document.getElementById('restartAll').onclick = showStart;
+
+  document.getElementById('goNext').onclick = ()=>{
+    if(allClear && state.round >= 3){
+      showStart();
+      return;
+    }
+    // proceed: either wrong-only next round, or repeat all if fully clear early
+    let nextQueue;
+    let nextRound = state.round + 1;
+    if(wrongCount === 0){
+      // all correct before round 3: keep going up rounds with full set for extra practice, capped at 3
+      nextQueue = shuffle(questions.map(q=>q.id));
+    } else {
+      nextQueue = shuffle(state.wrongThisRound);
+    }
+    if(nextRound > 3) nextRound = 3;
+    state = {
+      round: nextRound,
+      queue: nextQueue,
+      idx: 0,
+      wrongThisRound: [],
+      correctCount: 0,
+      totalThisRound: nextQueue.length,
+      answered:false
+    };
+    renderRoundTrack();
+    renderQuestion();
+  };
+}
+
+showStart();
+</script>
+</body>
+</html>
