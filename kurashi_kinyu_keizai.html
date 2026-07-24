@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>くらしと金融・経済 〜日本の経済〜</title>
+<style>
+  * { box-sizing: border-box; margin:0; padding:0; }
+  body {
+    font-family: "Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",sans-serif;
+    background: linear-gradient(135deg,#fef6e4 0%,#fde2e4 50%,#e2ece9 100%);
+    min-height: 100vh;
+    padding: 16px;
+    color: #3a2e2e;
+  }
+  .wrap { max-width: 560px; margin: 0 auto; }
+  header {
+    text-align:center;
+    margin-bottom: 16px;
+  }
+  header h1 {
+    font-size: 20px;
+    color: #a0522d;
+    line-height:1.4;
+  }
+  header p { font-size: 13px; color:#7a6a5f; margin-top:4px; }
+
+  .card {
+    background: #fffdf8;
+    border-radius: 18px;
+    box-shadow: 0 6px 18px rgba(160,82,45,0.15);
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+
+  .round-badge {
+    display:inline-block;
+    background:#f4a261;
+    color:#fff;
+    font-size:13px;
+    font-weight:bold;
+    padding:4px 14px;
+    border-radius:20px;
+    margin-bottom:10px;
+  }
+  .progress-bar-outer {
+    background:#eee;
+    border-radius:20px;
+    height:10px;
+    overflow:hidden;
+    margin: 10px 0 16px;
+  }
+  .progress-bar-inner {
+    background: linear-gradient(90deg,#f4a261,#e76f51);
+    height:100%;
+    width:0%;
+    transition: width 0.3s ease;
+  }
+  .q-count { text-align:right; font-size:12px; color:#999; margin-bottom:4px; }
+
+  .question-text {
+    font-size: 17px;
+    line-height:1.7;
+    margin-bottom: 18px;
+    font-weight:bold;
+    white-space:pre-wrap;
+  }
+  .choice-btn {
+    display:block;
+    width:100%;
+    text-align:left;
+    background:#fff;
+    border: 2px solid #e8d5c4;
+    border-radius:12px;
+    padding: 13px 16px;
+    margin-bottom:10px;
+    font-size:16px;
+    color:#3a2e2e;
+    cursor:pointer;
+    transition: all 0.15s;
+  }
+  .choice-btn:active { transform: scale(0.98); }
+  .choice-btn.correct { background:#d8f3dc; border-color:#52b788; }
+  .choice-btn.wrong { background:#ffd6d6; border-color:#e63946; }
+  .choice-btn.disabled { pointer-events:none; opacity:0.75; }
+
+  .explain-box {
+    display:none;
+    margin-top:14px;
+    background:#f1f8f5;
+    border-left: 4px solid #52b788;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size:14px;
+    line-height:1.6;
+  }
+  .next-btn {
+    display:none;
+    width:100%;
+    margin-top:14px;
+    background:#e76f51;
+    color:#fff;
+    border:none;
+    border-radius:12px;
+    padding:14px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+  }
+
+  .start-btn, .primary-btn {
+    display:block;
+    width:100%;
+    background:#e76f51;
+    color:#fff;
+    border:none;
+    border-radius:14px;
+    padding:16px;
+    font-size:17px;
+    font-weight:bold;
+    cursor:pointer;
+    margin-top: 8px;
+  }
+  .secondary-btn {
+    display:block;
+    width:100%;
+    background:#fff;
+    color:#e76f51;
+    border:2px solid #e76f51;
+    border-radius:14px;
+    padding:14px;
+    font-size:15px;
+    font-weight:bold;
+    cursor:pointer;
+    margin-top:10px;
+  }
+
+  .stage-list { font-size:14px; line-height:2; color:#5a4a3f; }
+  .result-score {
+    text-align:center;
+    font-size: 40px;
+    font-weight:bold;
+    color:#e76f51;
+    margin: 10px 0;
+  }
+  .weak-list {
+    background:#fff5f0;
+    border-radius:10px;
+    padding: 12px 14px;
+    margin-top: 12px;
+    font-size:14px;
+    line-height:1.9;
+  }
+  .weak-list b { color:#c1440e; }
+  footer { text-align:center; font-size:11px; color:#aaa; margin-top:20px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>くらしと金融・経済<br>〜日本の経済〜</h1>
+    <p>3周してしっかり定着させよう！</p>
+  </header>
+
+  <div id="app"></div>
+
+  <footer>第31回 くらしと金融・経済 対応</footer>
+</div>
+
+<script>
+const QUESTIONS = [
+  {q:"家計の収入のなかで、会社や工場などで働いて得る収入を何というか。", choices:["給与所得","事業所得","財産所得","消費支出"], answer:0, note:"労働の対価として企業などから受け取る収入。"},
+  {q:"家計の収入のなかで、個人で農業や商店、工場などを経営して得る収入を何というか。", choices:["給与所得","事業所得","財産所得","移転所得"], answer:1, note:"自営業者などが事業をおこなって得る収入。"},
+  {q:"家計の支出のなかで、くらしていくために実際に使う支出を何というか。", choices:["消費支出","非消費支出","貯蓄","財政支出"], answer:0, note:"食費や住居費、教育費など生活に必要な支出。"},
+  {q:"消費者が、商品の欠陥によって被害を受けた場合、企業の過ちを証明できなくても賠償を請求できることを定めた法律を何というか。", choices:["消費者基本法","製造物責任法(PL法)","独占禁止法","訪問販売法"], answer:1, note:"1995年に施行され、消費者の保護を強化した。"},
+  {q:"訪問販売などで商品を買った場合に、決められた期間内であれば契約を取り消すことができる制度を何というか。", choices:["クーリング・オフ制度","製造物責任法","消費者基本法","契約自由の原則"], answer:0, note:"一定期間内に無条件で契約を解除できる制度。"},
+  {q:"消費者の権利を守るための政府の責任を示す目的で、消費者保護基本法にかわって制定された法律は何か。", choices:["製造物責任法","消費者基本法","独占禁止法","景品表示法"], answer:1, note:"2004年に制定された、消費者の自立支援などを定めた法律。"},
+  {q:"経済が、好景気(好況)と不景気(不況)を交互にくり返すことを何というか。", choices:["景気変動(景気循環)","経済成長","インフレーション","デフレーション"], answer:0, note:"好況・後退・不況・回復をくり返す経済の動き。"},
+  {q:"物価が上がり続ける現象を何というか。", choices:["デフレーション(デフレ)","インフレーション(インフレ)","スタグフレーション","円高"], answer:1, note:"好景気のときにおこりやすい現象。"},
+  {q:"物価が下がり続ける現象を何というか。", choices:["インフレーション(インフレ)","デフレーション(デフレ)","スタグフレーション","円安"], answer:1, note:"不景気のときにおこりやすい現象。"},
+  {q:"物価や景気を安定させるために、政府がおこなう政策を何というか。", choices:["財政政策","金融政策","為替政策","貿易政策"], answer:0, note:"公共事業や税金の調整によって景気を安定させる政策。"},
+  {q:"物価や景気を安定させるために、日本銀行がおこなう政策を何というか。", choices:["財政政策","金融政策","労働政策","産業政策"], answer:1, note:"公開市場操作などによって通貨量を調整する政策。"},
+  {q:"銀行は、お金を借りた人が支払う利子を、お金を預けた人に支払う利子よりもどうして、その差額を利益としているか。", choices:["高くして","低くして","同じにして","無くして"], answer:0, note:"貸し出し金利を預金金利より高く設定して利益を得ている。"},
+  {q:"日本の中央銀行である日本銀行が、日本銀行券(紙幣)を発行することから何とよばれるか。", choices:["発券銀行","銀行の銀行","政府の銀行","一般の銀行"], answer:0, note:"日本で紙幣を発行できる唯一の銀行。"},
+  {q:"日本銀行が、一般の銀行に対してお金の貸し出しと預金の受け入れをおこなうことから何とよばれるか。", choices:["発券銀行","政府の銀行","銀行の銀行","民間銀行"], answer:2, note:"一般の銀行との間で資金のやりとりをおこなう。"},
+  {q:"日本銀行が、政府のお金を出し入れすることから何とよばれるか。", choices:["発券銀行","銀行の銀行","政府の銀行","中央銀行"], answer:2, note:"国庫金の管理などをおこなう役割。"},
+  {q:"株式を購入した人を何というか。", choices:["株主","経営者","取締役","出資者(のみ)"], answer:0, note:"会社に出資し、株式を持つ人。"},
+  {q:"株式を購入した人が、会社が利益をあげた場合にその一部を受け取ることができるものを何というか。", choices:["配当(配当金)","利子","地代","賃金"], answer:0, note:"会社の利益の一部を株主に分配するもの。"},
+  {q:"株式を購入した人が出席して、議決をする権利がある会議を何というか。", choices:["取締役会","株主総会","社員総会","経営会議"], answer:1, note:"会社の基本方針や役員を決定する最高機関。"},
+  {q:"消費者が買おうとする量を何というか。", choices:["需要量","供給量","生産量","在庫量"], answer:0, note:"買い手側が求める量。"},
+  {q:"生産者が売ろうとする量を何というか。", choices:["需要量","供給量","消費量","流通量"], answer:1, note:"売り手側が用意する量。"},
+  {q:"需要量が供給量を上回ると、価格はどうなるか。", choices:["上がる","下がる","変わらない","0になる"], answer:0, note:"品物が不足するため、価格は上昇する。"},
+  {q:"供給量が需要量を上回ると、価格はどうなるか。", choices:["上がる","下がる","変わらない","2倍になる"], answer:1, note:"品物が余るため、価格は下落する。"},
+  {q:"少数の企業が、商品の生産や販売を独占することによって決まる価格を何というか。", choices:["均衡価格","独占価格","市場価格","公共料金"], answer:1, note:"競争がないため、消費者に不利な価格になりやすい。"},
+  {q:"独占を防ぎ、企業の競争をうながすために定められた法律を何というか。", choices:["消費者基本法","独占禁止法","製造物責任法","会社法"], answer:1, note:"公正取引委員会がこの法律の運用を監督している。"},
+  {q:"景気の変動のうち、好景気のときに賃金や企業の利益、物価はどうなるか。", choices:["増える(上がる)","減る(下がる)","変わらない","0になる"], answer:0, note:"好景気では消費が活発になり、賃金や利益、物価が上昇する。"},
+  {q:"景気の変動のうち、不景気のときにものが売れる量はどうなるか。", choices:["増える","減る","変わらない","急増する"], answer:1, note:"不景気では消費が落ち込み、ものが売れなくなる。"},
+  {q:"株式会社のしくみで、出資者が受け取る証書を何というか。", choices:["株式","社債","手形","小切手"], answer:0, note:"出資した証として発行される証券。"},
+  {q:"株式会社が、株式を発行して得た資金を何というか。", choices:["資本(元手)","負債","利益","配当"], answer:0, note:"会社を経営するための元手となる資金。"},
+  {q:"株式会社で、会社の方針を決定したり役員を選出したりする機関を何というか。", choices:["取締役会","株主総会","監査役会","経営会議"], answer:1, note:"株主が出席し、議決権を行使する最高意思決定機関。"},
+  {q:"価格の決まり方において、価格が高いとき、供給量と需要量はどちらが多いか。", choices:["供給量","需要量","同じ","どちらも0"], answer:0, note:"価格が高いと生産者は多く売ろうとし、供給量が需要量を上回る。"},
+  {q:"価格の決まり方において、価格が安いとき、供給量と需要量はどちらが多いか。", choices:["供給量","需要量","同じ","どちらも0"], answer:1, note:"価格が安いと消費者は多く買おうとし、需要量が供給量を上回る。"},
+  {q:"供給量が需要量を上回っているとき、価格はどうなるか。", choices:["上がる","下がる","変わらない","2倍になる"], answer:1, note:"売れ残りが生じるため、価格は下落する。"},
+  {q:"需要量が供給量を上回っているとき、価格はどうなるか。", choices:["上がる","下がる","変わらない","0になる"], answer:0, note:"品不足になるため、価格は上昇する。"},
+  {q:"需要量と供給量が一致する価格を何というか。", choices:["独占価格","均衡価格","公共料金","市場価格(のみ)"], answer:1, note:"需要曲線と供給曲線が交わる点で決まる価格。"},
+  {q:"光熱・交通・通信などの料金は、国や地方公共団体が決定や認可をおこなう。その理由は何か。", choices:["国民生活に大きな影響を与えるから","企業の利益を増やすため","輸出を増やすため","独占を進めるため"], answer:0, note:"生活に不可欠なサービスのため、価格の急な変動を防ぐ必要がある。"},
+];
+
+let order = [];
+let round = 1;
+let idx = 0;
+let wrongThisRound = [];
+let wrongCounts = {}; // key: question text, count of wrong answers total
+let currentPool = [];
+let answeredCorrectlyOnFirstTry = new Set();
+
+const app = document.getElementById('app');
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function shuffleChoices(q){
+  const idxs = q.choices.map((c,i)=>i);
+  const shuffled = shuffle(idxs);
+  return {
+    text: q.q,
+    note: q.note,
+    choices: shuffled.map(i=>q.choices[i]),
+    answerIndex: shuffled.indexOf(q.answer),
+    origIndex: QUESTIONS.indexOf(q)
+  };
+}
+
+function renderStart(){
+  app.innerHTML = `
+    <div class="card">
+      <div class="stage-list">
+        📘 全${QUESTIONS.length}問<br>
+        🔁 3周してしっかり覚える方式<br>
+        1周目：まず全問チャレンジ<br>
+        2周目：間違えた問題を中心に復習<br>
+        3周目：最終チェック（まだ怪しい問題）
+      </div>
+      <button class="start-btn" onclick="startRound(1)">1周目スタート！</button>
+    </div>
+  `;
+}
+
+function startRound(r){
+  round = r;
+  idx = 0;
+  wrongThisRound = [];
+  if(r===1){
+    currentPool = shuffle(QUESTIONS.slice());
+  } else {
+    currentPool = shuffle(wrongCounts.__poolForRound || []);
+  }
+  if(currentPool.length===0){
+    finishRound();
+    return;
+  }
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const raw = currentPool[idx];
+  const q = shuffleChoices(raw);
+  const total = currentPool.length;
+  const pct = Math.round((idx/total)*100);
+
+  app.innerHTML = `
+    <div class="card">
+      <span class="round-badge">${round}周目</span>
+      <div class="q-count">${idx+1} / ${total} 問</div>
+      <div class="progress-bar-outer"><div class="progress-bar-inner" style="width:${pct}%"></div></div>
+      <div class="question-text">${q.text}</div>
+      <div id="choices"></div>
+      <div class="explain-box" id="explainBox"></div>
+      <button class="next-btn" id="nextBtn">次へ →</button>
+    </div>
+  `;
+
+  const choicesDiv = document.getElementById('choices');
+  q.choices.forEach((c,i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    btn.textContent = c;
+    btn.onclick = ()=>selectAnswer(i, q, raw);
+    choicesDiv.appendChild(btn);
+  });
+}
+
+function selectAnswer(i, q, raw){
+  const buttons = document.querySelectorAll('.choice-btn');
+  buttons.forEach(b=>b.classList.add('disabled'));
+  const correct = i===q.answerIndex;
+
+  buttons[q.answerIndex].classList.add('correct');
+  if(!correct){
+    buttons[i].classList.add('wrong');
+    wrongThisRound.push(raw);
+    wrongCounts[raw.q] = (wrongCounts[raw.q]||0)+1;
+  } else {
+    if(round===1) answeredCorrectlyOnFirstTry.add(raw.q);
+  }
+
+  const explainBox = document.getElementById('explainBox');
+  explainBox.style.display = 'block';
+  explainBox.innerHTML = (correct ? '✅ 正解！ ' : '❌ 不正解… 正解は「'+q.choices[q.answerIndex]+'」') + '<br>' + (q.note||'');
+
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.style.display = 'block';
+  nextBtn.textContent = (idx+1<currentPool.length) ? '次へ →' : `${round}周目の結果を見る`;
+  nextBtn.onclick = ()=>{
+    idx++;
+    if(idx<currentPool.length){
+      renderQuestion();
+    } else {
+      finishRound();
+    }
+  };
+}
+
+function finishRound(){
+  const wrongUnique = [...new Map(wrongThisRound.map(q=>[q.q,q])).values()];
+  wrongCounts.__poolForRound = wrongUnique;
+  wrongCounts.__lastPoolSize = currentPool.length;
+
+  const correctCount = currentPool.length - wrongUnique.length;
+
+  if(round<3 && wrongUnique.length>0){
+    app.innerHTML = `
+      <div class="card" style="text-align:center;">
+        <h2 style="color:#e76f51;">${round}周目 おつかれさま！</h2>
+        <div class="result-score">${correctCount} / ${currentPool.length}</div>
+        <p style="margin-bottom:14px;">間違えた ${wrongUnique.length} 問を中心に、次の周でもう一度チェックしよう！</p>
+        <button class="primary-btn" onclick="startRound(${round+1})">${round+1}周目へ進む</button>
+      </div>
+    `;
+  } else if(round<3 && wrongUnique.length===0){
+    app.innerHTML = `
+      <div class="card" style="text-align:center;">
+        <h2 style="color:#52b788;">${round}周目 パーフェクト！🎉</h2>
+        <p>間違いなし！このまま最後まで確認しよう。</p>
+        <button class="primary-btn" onclick="startRound(${round+1})">${round+1}周目へ進む</button>
+      </div>
+    `;
+  } else {
+    renderFinalResult(wrongUnique, correctCount);
+  }
+}
+
+function renderFinalResult(wrongUnique, correctCount){
+  let weakHtml = '';
+  if(wrongUnique.length>0){
+    weakHtml = `<div class="weak-list"><b>まだ怪しい問題（もう一回見直そう）</b><br>` +
+      wrongUnique.map(q=>'・'+q.q).join('<br>') + `</div>`;
+  } else {
+    weakHtml = `<div class="weak-list">🎉 弱点なし！バッチリ覚えられたで！</div>`;
+  }
+
+  app.innerHTML = `
+    <div class="card" style="text-align:center;">
+      <h2 style="color:#e76f51;">3周 完了！お疲れさま🎊</h2>
+      <div class="result-score">${correctCount} / ${(wrongCounts.__lastPoolSize||QUESTIONS.length)}</div>
+      ${weakHtml}
+      <button class="primary-btn" onclick="resetAll()">もう一度最初から</button>
+    </div>
+  `;
+}
+
+function resetAll(){
+  wrongCounts = {};
+  answeredCorrectlyOnFirstTry = new Set();
+  renderStart();
+}
+
+renderStart();
+</script>
+</body>
+</html>
