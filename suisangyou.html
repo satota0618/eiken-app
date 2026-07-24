@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>水産業 〜日本の農林水産業〜</title>
+<style>
+  * { box-sizing: border-box; margin:0; padding:0; }
+  body {
+    font-family: "Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",sans-serif;
+    background: linear-gradient(135deg,#fef6e4 0%,#fde2e4 50%,#e2ece9 100%);
+    min-height: 100vh;
+    padding: 16px;
+    color: #3a2e2e;
+  }
+  .wrap { max-width: 560px; margin: 0 auto; }
+  header {
+    text-align:center;
+    margin-bottom: 16px;
+  }
+  header h1 {
+    font-size: 20px;
+    color: #a0522d;
+    line-height:1.4;
+  }
+  header p { font-size: 13px; color:#7a6a5f; margin-top:4px; }
+
+  .card {
+    background: #fffdf8;
+    border-radius: 18px;
+    box-shadow: 0 6px 18px rgba(160,82,45,0.15);
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+
+  .round-badge {
+    display:inline-block;
+    background:#f4a261;
+    color:#fff;
+    font-size:13px;
+    font-weight:bold;
+    padding:4px 14px;
+    border-radius:20px;
+    margin-bottom:10px;
+  }
+  .progress-bar-outer {
+    background:#eee;
+    border-radius:20px;
+    height:10px;
+    overflow:hidden;
+    margin: 10px 0 16px;
+  }
+  .progress-bar-inner {
+    background: linear-gradient(90deg,#f4a261,#e76f51);
+    height:100%;
+    width:0%;
+    transition: width 0.3s ease;
+  }
+  .q-count { text-align:right; font-size:12px; color:#999; margin-bottom:4px; }
+
+  .question-text {
+    font-size: 17px;
+    line-height:1.7;
+    margin-bottom: 18px;
+    font-weight:bold;
+    white-space:pre-wrap;
+  }
+  .choice-btn {
+    display:block;
+    width:100%;
+    text-align:left;
+    background:#fff;
+    border: 2px solid #e8d5c4;
+    border-radius:12px;
+    padding: 13px 16px;
+    margin-bottom:10px;
+    font-size:16px;
+    color:#3a2e2e;
+    cursor:pointer;
+    transition: all 0.15s;
+  }
+  .choice-btn:active { transform: scale(0.98); }
+  .choice-btn.correct { background:#d8f3dc; border-color:#52b788; }
+  .choice-btn.wrong { background:#ffd6d6; border-color:#e63946; }
+  .choice-btn.disabled { pointer-events:none; opacity:0.75; }
+
+  .explain-box {
+    display:none;
+    margin-top:14px;
+    background:#f1f8f5;
+    border-left: 4px solid #52b788;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size:14px;
+    line-height:1.6;
+  }
+  .next-btn {
+    display:none;
+    width:100%;
+    margin-top:14px;
+    background:#e76f51;
+    color:#fff;
+    border:none;
+    border-radius:12px;
+    padding:14px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+  }
+
+  .start-btn, .primary-btn {
+    display:block;
+    width:100%;
+    background:#e76f51;
+    color:#fff;
+    border:none;
+    border-radius:14px;
+    padding:16px;
+    font-size:17px;
+    font-weight:bold;
+    cursor:pointer;
+    margin-top: 8px;
+  }
+  .secondary-btn {
+    display:block;
+    width:100%;
+    background:#fff;
+    color:#e76f51;
+    border:2px solid #e76f51;
+    border-radius:14px;
+    padding:14px;
+    font-size:15px;
+    font-weight:bold;
+    cursor:pointer;
+    margin-top:10px;
+  }
+
+  .stage-list { font-size:14px; line-height:2; color:#5a4a3f; }
+  .result-score {
+    text-align:center;
+    font-size: 40px;
+    font-weight:bold;
+    color:#e76f51;
+    margin: 10px 0;
+  }
+  .weak-list {
+    background:#fff5f0;
+    border-radius:10px;
+    padding: 12px 14px;
+    margin-top: 12px;
+    font-size:14px;
+    line-height:1.9;
+  }
+  .weak-list b { color:#c1440e; }
+  footer { text-align:center; font-size:11px; color:#aaa; margin-top:20px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>水産業<br>〜日本の農林水産業〜</h1>
+    <p>3周してしっかり定着させよう！</p>
+  </header>
+
+  <div id="app"></div>
+
+  <footer>第8回 水産業 対応</footer>
+</div>
+
+<script>
+const QUESTIONS = [
+  {q:"日本近海を北から南に向かって流れる寒流のうち、太平洋側を流れるものを何というか。", choices:["親潮(千島海流)","黒潮(日本海流)","対馬海流","リマン海流"], answer:0, note:"寒流のため、豊富な栄養分をふくむプランクトンが多い。"},
+  {q:"日本近海を南から北に向かって流れる暖流のうち、太平洋側を流れるものを何というか。", choices:["親潮(千島海流)","黒潮(日本海流)","リマン海流","対馬海流"], answer:1, note:"日本海流ともよばれる、太平洋側を流れる暖流。"},
+  {q:"日本近海を南から北に向かって流れる暖流のうち、日本海側を流れるものを何というか。", choices:["リマン海流","親潮(千島海流)","黒潮(日本海流)","対馬海流"], answer:3, note:"日本海側を北上する暖流。"},
+  {q:"日本近海を北から南に向かって流れる寒流のうち、日本海側を流れるものを何というか。", choices:["リマン海流","黒潮(日本海流)","対馬海流","親潮(千島海流)"], answer:0, note:"日本海側を南下する寒流。"},
+  {q:"暖流と寒流がぶつかる場所を何というか。", choices:["潮目(潮境)","大陸棚","排他的経済水域","湧昇流"], answer:0, note:"プランクトンが豊富で、好漁場となることが多い。"},
+  {q:"三陸海岸の沖合など、暖流と寒流がぶつかりよい漁場となっている海域を何海というか。", choices:["日本海","オホーツク海","三陸沖","瀬戸内海"], answer:2, note:"潮目にあたり、豊かな漁場として知られる。"},
+  {q:"大陸のまわりに広がる、水深200mくらいまでの浅い海底を何というか。", choices:["大陸棚","海溝","大陸だな","海嶺"], answer:0, note:"日光が届きやすく、魚のえさとなるプランクトンが豊富。"},
+  {q:"沿岸から200海里(約370km)までの範囲で、その国が水産資源や海底資源を利用できる権利をもつ水域を何というか。", choices:["公海","領海","排他的経済水域(EEZ)","大陸棚"], answer:2, note:"1970年代以降に各国が設定を進めた水域。"},
+  {q:"沿岸から12海里(約22km)までの範囲で、沿岸国の主権がおよぶ海域を何というか。", choices:["領海","公海","排他的経済水域","大陸棚"], answer:0, note:"国の主権がおよぶ海域で、外国の船は無断で航行できない。"},
+  {q:"1970年代、各国が200海里の排他的経済水域を設定するようになったことで衰退した漁業を何というか。", choices:["沿岸漁業","沖合漁業","遠洋漁業","栽培漁業"], answer:2, note:"外国の水域で自由に操業しづらくなったため衰退した。"},
+  {q:"日本近海で数日かけておこなわれる、10t以上の船を使う漁業を何というか。", choices:["沿岸漁業","沖合漁業","遠洋漁業","栽培漁業"], answer:1, note:"現在の日本の漁業種類の中で、漁獲量が最も多い。"},
+  {q:"10t未満の小型船で日帰りでおこなう漁業を何というか。", choices:["沿岸漁業","沖合漁業","遠洋漁業","養殖業"], answer:0, note:"海岸近くでおこなわれる小規模な漁業。"},
+  {q:"魚や貝の卵をふ化させ、稚魚や稚貝になるまで育ててから海や川に放流し、成長してからとる漁業を何というか。", choices:["沖合漁業","栽培漁業","遠洋漁業","養殖業"], answer:1, note:"水産資源を守り育てる「育てる漁業」の1つ。"},
+  {q:"いけすなどで魚や貝を出荷できる大きさになるまで人工的に育てる漁業を何というか。", choices:["栽培漁業","養殖業","沖合漁業","遠洋漁業"], answer:1, note:"かき・ほたて・まだいなどでさかんにおこなわれている。"},
+  {q:"広島県などでさかんな、養殖業がさかんな貝は何か。", choices:["かき","ほたて","あさり","しじみ"], answer:0, note:"広島湾は日本有数のかきの養殖地として知られる。"},
+  {q:"愛媛県などでさかんな、養殖業がさかんな魚は何か。", choices:["まぐろ","まだい","かつお","さんま"], answer:1, note:"愛媛県は、まだいの養殖生産量で全国有数である。"},
+  {q:"北海道などでさかんな、養殖業がさかんな貝は何か。", choices:["ほたて","かき","あさり","はまぐり"], answer:0, note:"寒流の栄養豊かな海域でさかんに養殖されている。"},
+  {q:"高知県などでかつおの一本釣りがさかんな理由となる、暖流と寒流がぶつかる場所を何というか。", choices:["潮目(潮境)","大陸棚","排他的経済水域","湧昇流"], answer:0, note:"かつおは黒潮にのって北上する回遊魚として知られる。"},
+  {q:"えびの養殖のためにマングローブが伐採されている地域はどこか。", choices:["東南アジア","北アメリカ","北ヨーロッパ","南極"], answer:0, note:"日本がえびを多く輸入していることとも関係している。"},
+  {q:"東南アジアでえびの養殖のために伐採されている、熱帯・亜熱帯の河口などに生育する樹木を何というか。", choices:["マングローブ","サンゴ","タイガ","ジャングル"], answer:0, note:"沿岸の生態系を守る役割もあるが、養殖池開発で減少している。"},
+  {q:"日本が世界で初めてまぐろの養殖に成功したことで知られる大学はどこか。", choices:["近畿大学","北海道大学","東京海洋大学","九州大学"], answer:0, note:"「近大マグロ」として知られる、完全養殖に成功した研究。"},
+  {q:"1970年代以降、遠洋漁業が衰退した最大の理由となった、各国が設定を進めたものは何か。", choices:["排他的経済水域(200海里)","領海(12海里)","公海自由の原則","大陸棚条約"], answer:0, note:"外国の海域での自由な操業が制限されるようになったため。"},
+  {q:"水産資源の減少を防ぐために、漁獲量の上限を定める制度を何というか。", choices:["TAC制度(漁獲可能量制度)","減反政策","エコラベル制度","トレーサビリティ制度"], answer:0, note:"魚種ごとに年間の漁獲量の上限を定める制度。"},
+  {q:"日本の漁業種類のうち、現在最も漁獲量が多いのはどれか。", choices:["遠洋漁業","沖合漁業","沿岸漁業","養殖業"], answer:1, note:"排他的経済水域の設定後、遠洋漁業にかわり中心となった。"},
+  {q:"日本が世界有数のえびの輸入国であることに関連し、日本がえびを多く輸入している地域はどこか。", choices:["東南アジア","北ヨーロッパ","南アメリカ","オセアニア"], answer:0, note:"えびの養殖のため、マングローブ林が伐採される問題が生じている。"},
+  {q:"暖流と寒流の性質のうち、寒流に多くふくまれ、魚のえさとなる小さな生物を何というか。", choices:["プランクトン","バクテリア","菌類","藻類(のみ)"], answer:0, note:"栄養分が豊富な寒流域には、これを食べる魚が多く集まる。"},
+  {q:"三陸海岸の沖合が好漁場となっている理由は、暖流の黒潮と寒流の何がぶつかるためか。", choices:["親潮(千島海流)","対馬海流","リマン海流","赤道海流"], answer:0, note:"黒潮と親潮がぶつかる潮目となっている。"},
+  {q:"漁業の分類のうち、沖合漁業でとれる代表的な魚は何か。", choices:["いわし・さば","まぐろ・かつお","かき・ほたて","のり・わかめ"], answer:0, note:"沖合漁業では、いわしやさばなどが多くとられる。"},
+  {q:"漁業の分類のうち、遠洋漁業でとれる代表的な魚は何か。", choices:["まぐろ・かつお","いわし・さば","かき・ほたて","のり・わかめ"], answer:0, note:"遠洋漁業では、まぐろやかつおなど回遊魚が多くとられる。"},
+  {q:"養殖業や栽培漁業をあわせて何漁業とよぶか。", choices:["育てる漁業","とる漁業","獲る漁業(のみ)","つくる漁業(誤答)"], answer:0, note:"水産資源を守り、計画的に生産する漁業のあり方。"},
+  {q:"水産資源の減少の理由の1つとして、各国の排他的経済水域の設定のほかに、乱獲や何が関係しているか。", choices:["水質汚濁・環境の変化","人口減少","貿易摩擦","為替の変動"], answer:0, note:"海洋環境の変化や乱獲が資源減少の一因とされている。"},
+  {q:"かつおの一本釣り漁業がさかんな高知県などが面している海域はどこか。", choices:["太平洋","日本海","オホーツク海","瀬戸内海"], answer:0, note:"黒潮にのって北上するかつおを一本釣りする漁法が有名。"},
+  {q:"200海里の排他的経済水域の設定によって、外国の漁船に対して沿岸国がもつ権利は何に関するものか。", choices:["水産資源や海底資源の利用","軍事的な支配","通貨の発行","関税の徴収"], answer:0, note:"排他的経済水域内の資源は沿岸国が優先的に利用できる。"},
+  {q:"養殖業や栽培漁業が「育てる漁業」とよばれるのに対して、遠洋漁業や沖合漁業、沿岸漁業は何とよばれるか。", choices:["とる漁業","つくる漁業","守る漁業","育む漁業"], answer:0, note:"自然の水産資源をそのままとる漁業のこと。"},
+];
+
+let order = [];
+let round = 1;
+let idx = 0;
+let wrongThisRound = [];
+let wrongCounts = {}; // key: question text, count of wrong answers total
+let currentPool = [];
+let answeredCorrectlyOnFirstTry = new Set();
+
+const app = document.getElementById('app');
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function shuffleChoices(q){
+  const idxs = q.choices.map((c,i)=>i);
+  const shuffled = shuffle(idxs);
+  return {
+    text: q.q,
+    note: q.note,
+    choices: shuffled.map(i=>q.choices[i]),
+    answerIndex: shuffled.indexOf(q.answer),
+    origIndex: QUESTIONS.indexOf(q)
+  };
+}
+
+function renderStart(){
+  app.innerHTML = `
+    <div class="card">
+      <div class="stage-list">
+        📘 全${QUESTIONS.length}問<br>
+        🔁 3周してしっかり覚える方式<br>
+        1周目：まず全問チャレンジ<br>
+        2周目：間違えた問題を中心に復習<br>
+        3周目：最終チェック（まだ怪しい問題）
+      </div>
+      <button class="start-btn" onclick="startRound(1)">1周目スタート！</button>
+    </div>
+  `;
+}
+
+function startRound(r){
+  round = r;
+  idx = 0;
+  wrongThisRound = [];
+  if(r===1){
+    currentPool = shuffle(QUESTIONS.slice());
+  } else {
+    currentPool = shuffle(wrongCounts.__poolForRound || []);
+  }
+  if(currentPool.length===0){
+    finishRound();
+    return;
+  }
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const raw = currentPool[idx];
+  const q = shuffleChoices(raw);
+  const total = currentPool.length;
+  const pct = Math.round((idx/total)*100);
+
+  app.innerHTML = `
+    <div class="card">
+      <span class="round-badge">${round}周目</span>
+      <div class="q-count">${idx+1} / ${total} 問</div>
+      <div class="progress-bar-outer"><div class="progress-bar-inner" style="width:${pct}%"></div></div>
+      <div class="question-text">${q.text}</div>
+      <div id="choices"></div>
+      <div class="explain-box" id="explainBox"></div>
+      <button class="next-btn" id="nextBtn">次へ →</button>
+    </div>
+  `;
+
+  const choicesDiv = document.getElementById('choices');
+  q.choices.forEach((c,i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    btn.textContent = c;
+    btn.onclick = ()=>selectAnswer(i, q, raw);
+    choicesDiv.appendChild(btn);
+  });
+}
+
+function selectAnswer(i, q, raw){
+  const buttons = document.querySelectorAll('.choice-btn');
+  buttons.forEach(b=>b.classList.add('disabled'));
+  const correct = i===q.answerIndex;
+
+  buttons[q.answerIndex].classList.add('correct');
+  if(!correct){
+    buttons[i].classList.add('wrong');
+    wrongThisRound.push(raw);
+    wrongCounts[raw.q] = (wrongCounts[raw.q]||0)+1;
+  } else {
+    if(round===1) answeredCorrectlyOnFirstTry.add(raw.q);
+  }
+
+  const explainBox = document.getElementById('explainBox');
+  explainBox.style.display = 'block';
+  explainBox.innerHTML = (correct ? '✅ 正解！ ' : '❌ 不正解… 正解は「'+q.choices[q.answerIndex]+'」') + '<br>' + (q.note||'');
+
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.style.display = 'block';
+  nextBtn.textContent = (idx+1<currentPool.length) ? '次へ →' : `${round}周目の結果を見る`;
+  nextBtn.onclick = ()=>{
+    idx++;
+    if(idx<currentPool.length){
+      renderQuestion();
+    } else {
+      finishRound();
+    }
+  };
+}
+
+function finishRound(){
+  const wrongUnique = [...new Map(wrongThisRound.map(q=>[q.q,q])).values()];
+  wrongCounts.__poolForRound = wrongUnique;
+  wrongCounts.__lastPoolSize = currentPool.length;
+
+  const correctCount = currentPool.length - wrongUnique.length;
+
+  if(round<3 && wrongUnique.length>0){
+    app.innerHTML = `
+      <div class="card" style="text-align:center;">
+        <h2 style="color:#e76f51;">${round}周目 おつかれさま！</h2>
+        <div class="result-score">${correctCount} / ${currentPool.length}</div>
+        <p style="margin-bottom:14px;">間違えた ${wrongUnique.length} 問を中心に、次の周でもう一度チェックしよう！</p>
+        <button class="primary-btn" onclick="startRound(${round+1})">${round+1}周目へ進む</button>
+      </div>
+    `;
+  } else if(round<3 && wrongUnique.length===0){
+    app.innerHTML = `
+      <div class="card" style="text-align:center;">
+        <h2 style="color:#52b788;">${round}周目 パーフェクト！🎉</h2>
+        <p>間違いなし！このまま最後まで確認しよう。</p>
+        <button class="primary-btn" onclick="startRound(${round+1})">${round+1}周目へ進む</button>
+      </div>
+    `;
+  } else {
+    renderFinalResult(wrongUnique, correctCount);
+  }
+}
+
+function renderFinalResult(wrongUnique, correctCount){
+  let weakHtml = '';
+  if(wrongUnique.length>0){
+    weakHtml = `<div class="weak-list"><b>まだ怪しい問題（もう一回見直そう）</b><br>` +
+      wrongUnique.map(q=>'・'+q.q).join('<br>') + `</div>`;
+  } else {
+    weakHtml = `<div class="weak-list">🎉 弱点なし！バッチリ覚えられたで！</div>`;
+  }
+
+  app.innerHTML = `
+    <div class="card" style="text-align:center;">
+      <h2 style="color:#e76f51;">3周 完了！お疲れさま🎊</h2>
+      <div class="result-score">${correctCount} / ${(wrongCounts.__lastPoolSize||QUESTIONS.length)}</div>
+      ${weakHtml}
+      <button class="primary-btn" onclick="resetAll()">もう一度最初から</button>
+    </div>
+  `;
+}
+
+function resetAll(){
+  wrongCounts = {};
+  answeredCorrectlyOnFirstTry = new Set();
+  renderStart();
+}
+
+renderStart();
+</script>
+</body>
+</html>
