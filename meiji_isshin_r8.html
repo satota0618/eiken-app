@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>明治維新 一問一答クイズ(3周)</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
+    background: linear-gradient(135deg, #fdf2f8, #f3e8ff);
+    margin: 0;
+    padding: 16px;
+    min-height: 100vh;
+    color: #3a2e3f;
+  }
+  .container { max-width: 640px; margin: 0 auto; }
+  h1 {
+    text-align: center;
+    font-size: 1.3rem;
+    color: #a4356a;
+    margin: 8px 0 4px;
+  }
+  .subtitle { text-align:center; font-size:0.85rem; color:#8a6d8f; margin-bottom:16px; }
+
+  .progress-wrap {
+    background: #fff;
+    border-radius: 14px;
+    padding: 14px;
+    box-shadow: 0 2px 10px rgba(164,53,106,0.1);
+    margin-bottom: 16px;
+  }
+  .round-bar { display:flex; gap:8px; justify-content:center; margin-bottom:10px; }
+  .round-chip {
+    flex:1; text-align:center; padding:8px 4px; border-radius:10px;
+    background:#f3e8ff; font-size:0.75rem; font-weight:bold; color:#a4356a;
+  }
+  .round-chip.done { background:#a4356a; color:white; }
+  .bar-outer { background:#f0e0ea; border-radius:8px; height:14px; overflow:hidden; }
+  .bar-inner { background: linear-gradient(90deg,#e893b8,#a4356a); height:100%; transition: width .3s; }
+  .stats { display:flex; justify-content:space-between; font-size:0.78rem; color:#8a6d8f; margin-top:6px; }
+
+  .card {
+    background: white;
+    border-radius: 18px;
+    padding: 24px 20px;
+    box-shadow: 0 4px 16px rgba(164,53,106,0.15);
+    min-height: 220px;
+    display:flex;
+    flex-direction:column;
+    justify-content: space-between;
+  }
+  .qnum { font-size: 0.75rem; color:#c48bab; font-weight:bold; margin-bottom:6px;}
+  .qtext { font-size: 1.05rem; line-height:1.7; color:#3a2e3f; }
+  .blank { color:#a4356a; font-weight:bold; border-bottom:2px solid #e893b8; padding:0 4px;}
+  .answer-box {
+    margin-top:16px;
+    background:#fdf2f8;
+    border-radius:12px;
+    padding:14px;
+    font-size:1.05rem;
+    font-weight:bold;
+    color:#a4356a;
+    text-align:center;
+    display:none;
+  }
+  .answer-box.show { display:block; }
+
+  .btn-row { display:flex; gap:10px; margin-top:18px; }
+  button {
+    flex:1;
+    border:none;
+    border-radius:12px;
+    padding:14px 8px;
+    font-size:0.95rem;
+    font-weight:bold;
+    cursor:pointer;
+    transition: transform .1s;
+  }
+  button:active { transform: scale(0.96); }
+  .btn-reveal { background:#a4356a; color:white; }
+  .btn-correct { background:#4caf82; color:white; }
+  .btn-wrong { background:#e05a6f; color:white; }
+  .btn-secondary { background:#f3e8ff; color:#a4356a; }
+
+  .finished {
+    text-align:center;
+    padding: 40px 20px;
+  }
+  .finished h2 { color:#a4356a; }
+  .emoji { font-size: 3rem; }
+
+  .footer-note { text-align:center; font-size:0.72rem; color:#b09ab5; margin-top:18px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>明治維新 一問一答クイズ</h1>
+  <div class="subtitle">幕末〜明治時代 全23問・3周方式</div>
+
+  <div class="progress-wrap">
+    <div class="round-bar" id="roundBar"></div>
+    <div class="bar-outer"><div class="bar-inner" id="barInner" style="width:0%"></div></div>
+    <div class="stats">
+      <span id="statMastered">マスター 0/23</span>
+      <span id="statStreak">連続正解 0</span>
+    </div>
+  </div>
+
+  <div id="quizArea"></div>
+
+  <div class="footer-note">〇×は自己採点やで。3回連続正解でマスター判定になるで。</div>
+</div>
+
+<script>
+const RAW_QUESTIONS = [
+  {q:"徳川慶喜は政権を返上する（①　）をおこない、その後朝廷が（②　）で天皇中心の政治を宣言した。", a:"①大政奉還　②王政復古の大号令"},
+  {q:"（　）の戦いから戊辰戦争が始まった。", a:"鳥羽・伏見の戦い"},
+  {q:"（①　）と（②　）の話し合いによって、江戸城の明けわたしが決定した。", a:"①西郷隆盛　②勝海舟"},
+  {q:"戊辰戦争は函館の（　）の戦いに旧幕府軍が敗北したことで終結した。", a:"五稜郭"},
+  {q:"1868年、明治天皇が神にちかう形で（　）を発表した。", a:"五箇条の御誓文"},
+  {q:"上の発表と同時に民衆に対しては（　）を示した。", a:"五榜の掲示"},
+  {q:"版籍奉還の版とは（①　）を指し、版籍奉還の籍とは（②　）を指す。", a:"①土地　②人民"},
+  {q:"1871年、地方政治の担い手を藩主から政府の役人にかえる（　）がおこなわれた。", a:"廃藩置県"},
+  {q:"明治時代になって、百姓や町人は平民、もと武士たちは（　）とよばれることになった。", a:"士族"},
+  {q:"1872年に、学校制度を定める（　）を公布した。", a:"学制"},
+  {q:"欧米諸国に対抗するため、経済を発展させると同時に軍隊も強くする（　）の政策をとった。", a:"富国強兵"},
+  {q:"富国強兵を実現するために、（　）を出し、国民に兵役の義務を課した。", a:"徴兵令"},
+  {q:"兵役の義務を負ったのは満（　）歳以上の男子だった。", a:"20歳"},
+  {q:"年貢を廃止して、（　）を発行し、地価の3％を税として、土地の所有者に現金で納めさせた。", a:"地券"},
+  {q:"地券の発行などにより税制を改めたことを（　）という。", a:"地租改正"},
+  {q:"経済を発展させるために、（　）の政策をとり、近代工業を発展させようとした。", a:"殖産興業"},
+  {q:"群馬県に（　）の富岡製糸場をつくり、品質の良い生糸づくりをめざした。", a:"官営（政府が経営する）工場"},
+  {q:"富岡製糸場では、（　）の技術や機械を導入していた。", a:"フランス"},
+  {q:"新橋－（　）間に鉄道が開通した。", a:"横浜"},
+  {q:"郵便制度を整備した（　）は「日本郵便の父」とよばれている。", a:"前島密"},
+  {q:"明治初期に外国から新しい文化が流入し、生活が大きく変化したことを（　）という。", a:"文明開化"},
+  {q:"それまでの太陰暦にかわって、（　）が採用された。", a:"太陽暦"},
+  {q:"（　）は『学問のすゝめ』を出版して、学問の大切さと人間の平等を説いた。", a:"福沢諭吉"}
+];
+
+const TOTAL = RAW_QUESTIONS.length;
+const NEED_STREAK = 3;
+const STORAGE_KEY = "meiji_isshin_r8_progress";
+
+let state = loadState();
+
+function loadState(){
+  try{
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if(saved){
+      const parsed = JSON.parse(saved);
+      if(parsed.streaks && parsed.streaks.length === TOTAL) return parsed;
+    }
+  }catch(e){}
+  return { streaks: new Array(TOTAL).fill(0), queue: shuffle([...Array(TOTAL).keys()]) };
+}
+
+function saveState(){
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){}
+}
+
+function shuffle(arr){
+  for(let i=arr.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+  return arr;
+}
+
+let currentIndex = null;
+let revealed = false;
+
+function masteredCount(){
+  return state.streaks.filter(s => s >= NEED_STREAK).length;
+}
+
+function renderRoundBar(){
+  const bar = document.getElementById("roundBar");
+  bar.innerHTML = "";
+  for(let r=1;r<=NEED_STREAK;r++){
+    const chip = document.createElement("div");
+    chip.className = "round-chip";
+    chip.textContent = r + "周目";
+    bar.appendChild(chip);
+  }
+}
+
+function updateProgressUI(){
+  const m = masteredCount();
+  document.getElementById("statMastered").textContent = `マスター ${m}/${TOTAL}`;
+  document.getElementById("barInner").style.width = (m/TOTAL*100) + "%";
+
+  // approximate "current round" = min streak among unmastered, capped, just for chip highlight
+  const minStreakUnmastered = Math.min(...state.streaks.filter(s=>s<NEED_STREAK), NEED_STREAK-1);
+  const chips = document.querySelectorAll(".round-chip");
+  chips.forEach((c, idx) => {
+    c.classList.toggle("done", idx < (m===TOTAL?NEED_STREAK: Math.floor(state.streaks.reduce((a,b)=>a+b,0)/TOTAL)) );
+  });
+
+  const avgStreak = (state.streaks.reduce((a,b)=>a+b,0)/TOTAL).toFixed(1);
+  document.getElementById("statStreak").textContent = `平均連続正解 ${avgStreak}`;
+}
+
+function pickNext(){
+  // rebuild queue if empty
+  if(state.queue.length === 0){
+    const remaining = [];
+    for(let i=0;i<TOTAL;i++){
+      if(state.streaks[i] < NEED_STREAK) remaining.push(i);
+    }
+    if(remaining.length === 0) return null; // all mastered
+    state.queue = shuffle(remaining);
+  }
+  // pop next index that isn't mastered
+  while(state.queue.length){
+    const idx = state.queue.shift();
+    if(state.streaks[idx] < NEED_STREAK) return idx;
+  }
+  return pickNext();
+}
+
+function renderQuestion(){
+  const area = document.getElementById("quizArea");
+  if(masteredCount() === TOTAL){
+    area.innerHTML = `
+      <div class="card finished">
+        <div class="emoji">🎉</div>
+        <h2>全問マスターや！</h2>
+        <p>23問すべて3回連続正解できたで。おつかれさま！</p>
+        <div class="btn-row">
+          <button class="btn-secondary" onclick="resetAll()">もう一回最初から</button>
+        </div>
+      </div>`;
+    updateProgressUI();
+    return;
+  }
+
+  currentIndex = pickNext();
+  revealed = false;
+  const item = RAW_QUESTIONS[currentIndex];
+  const streak = state.streaks[currentIndex];
+
+  area.innerHTML = `
+    <div class="card">
+      <div>
+        <div class="qnum">問題 ${currentIndex+1} ／ 現在の連続正解 ${streak}/${NEED_STREAK}</div>
+        <div class="qtext">${item.q.replace(/（[^）]*）/g, m => `<span class="blank">${m}</span>`)}</div>
+        <div class="answer-box" id="answerBox">${item.a}</div>
+      </div>
+      <div>
+        <div class="btn-row" id="revealRow">
+          <button class="btn-reveal" onclick="revealAnswer()">答えを見る</button>
+        </div>
+        <div class="btn-row" id="judgeRow" style="display:none;">
+          <button class="btn-correct" onclick="judge(true)">〇 正解できた</button>
+          <button class="btn-wrong" onclick="judge(false)">× まちがえた</button>
+        </div>
+      </div>
+    </div>
+  `;
+  updateProgressUI();
+}
+
+function revealAnswer(){
+  revealed = true;
+  document.getElementById("answerBox").classList.add("show");
+  document.getElementById("revealRow").style.display = "none";
+  document.getElementById("judgeRow").style.display = "flex";
+}
+
+function judge(isCorrect){
+  if(isCorrect){
+    state.streaks[currentIndex] += 1;
+    if(state.streaks[currentIndex] < NEED_STREAK){
+      // requeue further back so it doesn't repeat immediately
+      const pos = Math.min(4, state.queue.length);
+      state.queue.splice(pos, 0, currentIndex);
+    }
+  } else {
+    state.streaks[currentIndex] = 0;
+    const pos = Math.min(2, state.queue.length);
+    state.queue.splice(pos, 0, currentIndex);
+  }
+  saveState();
+  renderQuestion();
+}
+
+function resetAll(){
+  if(!confirm("進捗を全部リセットするで。ええか？")) return;
+  state = { streaks: new Array(TOTAL).fill(0), queue: shuffle([...Array(TOTAL).keys()]) };
+  saveState();
+  renderQuestion();
+}
+
+renderRoundBar();
+renderQuestion();
+</script>
+</body>
+</html>
