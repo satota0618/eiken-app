@@ -1,0 +1,384 @@
+<style>
+  :root{
+    --navy:#16324F;
+    --teal:#2A9D8F;
+    --sand:#E9C46A;
+    --coral:#E76F51;
+    --paper:#F6F8F7;
+    --ink:#1B2430;
+  }
+  *{box-sizing:border-box;}
+  .fuka-root{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Hiragino Sans","Yu Gothic",sans-serif;
+    max-width:720px;
+    margin:0 auto;
+    padding:0 0 40px 0;
+    line-height:1.7;
+  }
+  .fuka-hero{
+    background:linear-gradient(160deg,var(--navy) 0%,#0E2238 100%);
+    color:#fff;
+    padding:36px 28px 30px 28px;
+    border-radius:0 0 28px 28px;
+    position:relative;
+    overflow:hidden;
+  }
+  .fuka-hero::after{
+    content:"";
+    position:absolute;
+    right:-40px; bottom:-60px;
+    width:200px; height:200px;
+    border-radius:50%;
+    background:radial-gradient(circle,rgba(42,157,143,0.35),transparent 70%);
+  }
+  .fuka-hero h1{
+    margin:0 0 6px 0;
+    font-size:26px;
+    letter-spacing:0.02em;
+  }
+  .fuka-hero p{
+    margin:0;
+    color:#BFD3DC;
+    font-size:14px;
+  }
+  .fuka-progress{
+    display:flex; gap:8px; margin-top:18px;
+  }
+  .fuka-progress-dot{
+    flex:1; height:5px; border-radius:3px;
+    background:rgba(255,255,255,0.2);
+    overflow:hidden;
+  }
+  .fuka-progress-fill{
+    height:100%; background:var(--sand); width:0%;
+    transition:width .4s ease;
+  }
+  .fuka-section{
+    margin:26px 20px 0 20px;
+    background:#fff;
+    border-radius:16px;
+    padding:22px 20px;
+    border:1px solid #E4E9E7;
+  }
+  .fuka-section-tag{
+    display:inline-block;
+    font-size:12px;
+    color:var(--teal);
+    background:#E4F3F1;
+    padding:3px 10px;
+    border-radius:20px;
+    margin-bottom:10px;
+  }
+  .fuka-section h2{
+    margin:0 0 6px 0;
+    font-size:18px;
+    color:var(--navy);
+  }
+  .fuka-tip{
+    background:#FBF3E1;
+    border-left:4px solid var(--sand);
+    padding:10px 14px;
+    border-radius:6px;
+    font-size:13.5px;
+    margin:12px 0 18px 0;
+    color:#5B4A22;
+  }
+  .fuka-q{
+    margin:18px 0;
+    padding-top:16px;
+    border-top:1px dashed #DDE3E1;
+  }
+  .fuka-q:first-of-type{border-top:none;padding-top:0;}
+  .fuka-q-label{
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    color:#8A9490;
+    margin-bottom:4px;
+  }
+  .fuka-q-body{
+    font-size:15px;
+    margin-bottom:12px;
+    color:var(--ink);
+  }
+  .fuka-options{
+    display:flex; flex-direction:column; gap:8px;
+  }
+  .fuka-opt{
+    text-align:left;
+    padding:10px 14px;
+    border:1.5px solid #D9E0DD;
+    border-radius:10px;
+    background:#fff;
+    cursor:pointer;
+    font-size:14.5px;
+    color:var(--ink);
+    transition:border-color .15s, background .15s;
+  }
+  .fuka-opt:hover{border-color:var(--teal);}
+  .fuka-opt.correct{border-color:var(--teal); background:#E4F3F1; font-weight:bold;}
+  .fuka-opt.wrong{border-color:var(--coral); background:#FBE9E4;}
+  .fuka-opt[disabled]{cursor:default;}
+  .fuka-write-row{
+    display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+  }
+  .fuka-write-row input{
+    width:110px;
+    padding:9px 10px;
+    border:1.5px solid #D9E0DD;
+    border-radius:8px;
+    font-size:15px;
+  }
+  .fuka-write-row span.unit{font-size:14px; color:#5B665F;}
+  .fuka-btn{
+    padding:9px 16px;
+    border:none;
+    border-radius:8px;
+    background:var(--navy);
+    color:#fff;
+    font-size:14px;
+    cursor:pointer;
+  }
+  .fuka-btn:hover{background:#0E2238;}
+  .fuka-feedback{
+    margin-top:10px;
+    padding:10px 14px;
+    border-radius:8px;
+    font-size:14px;
+    display:none;
+  }
+  .fuka-feedback.show{display:block;}
+  .fuka-feedback.ok{background:#E4F3F1; color:#1B5E56;}
+  .fuka-feedback.ng{background:#FBE9E4; color:#8A3A28;}
+  .fuka-explain{
+    margin-top:8px;
+    font-size:13.5px;
+    color:#4A554F;
+    background:#F6F8F7;
+    padding:10px 12px;
+    border-radius:8px;
+    white-space:pre-line;
+  }
+  .fuka-footer{
+    margin:28px 20px 0 20px;
+    text-align:center;
+    font-size:13px;
+    color:#8A9490;
+  }
+  .fuka-reset{
+    background:none;border:1px solid #D9E0DD;color:#5B665F;
+    padding:6px 14px;border-radius:20px;font-size:12.5px;cursor:pointer;margin-top:10px;
+  }
+</style>
+
+<div class="fuka-root" id="fukaRoot">
+  <div class="fuka-hero">
+    <h1>浮力ふりかえりドリル</h1>
+    <p>復習テストで出た3つのつまずきポイントを、番号順に確認しよう</p>
+    <div class="fuka-progress" id="fukaProgressBar"></div>
+  </div>
+
+  <div class="fuka-section" data-section="1">
+    <span class="fuka-section-tag">つまずき①</span>
+    <h2>浮いている物体：割合を重さにそのままかけない</h2>
+    <div class="fuka-tip">浮いているとき「浮力＝物体の重さ」。まず<b>つかっている体積（cm³）</b>を出してから、割合（分数）を使って<b>全体の体積</b>を計算する。分数をいきなり重さにかけない。</div>
+
+    <div class="fuka-q" data-qid="1-1" data-type="mc" data-answer="1">
+      <div class="fuka-q-label">Q1・選択</div>
+      <div class="fuka-q-body">重さ150gの木片を水に浮かべたら、全体の5分の2が水面から上に出ていた。水につかっている部分の体積は？</div>
+      <div class="fuka-options">
+        <button class="fuka-opt" data-idx="0">60 cm³</button>
+        <button class="fuka-opt" data-idx="1">150 cm³</button>
+        <button class="fuka-opt" data-idx="2">225 cm³</button>
+        <button class="fuka-opt" data-idx="3">375 cm³</button>
+      </div>
+      <div class="fuka-explain" style="display:none">浮いているので浮力＝物体の重さ＝150g。水1cm³＝1gだから、つかっている体積は150cm³。「5分の2」は使わない（これは水面から上に出ている割合で、全体の体積を求めるときにだけ使う）。</div>
+    </div>
+
+    <div class="fuka-q" data-qid="1-2" data-type="write" data-answer="490">
+      <div class="fuka-q-label">Q2・計算して入力</div>
+      <div class="fuka-q-body">重さ280gの直方体のつみ木を水に浮かべたら、全体の7分の4が水につかった。つみ木全体の体積は何cm³？</div>
+      <div class="fuka-write-row">
+        <input type="number" placeholder="数字"><span class="unit">cm³</span>
+        <button class="fuka-btn" data-action="check">答え合わせ</button>
+      </div>
+      <div class="fuka-feedback"></div>
+      <div class="fuka-explain" style="display:none">①つかっている体積＝浮力＝重さ＝280cm³
+②「280cm³が全体の7分の4」なので　280 ÷ 4/7 ＝ 280 × 7/4 ＝ 490cm³</div>
+    </div>
+  </div>
+
+  <div class="fuka-section" data-section="2">
+    <span class="fuka-section-tag">つまずき②</span>
+    <h2>半分だけ沈める：使う体積を半分にする</h2>
+    <div class="fuka-tip">「半分だけ」「3分の1だけ」水に入れる問題は、<b>浮力の計算に使う体積も同じ割合にする</b>。物体全体の体積をそのまま使わない。</div>
+
+    <div class="fuka-q" data-qid="2-1" data-type="mc" data-answer="1">
+      <div class="fuka-q-label">Q3・選択</div>
+      <div class="fuka-q-body">重さ200g、体積60cm³のおもりを、ちょうど半分だけ水につけた。ばねはかりは何gを示す？</div>
+      <div class="fuka-options">
+        <button class="fuka-opt" data-idx="0">140 g</button>
+        <button class="fuka-opt" data-idx="1">170 g</button>
+        <button class="fuka-opt" data-idx="2">200 g</button>
+        <button class="fuka-opt" data-idx="3">230 g</button>
+      </div>
+      <div class="fuka-explain" style="display:none">沈んでいる体積＝60÷2＝30cm³。浮力＝30g。ばねはかり＝200－30＝170g。</div>
+    </div>
+
+    <div class="fuka-q" data-qid="2-2" data-type="write" data-answer="330">
+      <div class="fuka-q-label">Q4・計算して入力</div>
+      <div class="fuka-q-body">重さ360g、体積90cm³のおもりを、3分の1だけ水につけた。ばねはかりは何g？</div>
+      <div class="fuka-write-row">
+        <input type="number" placeholder="数字"><span class="unit">g</span>
+        <button class="fuka-btn" data-action="check">答え合わせ</button>
+      </div>
+      <div class="fuka-feedback"></div>
+      <div class="fuka-explain" style="display:none">沈んでいる体積＝90 × 3分の1 ＝30cm³。浮力＝30g。ばねはかり＝360－30＝330g。</div>
+    </div>
+  </div>
+
+  <div class="fuka-section" data-section="3">
+    <span class="fuka-section-tag">つまずき③</span>
+    <h2>単位換算の最後の一手を忘れない</h2>
+    <div class="fuka-tip">液体を変えたときの「ばねはかりの差」は、<b>体積 × 密度の差</b>で決まる。差の数字を出したあと、密度で割って体積に戻すところまでが1セット。</div>
+
+    <div class="fuka-q" data-qid="3-1" data-type="mc" data-answer="2">
+      <div class="fuka-q-label">Q5・選択</div>
+      <div class="fuka-q-body">ある物体を水に沈めたときと油（1cm³あたり0.8g）に沈めたときで、ばねはかりの差が8gあった。沈んでいる部分の体積は何cm³？</div>
+      <div class="fuka-options">
+        <button class="fuka-opt" data-idx="0">8 cm³</button>
+        <button class="fuka-opt" data-idx="1">10 cm³</button>
+        <button class="fuka-opt" data-idx="2">40 cm³</button>
+        <button class="fuka-opt" data-idx="3">64 cm³</button>
+      </div>
+      <div class="fuka-explain" style="display:none">水と油の密度の差は 1－0.8＝0.2g/cm³。差の8gはこの0.2g/cm³ぶんの体積で生まれているので、体積＝8÷0.2＝40cm³。8gのまま止めない。</div>
+    </div>
+
+    <div class="fuka-q" data-qid="3-2" data-type="write" data-answer="12">
+      <div class="fuka-q-label">Q6・計算して入力</div>
+      <div class="fuka-q-body">同じ物体を、食塩水（1cm³あたり1.25g）に全部沈めたときと真水に全部沈めたときで、ばねはかりの差は3gだった。物体の体積は何cm³？</div>
+      <div class="fuka-write-row">
+        <input type="number" placeholder="数字"><span class="unit">cm³</span>
+        <button class="fuka-btn" data-action="check">答え合わせ</button>
+      </div>
+      <div class="fuka-feedback"></div>
+      <div class="fuka-explain" style="display:none">密度の差＝1.25－1＝0.25g/cm³。差3gはこの0.25g/cm³ぶんの体積なので、体積＝3÷0.25＝12cm³。</div>
+    </div>
+  </div>
+
+  <div class="fuka-footer" id="fukaScoreLine">
+    まだ0問クリア
+    <br>
+    <button class="fuka-reset" id="fukaReset">記録をリセット</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  const root = document.getElementById('fukaRoot');
+  const STORAGE_KEY = 'fuka-drill-progress-v1';
+  let progress = {};
+
+  function totalQuestions(){
+    return root.querySelectorAll('.fuka-q').length;
+  }
+
+  function updateUI(){
+    const bar = document.getElementById('fukaProgressBar');
+    bar.innerHTML = '';
+    const total = totalQuestions();
+    let done = 0;
+    root.querySelectorAll('.fuka-q').forEach(q=>{
+      const id = q.getAttribute('data-qid');
+      const dot = document.createElement('div');
+      dot.className = 'fuka-progress-dot';
+      const fill = document.createElement('div');
+      fill.className = 'fuka-progress-fill';
+      if(progress[id] === 'correct'){ fill.style.width='100%'; done++; }
+      else if(progress[id] === 'wrong'){ fill.style.width='100%'; fill.style.background = 'var(--coral)'; done++; }
+      dot.appendChild(fill);
+      bar.appendChild(dot);
+    });
+    document.getElementById('fukaScoreLine').firstChild.textContent =
+      (done===total && total>0) ? '全' + total + '問クリア、おつかれさま！' : ('今のところ ' + done + ' / ' + total + ' 問クリア');
+  }
+
+  async function save(){
+    try{ await window.storage.set(STORAGE_KEY, JSON.stringify(progress), false); }catch(e){ /* best effort */ }
+  }
+
+  async function load(){
+    try{
+      const r = await window.storage.get(STORAGE_KEY, false);
+      if(r && r.value){ progress = JSON.parse(r.value); }
+    }catch(e){ progress = {}; }
+    updateUI();
+  }
+
+  // multiple choice
+  root.querySelectorAll('.fuka-q[data-type="mc"]').forEach(q=>{
+    const qid = q.getAttribute('data-qid');
+    const correctIdx = q.getAttribute('data-answer');
+    const opts = q.querySelectorAll('.fuka-opt');
+    const explain = q.querySelector('.fuka-explain');
+    opts.forEach(opt=>{
+      opt.addEventListener('click', ()=>{
+        opts.forEach(o=>o.disabled = true);
+        const idx = opt.getAttribute('data-idx');
+        if(idx === correctIdx){
+          opt.classList.add('correct');
+          progress[qid] = 'correct';
+        } else {
+          opt.classList.add('wrong');
+          opts[correctIdx].classList.add('correct');
+          progress[qid] = 'wrong';
+        }
+        explain.style.display = 'block';
+        save();
+        updateUI();
+      });
+    });
+  });
+
+  // write-in
+  root.querySelectorAll('.fuka-q[data-type="write"]').forEach(q=>{
+    const qid = q.getAttribute('data-qid');
+    const answer = q.getAttribute('data-answer');
+    const input = q.querySelector('input');
+    const btn = q.querySelector('[data-action="check"]');
+    const feedback = q.querySelector('.fuka-feedback');
+    const explain = q.querySelector('.fuka-explain');
+    btn.addEventListener('click', ()=>{
+      const val = input.value.trim();
+      if(val === ''){ return; }
+      feedback.classList.add('show');
+      explain.style.display = 'block';
+      if(Math.abs(parseFloat(val) - parseFloat(answer)) < 0.001){
+        feedback.classList.add('ok'); feedback.classList.remove('ng');
+        feedback.textContent = '正解！';
+        progress[qid] = 'correct';
+      } else {
+        feedback.classList.add('ng'); feedback.classList.remove('ok');
+        feedback.textContent = '正解は ' + answer + '。もう一度式を確認してみよう。';
+        progress[qid] = 'wrong';
+      }
+      save();
+      updateUI();
+    });
+  });
+
+  document.getElementById('fukaReset').addEventListener('click', async ()=>{
+    progress = {};
+    root.querySelectorAll('.fuka-opt').forEach(o=>{o.disabled=false; o.classList.remove('correct','wrong');});
+    root.querySelectorAll('.fuka-explain').forEach(e=>e.style.display='none');
+    root.querySelectorAll('.fuka-feedback').forEach(f=>{f.classList.remove('show','ok','ng');});
+    root.querySelectorAll('.fuka-q[data-type="write"] input').forEach(i=>i.value='');
+    await save();
+    updateUI();
+  });
+
+  load();
+})();
+</script>
