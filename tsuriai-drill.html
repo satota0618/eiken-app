@@ -1,0 +1,271 @@
+<style>
+  :root{
+    --navy:#16324F;
+    --teal:#2A9D8F;
+    --sand:#E9C46A;
+    --coral:#E76F51;
+    --paper:#F6F8F7;
+    --ink:#1B2430;
+  }
+  *{box-sizing:border-box;}
+  .tsu-root{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Hiragino Sans","Yu Gothic",sans-serif;
+    max-width:720px;
+    margin:0 auto;
+    padding:0 0 40px 0;
+    line-height:1.7;
+  }
+  .tsu-hero{
+    background:linear-gradient(160deg,var(--navy) 0%,#0E2238 100%);
+    color:#fff;
+    padding:36px 28px 30px 28px;
+    border-radius:0 0 28px 28px;
+    position:relative;
+    overflow:hidden;
+  }
+  .tsu-hero::after{
+    content:"";
+    position:absolute;
+    right:-40px; bottom:-60px;
+    width:200px; height:200px;
+    border-radius:50%;
+    background:radial-gradient(circle,rgba(233,196,106,0.35),transparent 70%);
+  }
+  .tsu-hero h1{margin:0 0 6px 0; font-size:26px; letter-spacing:0.02em;}
+  .tsu-hero p{margin:0; color:#BFD3DC; font-size:14px;}
+  .tsu-progress{display:flex; gap:8px; margin-top:18px;}
+  .tsu-progress-dot{flex:1; height:5px; border-radius:3px; background:rgba(255,255,255,0.2); overflow:hidden;}
+  .tsu-progress-fill{height:100%; background:var(--sand); width:0%; transition:width .4s ease;}
+  .tsu-section{margin:26px 20px 0 20px; background:#fff; border-radius:16px; padding:22px 20px; border:1px solid #E4E9E7;}
+  .tsu-section-tag{display:inline-block; font-size:12px; color:var(--teal); background:#E4F3F1; padding:3px 10px; border-radius:20px; margin-bottom:10px;}
+  .tsu-section h2{margin:0 0 6px 0; font-size:18px; color:var(--navy);}
+  .tsu-tip{background:#FBF3E1; border-left:4px solid var(--sand); padding:10px 14px; border-radius:6px; font-size:13.5px; margin:12px 0 18px 0; color:#5B4A22;}
+  .tsu-q{margin:18px 0; padding-top:16px; border-top:1px dashed #DDE3E1;}
+  .tsu-q:first-of-type{border-top:none;padding-top:0;}
+  .tsu-q-label{font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:#8A9490; margin-bottom:4px;}
+  .tsu-q-body{font-size:15px; margin-bottom:12px; color:var(--ink);}
+  .tsu-options{display:flex; flex-direction:column; gap:8px;}
+  .tsu-opt{text-align:left; padding:10px 14px; border:1.5px solid #D9E0DD; border-radius:10px; background:#fff; cursor:pointer; font-size:14.5px; color:var(--ink); transition:border-color .15s, background .15s;}
+  .tsu-opt:hover{border-color:var(--teal);}
+  .tsu-opt.correct{border-color:var(--teal); background:#E4F3F1; font-weight:bold;}
+  .tsu-opt.wrong{border-color:var(--coral); background:#FBE9E4;}
+  .tsu-opt[disabled]{cursor:default;}
+  .tsu-write-row{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
+  .tsu-write-row input{width:110px; padding:9px 10px; border:1.5px solid #D9E0DD; border-radius:8px; font-size:15px;}
+  .tsu-write-row span.unit{font-size:14px; color:#5B665F;}
+  .tsu-btn{padding:9px 16px; border:none; border-radius:8px; background:var(--navy); color:#fff; font-size:14px; cursor:pointer;}
+  .tsu-btn:hover{background:#0E2238;}
+  .tsu-feedback{margin-top:10px; padding:10px 14px; border-radius:8px; font-size:14px; display:none;}
+  .tsu-feedback.show{display:block;}
+  .tsu-feedback.ok{background:#E4F3F1; color:#1B5E56;}
+  .tsu-feedback.ng{background:#FBE9E4; color:#8A3A28;}
+  .tsu-explain{margin-top:8px; font-size:13.5px; color:#4A554F; background:#F6F8F7; padding:10px 12px; border-radius:8px; white-space:pre-line;}
+  .tsu-footer{margin:28px 20px 0 20px; text-align:center; font-size:13px; color:#8A9490;}
+  .tsu-reset{background:none;border:1px solid #D9E0DD;color:#5B665F; padding:6px 14px;border-radius:20px;font-size:12.5px;cursor:pointer;margin-top:10px;}
+</style>
+
+<div class="tsu-root" id="tsuRoot">
+  <div class="tsu-hero">
+    <h1>力のつりあい ふりかえりドリル</h1>
+    <p>てこ・滑車と輪じく・ばね、浮力と同じクセが出てないか確認しよう</p>
+    <div class="tsu-progress" id="tsuProgressBar"></div>
+  </div>
+
+  <div class="tsu-section" data-section="1">
+    <span class="tsu-section-tag">てこ</span>
+    <h2>モーメントのつり合い：距離を掛け忘れない</h2>
+    <div class="tsu-tip">てこは「支点からの距離 × 力」の値が両側で等しくなる。距離を掛けずに重さだけで比べたり、比だけで答えを出したりしない。</div>
+
+    <div class="tsu-q" data-qid="1-1" data-type="mc" data-answer="1">
+      <div class="tsu-q-label">Q1・選択</div>
+      <div class="tsu-q-body">支点から30cmの位置に180gのおもりをつるした。反対側、支点から60cmの位置に何gのおもりをつるせばつり合う？</div>
+      <div class="tsu-options">
+        <button class="tsu-opt" data-idx="0">60 g</button>
+        <button class="tsu-opt" data-idx="1">90 g</button>
+        <button class="tsu-opt" data-idx="2">120 g</button>
+        <button class="tsu-opt" data-idx="3">360 g</button>
+      </div>
+      <div class="tsu-explain" style="display:none">180g×30cm＝5400。反対側は距離60cmなので、5400÷60＝90g。「距離が2倍だから重さは半分」という比の感覚でもOKだが、必ず「距離×力」で確認する。</div>
+    </div>
+
+    <div class="tsu-q" data-qid="1-2" data-type="write" data-answer="240">
+      <div class="tsu-q-label">Q2・計算して入力</div>
+      <div class="tsu-q-body">支点から40cmの位置に150gのおもりをつるした。反対側、支点から25cmの位置におもりをつるしてつり合わせた。おもりの重さは何g？</div>
+      <div class="tsu-write-row">
+        <input type="number" placeholder="数字"><span class="unit">g</span>
+        <button class="tsu-btn" data-action="check">答え合わせ</button>
+      </div>
+      <div class="tsu-feedback"></div>
+      <div class="tsu-explain" style="display:none">150×40＝6000。6000÷25＝240g。</div>
+    </div>
+  </div>
+
+  <div class="tsu-section" data-section="2">
+    <span class="tsu-section-tag">滑車・輪じく</span>
+    <h2>本数・半径の比を正しく数える</h2>
+    <div class="tsu-tip">動滑車では、おもりを支えるひもの本数で割る。輪じくでは、輪とじくの半径の比が「力」と逆比になる（半径が大きい方が力は小さくてすむ）。焦って半径をそのままかけない。</div>
+
+    <div class="tsu-q" data-qid="2-1" data-type="mc" data-answer="1">
+      <div class="tsu-q-label">Q3・選択</div>
+      <div class="tsu-q-body">重さ300gのおもりを動滑車1個で持ち上げる（おもりを支えるひもは2本）。ひもを引く力は何g？</div>
+      <div class="tsu-options">
+        <button class="tsu-opt" data-idx="0">100 g</button>
+        <button class="tsu-opt" data-idx="1">150 g</button>
+        <button class="tsu-opt" data-idx="2">300 g</button>
+        <button class="tsu-opt" data-idx="3">600 g</button>
+      </div>
+      <div class="tsu-explain" style="display:none">おもりを支えているひもが2本なので、重さを2本で分ける。300÷2＝150g。</div>
+    </div>
+
+    <div class="tsu-q" data-qid="2-2" data-type="write" data-answer="18">
+      <div class="tsu-q-label">Q4・計算して入力</div>
+      <div class="tsu-q-body">輪の半径10cm、じくの半径2cmの輪じくがある。じく側に90gのおもりをつるすとき、輪を引く力は何g？</div>
+      <div class="tsu-write-row">
+        <input type="number" placeholder="数字"><span class="unit">g</span>
+        <button class="tsu-btn" data-action="check">答え合わせ</button>
+      </div>
+      <div class="tsu-feedback"></div>
+      <div class="tsu-explain" style="display:none">輪じくは「力×輪の半径＝おもりの重さ×じくの半径」でつり合う。力×10＝90×2＝180。力＝180÷10＝18g。半径が大きい輪の方を引くので、力はおもりより小さくなる。</div>
+    </div>
+  </div>
+
+  <div class="tsu-section" data-section="3">
+    <span class="tsu-section-tag">ばね</span>
+    <h2>「全長」と「のび」を混同しない</h2>
+    <div class="tsu-tip">のび＝全長－自然長。全長をそのままのびとして比例計算に使わない。複数のばねで支えるときは、力の分け方（並列は力が分散、直列は同じ力がかかる）を先に図で確認する。</div>
+
+    <div class="tsu-q" data-qid="3-1" data-type="mc" data-answer="2">
+      <div class="tsu-q-label">Q5・選択</div>
+      <div class="tsu-q-body">自然長15cmのばねに120gのおもりをつるすと全長23cmになった。同じばねに180gのおもりをつるすと全長は何cmになる？（のびは重さに比例する）</div>
+      <div class="tsu-options">
+        <button class="tsu-opt" data-idx="0">12 cm</button>
+        <button class="tsu-opt" data-idx="1">23 cm</button>
+        <button class="tsu-opt" data-idx="2">27 cm</button>
+        <button class="tsu-opt" data-idx="3">35 cm</button>
+      </div>
+      <div class="tsu-explain" style="display:none">120gでののび＝23－15＝8cm。180gののび＝8×(180÷120)＝12cm。全長＝自然長15cm＋のび12cm＝27cm。「23cm」を丸ごと比例計算に使うと間違える。</div>
+    </div>
+
+    <div class="tsu-q" data-qid="3-2" data-type="write" data-answer="110">
+      <div class="tsu-q-label">Q6・計算して入力</div>
+      <div class="tsu-q-body">同じばね2本を並列につないで束ね、220gのおもりを均等に支えた。1本のばねにかかる力は何g？</div>
+      <div class="tsu-write-row">
+        <input type="number" placeholder="数字"><span class="unit">g</span>
+        <button class="tsu-btn" data-action="check">答え合わせ</button>
+      </div>
+      <div class="tsu-feedback"></div>
+      <div class="tsu-explain" style="display:none">2本で均等に支えているので、1本あたり220÷2＝110g。</div>
+    </div>
+  </div>
+
+  <div class="tsu-footer" id="tsuScoreLine">
+    まだ0問クリア
+    <br>
+    <button class="tsu-reset" id="tsuReset">記録をリセット</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  const root = document.getElementById('tsuRoot');
+  const STORAGE_KEY = 'tsuriai-drill-progress-v1';
+  let progress = {};
+
+  function totalQuestions(){ return root.querySelectorAll('.tsu-q').length; }
+
+  function updateUI(){
+    const bar = document.getElementById('tsuProgressBar');
+    bar.innerHTML = '';
+    const total = totalQuestions();
+    let done = 0;
+    root.querySelectorAll('.tsu-q').forEach(q=>{
+      const id = q.getAttribute('data-qid');
+      const dot = document.createElement('div');
+      dot.className = 'tsu-progress-dot';
+      const fill = document.createElement('div');
+      fill.className = 'tsu-progress-fill';
+      if(progress[id] === 'correct'){ fill.style.width='100%'; done++; }
+      else if(progress[id] === 'wrong'){ fill.style.width='100%'; fill.style.background = 'var(--coral)'; done++; }
+      dot.appendChild(fill);
+      bar.appendChild(dot);
+    });
+    document.getElementById('tsuScoreLine').firstChild.textContent =
+      (done===total && total>0) ? '全' + total + '問クリア、おつかれさま！' : ('今のところ ' + done + ' / ' + total + ' 問クリア');
+  }
+
+  async function save(){
+    try{ await window.storage.set(STORAGE_KEY, JSON.stringify(progress), false); }catch(e){}
+  }
+  async function load(){
+    try{
+      const r = await window.storage.get(STORAGE_KEY, false);
+      if(r && r.value){ progress = JSON.parse(r.value); }
+    }catch(e){ progress = {}; }
+    updateUI();
+  }
+
+  root.querySelectorAll('.tsu-q[data-type="mc"]').forEach(q=>{
+    const qid = q.getAttribute('data-qid');
+    const correctIdx = q.getAttribute('data-answer');
+    const opts = q.querySelectorAll('.tsu-opt');
+    const explain = q.querySelector('.tsu-explain');
+    opts.forEach(opt=>{
+      opt.addEventListener('click', ()=>{
+        opts.forEach(o=>o.disabled = true);
+        const idx = opt.getAttribute('data-idx');
+        if(idx === correctIdx){
+          opt.classList.add('correct');
+          progress[qid] = 'correct';
+        } else {
+          opt.classList.add('wrong');
+          opts[correctIdx].classList.add('correct');
+          progress[qid] = 'wrong';
+        }
+        explain.style.display = 'block';
+        save();
+        updateUI();
+      });
+    });
+  });
+
+  root.querySelectorAll('.tsu-q[data-type="write"]').forEach(q=>{
+    const qid = q.getAttribute('data-qid');
+    const answer = q.getAttribute('data-answer');
+    const input = q.querySelector('input');
+    const btn = q.querySelector('[data-action="check"]');
+    const feedback = q.querySelector('.tsu-feedback');
+    const explain = q.querySelector('.tsu-explain');
+    btn.addEventListener('click', ()=>{
+      const val = input.value.trim();
+      if(val === ''){ return; }
+      feedback.classList.add('show');
+      explain.style.display = 'block';
+      if(Math.abs(parseFloat(val) - parseFloat(answer)) < 0.001){
+        feedback.classList.add('ok'); feedback.classList.remove('ng');
+        feedback.textContent = '正解！';
+        progress[qid] = 'correct';
+      } else {
+        feedback.classList.add('ng'); feedback.classList.remove('ok');
+        feedback.textContent = '正解は ' + answer + '。もう一度式を確認してみよう。';
+        progress[qid] = 'wrong';
+      }
+      save();
+      updateUI();
+    });
+  });
+
+  document.getElementById('tsuReset').addEventListener('click', async ()=>{
+    progress = {};
+    root.querySelectorAll('.tsu-opt').forEach(o=>{o.disabled=false; o.classList.remove('correct','wrong');});
+    root.querySelectorAll('.tsu-explain').forEach(e=>e.style.display='none');
+    root.querySelectorAll('.tsu-feedback').forEach(f=>{f.classList.remove('show','ok','ng');});
+    root.querySelectorAll('.tsu-q[data-type="write"] input').forEach(i=>i.value='');
+    await save();
+    updateUI();
+  });
+
+  load();
+})();
+</script>
