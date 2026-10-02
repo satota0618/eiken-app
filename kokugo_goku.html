@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ja"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>国語 むずかしい語句 3周</title>
+<style>
+:root{--bg:#fbf8f2;--fg:#2b2622;--card:#fff;--ac:#c0392b;--ok:#2e8b57;--mut:#8a8178;--bd:#e6dfd2;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1d1b19;--fg:#f0ebe3;--card:#2a2724;--bd:#3d3833;--mut:#a39a8e}}
+:root[data-theme="dark"]{--bg:#1d1b19;--fg:#f0ebe3;--card:#2a2724;--bd:#3d3833;--mut:#a39a8e}
+html,body{margin:0;background:var(--bg);color:var(--fg);font-family:"Hiragino Sans","Yu Gothic",sans-serif}
+main{max-width:520px;margin:0 auto;padding:16px}
+h1{font-size:20px;margin:8px 0 12px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:18px;margin-bottom:12px}
+button{font:inherit;border:0;border-radius:10px;padding:12px 16px;background:var(--ac);color:#fff;cursor:pointer}
+button.sub{background:transparent;color:var(--fg);border:1px solid var(--bd)}
+button.ch{display:block;width:100%;text-align:left;background:var(--bg);color:var(--fg);border:2px solid var(--bd);margin:8px 0;line-height:1.5}
+button.ch.ok{border-color:var(--ok)}button.ch.ng{border-color:var(--ac)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.w{font-size:30px;font-weight:700;margin:8px 0}
+.bar{height:8px;background:var(--bd);border-radius:6px;overflow:hidden;margin:6px 0 12px}
+.bar i{display:block;height:100%;background:var(--ac)}
+.rd{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--bd)}
+small{color:var(--mut)}
+label{margin-right:10px;white-space:nowrap}
+</style></head><body><main id="app"></main>
+<script>
+// ページ番号 / 語句|意味 。語句を増やすときはここに行を足すだけ。
+var RAW={152:`あいそ|人にあたえる感じ。もてなし
+あえなく|あっけなく
+あがく|もがく
+あくまで|どこまでも。さいごまで
+あくせく|小さなことに追われて、いそがしそう
+あさましい|あきれた。けしからん
+あじけない|おもしろみがなくて、つまらない
+あたふたと|あわてて
+あまつさえ|そのうえ。おまけに
+あやかる|しあわせな人に似せて、自分もそうなる
+あらまし|だいたい。ざっと
+ありきたり|めずらしくないこと
+いいなり|言われたまま
+いきさつ|事情。わけ
+いさめる|目上の人のまちがいを注意する
+いずこ|どこ
+いちまつ|ほんの少し
+いでたち|身じたく
+いとわない|いやがらない
+いなめない|否定できない
+いぶかしい|うたがわしい。あやしい
+いまわしい|えんぎがわるい
+いみじくも|たくみに。うまく
+うがつ|穴をあける。ものごとの本当のすがたをとらえる
+うかない顔|元気のない、心配そうな顔
+うごめく|はうように、少しずつ動く
+うしろめたい|やましくて、気がとがめる
+うそぶく|ほえる。えらそうなことを言う
+うとい|親しくない。よく知らない
+うなだれる|首を前にたれる
+うらぶれる|みすぼらしい姿になる
+えぐる|穴をあける
+えこひいき|一方にだけ力を入れてかわいがる`,
+153:`おいたち|おとなになるまでのようす
+おおかれすくなかれ|多かろうと少なかろうと
+おかまいなし|かまわないこと
+おのずから|ひとりでに。自然に
+おののく|こわくて、寒くてふるえる
+おびただしい|たいへん多い
+おぼつかない|はっきりしない。たよりない
+おもかげ|心にうかぶ姿・ようす
+おもむろに|静かに。ゆっくりと
+かえすがえす|くり返し、くり返し
+かえって|ぎゃくに。あべこべに
+かたくな|心がひねくれていること。へんくつ
+かたじけない|ありがたい。もったいない
+かもす|作る。こしらえる
+ぎまん|あざむき、だますこと
+ぎょうぎょうしい|おおげさである
+きわだつ|はっきり区別される。めだつ
+こじつける|むりに、りくつをつける
+こつぜん|にわかに。とつぜんと
+さえぎる|じゃまをする
+さだめし|きっと。まちがいなく
+さとす|よくわかるように言い聞かせる
+さながら|まるで。そっくり
+さもしい|いやしい。あさましい
+さりげない|なにげない
+しいたげる|苦しめる
+しおらしい|ひかえめで、かわいらしい
+しきたり|今までのやり方。ならわし
+しどけない|だらしがない
+しどろもどろ|自信がなくて話のすじが乱れるようす
+しにせ|むかしからずっとつづいている店
+しのぐ|たえる。がまんする。まさる
+しりぬぐい|人の失敗のあとしまつ
+すがすがしい|さっぱりして気持ちがいい
+すべ|方法。手段
+せきたてる|急がせる。さいそくする
+せつない|悲しい。つらい
+そこつ|軽はずみなこと
+そそる|その気にならせる
+そぶり|顔色や動作にあらわれたようす
+たけだけしい|たいへん勇ましくて強い
+たしなめる|考えなおすようにしかる
+だしぬけ|いきなり。とつぜん`,
+154:`たじたじ|相手の勢いにおされて、力が弱るようす
+たわむれる|ふざける。おもしろがって遊ぶ
+ちぐはぐ|物ごとがくいちがって、そろわないこと
+ちなみに|それにつけて。ついでに言う
+ついぞ|今まで、一度も。かつて
+つかのま|ほんの少しの間
+つけいる|相手の弱点にうまくくいこむ
+つちかう|根に土をかけて育てる。力や性質を育て養う
+つづめる|短くする
+つぶさに|細かく。くわしく
+つまびらか|くわしいようす
+つらよごし|はじをかかせる人・こと
+つれない|思いやりがない
+とっさ|たいへん短い間。しゅんかん
+とてつもない|とほうもない。とんでもない
+とどのつまり|結局。最後には
+とりもなおさず|そのまま。つまり
+なぞらえる|かりにそう考える。似せる
+ぬけがけ|自分が先に物ごとをすること
+ねんごろ|まごころをこめてすること
+のっけ|はじめ
+のべつ|切れ目なくつづくようす
+はえぬき|その土地で生まれ、その土地で育つこと
+はからずも|思いがけなく
+はぐくむ|養い育てる
+はなはだしい|たいへんである。ひどい
+はなばなしい|はなやかで、みごとである
+はばむ|じゃまをする
+はびこる|草木が一面に広がる。悪者が勢いをはる
+はらから|きょうだい
+ひいては|そのためにそれがもとになって
+ひいでる|たいへんすぐれている
+ひしめく|おおぜいが、おしあってさわぐ
+ひたむき|一つのことにむちゅうになるようす
+ひっきりなし|きれめがないこと
+ひとえに|まったく。ぜひ
+ひときわ|いちだんと。いっそう
+ひなびる|いなかふうになる
+ひねもす|一日じゅう
+ふいちょう|言いふらすこと
+ふがいない|いくじがない。情けない
+ぶさた|たよりをしない
+ふしだら|だらしないこと`,
+155:`ふぜい|上品な感じ。おもむき
+ふしつけ|礼儀にはずれていること
+ふてぶてしい|ずうずうしく、だいたんである
+へこたれる|元気がなくなり、弱る
+へつらう|相手の気に入るようなことを言ったりする
+へりくだる|相手をうやまって、自分を低くあつかう
+ほうほうのてい|さんざんな目に会ってあわててにげだすようす
+ほかならない|ほかのものではない
+ほどなく|まもなく。やがて
+ほとぼり|まだ残っている熱。たかぶった気持ち
+ほのめかす|それとなくわかるように言う
+まどろむ|うとうとする
+まんべんなく|残るところがないように
+まんまと|ぐあいよく。うまく
+みじん|ひじょうに細かいもの
+みずみずしい|つやがあって若々しい
+みやびやか|上品で美しい
+むげに|ようしゃなく。ひどく
+むとんじゃく|気にかけないこと。平気なこと
+めど|めあて。針の穴
+めめしい|いくじがない。みれんがある
+もくろみ|計画。くわだて。考え
+もしくは|そうでなければ
+もてはやす|さかんにほめる
+もどかしい|思うようにならないで、いらいらする
+やおら|ゆっくり。重々しく、しずかに
+やみつき|好きになって、やめられないこと
+ゆがめる|形を正しくなくする
+ゆだねる|人にまかせる
+ゆゆしい|たいへんな。とんでもない
+よどみ|水がたまっていて、よく流れない所
+よもや|まさか
+よんどころない|どうにもしかたがない
+りりしい|引きしまって、勇ましい
+ろうばい|あわてること
+わきまえ|よく知っている。心得る
+わだかまり|気持ちがさっぱりしない
+わびしい|さびしくて心細い気持ち
+わななく|がたがたふるえる`};
+var D=[];Object.keys(RAW).forEach(function(p){RAW[p].split("\n").forEach(function(l){var a=l.split("|");if(a[1])D.push({id:D.length,p:+p,w:a[0],m:a[1]})})});
+var S={pages:{152:1,153:1,154:1,155:1},round:1,q:[],i:0,wrong:[],hist:[],ans:false};
+var A=document.getElementById("app");
+function sh(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
+function home(){
+var h="<h1>国語 むずかしい語句 3周</h1><div class='card'><small>語句を見て、正しい意味を選ぼう。1周目は全問、まちがえた問題だけが次の周に持ち越されます（最大3周）。</small><div style='margin-top:12px'>";
+[152,153,154,155].forEach(function(p){h+="<label><input type='checkbox' "+(S.pages[p]?"checked":"")+" onchange='S.pages["+p+"]=this.checked?1:0'> p."+p+"</label>"});
+h+="</div></div><button onclick='start()'>1周目をはじめる</button> <small>全"+D.length+"語</small>";A.innerHTML=h}
+function start(){var ids=D.filter(function(d){return S.pages[d.p]}).map(function(d){return d.id});if(!ids.length)return;S.round=1;S.hist=[];begin(ids)}
+function begin(ids){S.q=sh(ids);S.i=0;S.wrong=[];S.ans=false;ask()}
+function ask(){
+if(S.i>=S.q.length)return fin();
+var d=D[S.q[S.i]];
+var opts=[d.id];sh(D.filter(function(x){return x.id!==d.id&&x.m!==d.m})).slice(0,3).forEach(function(x){opts.push(x.id)});opts=sh(opts);
+var h="<h1>"+S.round+"周目　"+(S.i+1)+" / "+S.q.length+"</h1><div class='bar'><i style='width:"+(S.i*100/S.q.length)+"%'></i></div><div class='card'><small>p."+d.p+"</small><div class='w'>"+d.w+"</div>";
+opts.forEach(function(o){h+="<button class='ch' data-o='"+o+"' onclick='pick("+o+")'>"+D[o].m+"</button>"});
+h+="<div id='fb' style='margin-top:8px'></div></div><div id='nx'></div>";A.innerHTML=h;S.ans=false}
+function pick(o){if(S.ans)return;S.ans=true;var d=D[S.q[S.i]],ok=D[o].m===d.m||o===d.id;
+document.querySelectorAll(".ch").forEach(function(b){var id=+b.dataset.o;if(D[id].m===d.m)b.classList.add("ok");else if(id===o)b.classList.add("ng")});
+document.getElementById("fb").innerHTML=ok?"<b style='color:var(--ok)'>○ 正解！</b>":"<b style='color:var(--ac)'>× 正解は上の緑の枠</b>";
+if(!ok)S.wrong.push(d.id);
+document.getElementById("nx").innerHTML="<button onclick='S.i++;ask()'>次へ</button>"}
+function fin(){
+var n=S.q.length,w=S.wrong.length;S.hist.push({r:S.round,n:n,c:n-w});
+var h="<h1>"+S.round+"周目 おつかれさま！</h1><div class='card'><div class='w'>"+(n-w)+" / "+n+"</div><small>まちがえた語："+w+"</small></div>";
+if(w){h+="<div class='card'><b>まちがえた語句</b>";S.wrong.forEach(function(id){h+="<div class='rd'><b>"+D[id].w+"</b><small>"+D[id].m+"</small></div>"});h+="</div>"}
+var row="<div class='row'>";
+if(w&&S.round<3)row+="<button onclick='S.round++;begin(S.wrong.slice())'>"+(S.round+1)+"周目へ（"+w+"語）</button>";
+if(!w||S.round>=3){h+="<div class='card'><b>成績</b>";S.hist.forEach(function(x){h+="<div class='rd'><span>"+x.r+"周目</span><span>"+x.c+" / "+x.n+"</span></div>"});h+=(w?"<small>3周やっても残った語は、もう一度1周目から！</small>":"<b>全問クリア！🎉</b>")+"</div>"}
+row+="<button class='sub' onclick='home()'>ホームへ</button></div>";A.innerHTML=h+row}
+home();
+</script></body></html>
