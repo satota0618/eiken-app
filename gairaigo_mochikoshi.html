@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ja"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>外来語 3周ドリル</title>
+<style>
+:root{--bg:#fbf8f2;--fg:#2b2622;--card:#fff;--ac:#c0392b;--ok:#2e8b57;--ng:#c0392b;--mut:#8a8178;--bd:#e6dfd2;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1d1b19;--fg:#f0ebe3;--card:#2a2724;--bd:#3d3833;--mut:#a39a8e}}
+:root[data-theme="dark"]{--bg:#1d1b19;--fg:#f0ebe3;--card:#2a2724;--bd:#3d3833;--mut:#a39a8e}
+html,body{margin:0;background:var(--bg);color:var(--fg);font-family:"Hiragino Sans","Yu Gothic",sans-serif}
+main{max-width:520px;margin:0 auto;padding:16px}
+h1{font-size:20px;margin:8px 0 12px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:18px;margin-bottom:12px}
+button{font:inherit;border:0;border-radius:10px;padding:12px 16px;background:var(--ac);color:#fff;cursor:pointer}
+button.sub{background:transparent;color:var(--fg);border:1px solid var(--bd)}
+button:disabled{opacity:.4}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.pat{font-size:26px;font-weight:700;letter-spacing:2px;margin:10px 0;line-height:1.6}
+.box{display:inline-block;width:1.1em;height:1.1em;border:2px solid var(--fg);vertical-align:middle;margin:0 1px}
+.mean{font-size:16px;color:var(--mut)}
+input{width:100%;box-sizing:border-box;font-size:22px;padding:10px;border:2px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--fg);margin:10px 0}
+.bar{height:8px;background:var(--bd);border-radius:6px;overflow:hidden;margin:6px 0 12px}
+.bar i{display:block;height:100%;background:var(--ac)}
+.fb{font-size:18px;min-height:28px;margin:6px 0}.ok{color:var(--ok)}.ng{color:var(--ng)}
+.rd{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--bd)}
+small{color:var(--mut)}
+</style></head><body><main id="app"></main>
+<script>
+var D=[
+[1,"イ{ンフォメー}ション","情報　案内書"],[1,"{フィク}ション","小説　作りごと"],[1,"イ{ンフレー}ション","物価が継続的に上昇している状態"],[1,"{コミュニケー}ション","伝達　通信"],[1,"{オプ}ション","選択肢　自由に選ぶこと"],[1,"コ{ラボレー}ション","ともに取り組むこと"],
+[2,"リ{サイクル}","再利用　資源の再生"],[2,"リ{バイバル}","復帰　再上演　過去に流行したものの復活"],[2,"リ{ピート}","くり返すこと　反復"],
+[3,"{スイミ}ング","泳ぎ　水泳"],[3,"ミ{ーティ}ング","集会　会合"],[3,"{タイミ}ング","物事をするのにちょうどよい時機"],[3,"リ{スニ}ング","聞くこと　聞き取り"],[3,"{トレーニ}ング","練習すること　訓練"],
+[4,"{メカニ}ズム","しくみ　機械装置"],[4,"{ジャーナリ}ズム","報道活動　報道機関"],[4,"マ{ンネリ}ズム","型どおりで新鮮さがないこと"],
+[5,"{チーム}ワーク","団結して行うこと"],[5,"{ネット}ワーク","通信・放送など情報伝達を行う設備"],[5,"{ライフ}ワーク","一生を通して行う仕事や研究など"],
+[6,"ディス{タン}ス","距離　へだたり"],[6,"ディス{カッシ}ョン","議論　討論"],[6,"ディス{カバ}リー","発見　見つけること"],
+[7,"オ{リジ}ナル","最初のもの　原形"],[7,"{プロ}フェッショナル","専門家　本職"],[7,"タ{ーミ}ナル","終着駅　終点"],[7,"{シグ}ナル","信号　合図"],
+[8,"{アク}ティビティー","活動　行動"],[8,"リ{アリ}ティー","現実　事実"],[8,"セ{キュリ}ティー","安全性"],
+[9,"カ{テゴ}リー","種類　区分"],[9,"{デリ}バリー","配達"],[9,"ファ{クト}リー","工場　製造所"],[9,"{ライ}ブラリー","図書館　図書"],
+[10,"テ{クノロ}ジー","科学技術"],[10,"バイ{オ}ロジー","生物学"],[10,"{エナ}ジー","気力　活力"],[10,"{エコ}ロジー","生態　自然環境"],[10,"{シナ}ジー","相乗効果　協働"]
+].map(function(a,i){var m=a[1].match(/\{(.*)\}/);return{id:i,g:a[0],pre:a[1].split("{")[0],hole:m[1],post:a[1].split("}")[1],mean:a[2],word:a[1].replace(/[{}]/g,"")}});
+var S={round:1,hist:{},q:[],i:0,first:{},wrong:[],phase:"home"};
+var KEY="gairaigo3";
+function load(){try{var s=localStorage.getItem(KEY);if(s)S.hist=JSON.parse(s)}catch(e){}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S.hist))}catch(e){}}
+function sh(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function norm(s){return s.replace(/[\s　]/g,"").replace(/[-－―‐ｰ]/g,"ー").replace(/[ぁ-ん]/g,function(c){return String.fromCharCode(c.charCodeAt(0)+96)})}
+var A=document.getElementById("app");
+function home(){S.phase="home";A.innerHTML="<h1>外来語 3周ドリル</h1><div class='card'><small>□に入るカタカナを答えよう（全"+D.length+"問）。1周目は全問、まちがえた問題だけが次の周に持ち越されます（最大3周）。</small></div><button onclick='start()'>1周目をはじめる</button>"}
+function start(){S.round=1;S.hist=[];begin(D.map(function(d){return d.id}))}
+function begin(ids){S.q=sh(ids);S.i=0;S.wrong=[];S.shown=false;S.phase="q";ask()}
+function pat(d){var b="";for(var k=0;k<d.hole.length;k++)b+="<span class='box'></span>";return d.pre+b+d.post}
+function ask(){
+if(S.i>=S.q.length)return fin();
+var d=D[S.q[S.i]];
+A.innerHTML="<h1>"+S.round+"周目　"+(S.i+1)+" / "+S.q.length+"</h1><div class='bar'><i style='width:"+(S.i*100/S.q.length)+"%'></i></div><div class='card'><small>第"+d.g+"組</small><div class='pat'>"+pat(d)+"</div><div class='mean'>【"+d.mean+"】</div><input id='in' placeholder='□に入るカタカナ' autocomplete='off' autocapitalize='off'><div class='row'><button id='ck' onclick='check()'>答え合わせ</button><button class='sub' onclick='giveup()'>わからない</button></div><div class='fb' id='fb'></div></div>";
+var el=document.getElementById("in");el.focus();el.addEventListener("keydown",function(e){if(e.key==="Enter"&&!e.isComposing){S.shown?next():check()}})}
+function mark(ok,d){
+if(!ok&&S.wrong.indexOf(d.id)<0)S.wrong.push(d.id);
+var fb=document.getElementById("fb");
+fb.className="fb "+(ok?"ok":"ng");
+fb.innerHTML=(ok?"○ 正解！　":"× 正解は「"+d.hole+"」　")+"<small>"+d.word+"</small>";
+S.shown=true;var b=document.getElementById("ck");b.textContent="次へ";b.onclick=next;document.getElementById("in").disabled=true}
+function check(){var d=D[S.q[S.i]],v=norm(document.getElementById("in").value);if(!v)return;
+var ok=v===norm(d.hole)||v===norm(d.word);
+mark(ok,d)}
+function giveup(){var d=D[S.q[S.i]];if(S.shown)return;mark(false,d)}
+function next(){S.shown=false;S.i++;ask()}
+function fin(){
+var n=S.q.length,w=S.wrong.length;S.hist.push({r:S.round,n:n,c:n-w});
+var h="<h1>"+S.round+"周目 おつかれさま！</h1><div class='card'><div class='pat'>"+(n-w)+" / "+n+"</div><small>まちがえた問題："+w+"</small></div>";
+if(w){h+="<div class='card'><b>まちがえた問題</b>";S.wrong.forEach(function(id){h+="<div class='rd'><span>"+D[id].word+"</span><small>"+D[id].mean+"</small></div>"});h+="</div>"}
+if(!w||S.round>=3){h+="<div class='card'><b>成績</b>";S.hist.forEach(function(x){h+="<div class='rd'><span>"+x.r+"周目</span><span>"+x.c+" / "+x.n+"</span></div>"});h+=(w?"<small>3周やっても残った問題は、もう一度1周目から！</small>":"<b>全問クリア！🎉</b>")+"</div>"}
+h+="<div class='row'>"+(w&&S.round<3?"<button onclick='S.round++;begin(S.wrong.slice())'>"+(S.round+1)+"周目へ（"+w+"問）</button>":"")+"<button class='sub' onclick='home()'>ホームへ</button></div>";
+A.innerHTML=h}
+load();home();
+</script></body></html>
