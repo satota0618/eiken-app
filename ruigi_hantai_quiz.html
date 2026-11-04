@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>類義語・反対語 クイズ</title>
+<style>
+:root{--bg:#f6f4ee;--card:#fff;--ink:#222;--sub:#6b6b6b;--acc:#2f7d6d;--ok:#2e8b57;--ng:#c0392b;--line:#e4e0d6}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;line-height:1.6}
+#app{max-width:560px;margin:0 auto;padding:16px 14px 48px}
+.top{padding:8px 4px 4px}
+.top h1{font-size:22px;margin:0}
+.sub{margin:4px 0 0;color:var(--sub);font-size:13px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin:12px 0}
+.card h2{font-size:15px;margin:0 0 10px;color:var(--acc)}
+.center{text-align:center}
+.note{font-size:13px;color:var(--sub);margin:8px 0}
+button{font:inherit;cursor:pointer;border:0;border-radius:12px;min-height:48px;padding:10px 14px;-webkit-tap-highlight-color:transparent}
+button:disabled{opacity:.45;cursor:default}
+.primary{width:100%;background:var(--acc);color:#fff;font-weight:700;font-size:17px;margin-top:12px}
+.secondary{width:100%;background:#e5f1ee;color:var(--acc);font-weight:700;font-size:16px;margin-top:10px}
+.ghost{background:transparent;color:var(--acc);border:1px solid var(--line);min-height:40px}
+.ghost.small{min-height:34px;padding:4px 12px;font-size:13px}
+.stack{margin-top:8px}
+.stack .ghost{width:100%;margin-top:10px}
+.row2{display:flex;gap:10px}
+.row2>button{flex:1}
+.seg{display:flex;gap:8px}
+.segbtn{flex:1;background:#efece3;color:var(--ink);font-size:15px}
+.segbtn.on{background:var(--acc);color:#fff;font-weight:700}
+.chk{display:flex;gap:10px;align-items:flex-start;padding:8px 0;font-size:15px}
+.chk input{width:22px;height:22px;margin-top:2px;flex:none;accent-color:var(--acc)}
+.chk.sec{border-top:1px solid var(--line)}
+.chk em{font-style:normal;color:var(--sub);font-size:12px;margin-left:8px}
+.pg{margin:14px 0 2px;font-weight:700;font-size:13px;color:var(--sub)}
+.bar{display:flex;align-items:center;gap:10px;margin-top:4px}
+.roundtag{background:var(--acc);color:#fff;border-radius:999px;padding:2px 12px;font-size:13px;font-weight:700}
+.prog{flex:1;color:var(--sub);font-size:13px}
+.pbar{height:6px;background:#e6e2d7;border-radius:3px;margin:8px 0 0;overflow:hidden}
+.pbar i{display:block;height:100%;background:var(--acc)}
+.q .src{font-size:12px;color:var(--sub)}
+.q .prompt{font-size:15px;margin:8px 0 4px}
+.stem{font-size:34px;font-weight:700;letter-spacing:.06em;text-align:center;margin:12px 0 16px;word-break:keep-all}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opts.many{grid-template-columns:1fr 1fr}
+.opt{background:#f1eee5;font-size:20px;border:2px solid transparent;min-height:56px}
+.opt.on{background:#dcebe7;border-color:var(--acc)}
+.opt.right{background:#d8f0df;border-color:var(--ok);color:#13532f;font-weight:700}
+.opt.wrong{background:#f8dcd8;border-color:var(--ng);color:#7d231a}
+.opt:disabled{opacity:1}
+.fb{margin-top:16px;font-size:20px;font-weight:700}
+.okc{color:var(--ok)}.ngc{color:var(--ng)}
+.answer{margin-top:8px;font-size:17px;font-weight:700}
+.answer.big{font-size:44px;text-align:center;margin:8px 0}
+.exp{color:var(--sub);font-size:14px;margin-top:2px}
+.ok{background:var(--ok);color:#fff;font-weight:700;margin-top:14px}
+.ng{background:var(--ng);color:#fff;font-weight:700;margin-top:14px}
+.score{font-size:40px;font-weight:700}
+.score small{font-size:15px;font-weight:400;color:var(--sub)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;text-align:center}
+.stats b{display:block;font-size:28px}
+.stats span{font-size:11px;color:var(--sub)}
+.stats .warn b{color:var(--ng)}
+.miss{list-style:none;margin:0;padding:0}
+.miss li{padding:8px 0;border-top:1px solid var(--line);display:grid;grid-template-columns:1fr auto;gap:2px 10px}
+.miss .ml{grid-column:1/3;font-size:12px;color:var(--sub)}
+.miss .mq{font-weight:700;font-size:17px}
+.miss .ma{font-size:16px;text-align:right}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+const SECTIONS = [
+  { id: 'q1', label: '練習問題1', page: 'p.116', title: '意味の似ている言葉（記号で答える）' },
+  { id: 'q2', label: '練習問題2', page: 'p.116', title: 'よく似た意味の言葉を選ぶ' },
+  { id: 'q3', label: '練習問題3', page: 'p.116', title: '非・不・無・未' },
+  { id: 'q4', label: '練習問題4', page: 'p.116', title: '反対の意味の漢字を入れる' },
+  { id: 'q5', label: '練習問題5', page: 'p.116', title: '反対語を選ぶ' },
+  { id: 'q6', label: '練習問題6', page: 'p.116', title: '反対の意味の2語を選ぶ' },
+  { id: 'q7', label: '練習問題7', page: 'p.117', title: '反対語を漢字で（15問）' },
+  { id: 'q8', label: '練習問題8', page: 'p.117', title: '反対の意味の熟語の組を選ぶ' },
+  { id: 'q9', label: '練習問題9', page: 'p.117', title: '□に反対の漢字を入れる' },
+  { id: 'q10', label: '練習問題10', page: 'p.117', title: '反対語を漢字で（5問）' },
+  { id: 'b1', label: '要点まとめ 3反対語', page: 'p.117', title: '反対の意味を表す漢字（32組）' },
+];
+const SEC = Object.fromEntries(SECTIONS.map(s => [s.id, s]));
+
+const Q = [];
+const counters = {};
+function add(sec, no, o) {
+  counters[sec] = (counters[sec] || 0) + 1;
+  Q.push(Object.assign({ id: sec + '-' + counters[sec], sec: sec, no: no }, o));
+}
+const SYM = ['ア', 'イ', 'ウ', 'エ', 'オ', 'カ'];
+function symOpts(list) { return list.map((t, i) => ({ k: SYM[i], t: t })); }
+const num = i => '(' + (i + 1) + ')';
+
+// ---- 練習問題1（p.116）
+const O1 = symOpts(['無欠', '快活', '競技', '音信', '記念', '発達']);
+[['進歩', 'カ', '進歩 ≒ 発達'],
+ ['消息', 'エ', '消息 ≒ 音信（たより）'],
+ ['完全', 'ア', '完全 ≒ 無欠']
+].forEach((x, i) => add('q1', num(i), {
+  type: 'choice', prompt: '意味の似ている言葉を選ぼう', stem: x[0], options: O1, answer: x[1], exp: x[2]
+}));
+
+// ---- 練習問題2（p.116）
+[['平易', ['容易', '難易', '貿易'], 'ア', '平易 ≒ 容易（やさしい）'],
+ ['講演', ['講師', '講堂', '講義'], 'ウ', '講演 ≒ 講義'],
+ ['異国', ['祖国', '故国', '他国'], 'ウ', '異国 ≒ 他国（よその国）'],
+ ['出版', ['版木', '刊行', '活版'], 'イ', '出版 ≒ 刊行']
+].forEach((x, i) => add('q2', num(i), {
+  type: 'choice', prompt: '意味のよく似た言葉を選ぼう', stem: x[0], options: symOpts(x[1]), answer: x[2], exp: x[3]
+}));
+
+// ---- 練習問題3（p.116）
+const O3 = ['非', '不', '無', '未'].map(t => ({ k: t, t: t }));
+[['関係', '無'], ['完成', '未'], ['制限', '無'], ['売品', '非'],
+ ['公式', '非'], ['正確', '不'], ['解決', '未'], ['可能', '不']
+].forEach((x, i) => add('q3', num(i), {
+  type: 'choice', prompt: '上に入れて反対の意味にする字は？（非・不・無・未）', stem: '□' + x[0],
+  options: O3, answer: x[1], exp: x[1] + x[0] + ' ⇔ ' + x[0]
+}));
+
+// ---- 練習問題4（p.116）
+[['貧', '富', ['富', '貴', '福', '豊'], '貧富（ひんぷ）'],
+ ['往', '復', ['復', '戻', '返', '帰'], '往復（おうふく）'],
+ ['加', '減', ['減', '除', '引', '去'], '加減（かげん）'],
+ ['師', '弟', ['弟', '兄', '患', '教'], '師弟（してい）'],
+ ['因', '果', ['果', '結', '悪', '原'], '因果（いんが）'],
+ ['新', '旧', ['旧', '昔', '老', '前'], '新旧（しんきゅう）'],
+ ['善', '悪', ['悪', '凶', '害', '否'], '善悪（ぜんあく）'],
+ ['断', '続', ['続', '絶', '連', '接'], '断続（だんぞく）']
+].forEach((x, i) => add('q4', num(i), {
+  type: 'choice', writable: true, prompt: '反対の意味の漢字を□に入れて熟語にしよう', stem: x[0] + '□',
+  choices: x[2], answer: x[1], answerText: x[1], exp: x[3]
+}));
+
+// ---- 練習問題5（p.116）
+[['単純', ['簡単', '複雑', '純真'], 'イ', '単純 ⇔ 複雑'],
+ ['安全', ['不安', '困難', '危険'], 'ウ', '安全 ⇔ 危険'],
+ ['需要', ['供給', '要求', '配給'], 'ア', '需要 ⇔ 供給'],
+ ['延長', ['延期', '中止', '短縮'], 'ウ', '延長 ⇔ 短縮']
+].forEach((x, i) => add('q5', num(i), {
+  type: 'choice', prompt: '反対の意味の言葉を選ぼう', stem: x[0], options: symOpts(x[1]), answer: x[2], exp: x[3]
+}));
+
+// ---- 練習問題6（p.116）
+[[['製造', '輸入', '原料', '製品'], ['ウ', 'エ'], '原料 ⇔ 製品'],
+ [['消費', '利益', '生産', '事業'], ['ア', 'ウ'], '消費 ⇔ 生産']
+].forEach((x, i) => add('q6', num(i), {
+  type: 'pick2', prompt: '反対の意味を表す言葉を2つ選ぼう', stem: x[0].join('・'),
+  options: symOpts(x[0]), answer: x[1], exp: x[2]
+}));
+
+// ---- 練習問題7（p.117）
+[['害虫', '益虫', ['益虫', '毒虫', '幼虫', '成虫'], '害虫 ⇔ 益虫'],
+ ['病的', '健康的', ['健康的', '異常的', '積極的', '消極的'], '病的 ⇔ 健康的'],
+ ['戦争', '平和', ['平和', '平等', '勝利', '敗北'], '戦争 ⇔ 平和'],
+ ['減少', '増加', ['増加', '縮小', '低下', '減速'], '減少 ⇔ 増加'],
+ ['個人', '集団', ['集団', '全員', '人物', '他人'], '個人 ⇔ 集団（団体も可）'],
+ ['賛成', '反対', ['反対', '否決', '拒否', '不満'], '賛成 ⇔ 反対'],
+ ['入院', '退院', ['退院', '出院', '通院', '帰院'], '入院 ⇔ 退院'],
+ ['有名', '無名', ['無名', '不名', '非名', '未名'], '有名 ⇔ 無名'],
+ ['予習', '復習', ['復習', '学習', '反復', '練習'], '予習 ⇔ 復習'],
+ ['不当', '正当', ['正当', '不正', '無当', '失当'], '不当 ⇔ 正当'],
+ ['単純', '複雑', ['複雑', '簡単', '純粋', '単調'], '単純 ⇔ 複雑'],
+ ['失敗', '成功', ['成功', '成長', '失望', '勝利'], '失敗 ⇔ 成功'],
+ ['増加', '減少', ['減少', '減速', '増減', '縮小'], '増加 ⇔ 減少'],
+ ['損害', '利益', ['利益', '損失', '被害', '収入'], '損害 ⇔ 利益'],
+ ['出発', '到着', ['到着', '帰宅', '出現', '発車'], '出発 ⇔ 到着']
+].forEach((x, i) => add('q7', num(i), {
+  type: 'choice', writable: true, prompt: '反対の意味の言葉を漢字で答えよう', stem: x[0],
+  choices: x[2], answer: x[1], answerText: x[1], exp: x[3]
+}));
+
+// ---- 練習問題8（p.117）
+[[['土地', '建設', '家庭', '設備', '破壊'], ['イ', 'オ'], '建設 ⇔ 破壊'],
+ [['総合', '一般', '独立', '特殊', '人民'], ['イ', 'エ'], '一般 ⇔ 特殊'],
+ [['細部', '分配', '豊富', '部分', '欠乏'], ['ウ', 'オ'], '豊富 ⇔ 欠乏'],
+ [['理想', '真理', '失敗', '過信', '現実'], ['ア', 'オ'], '理想 ⇔ 現実'],
+ [['価格', '利益', '商売', '損害', '高価'], ['イ', 'エ'], '利益 ⇔ 損害']
+].forEach((x, i) => add('q8', num(i), {
+  type: 'pick2', prompt: '5つの熟語のうち、たがいに反対の意味の1組を選ぼう', stem: x[0].join('・'),
+  options: symOpts(x[0]), answer: x[1], exp: x[2]
+}));
+
+// ---- 練習問題9（p.117）□に入る反対の意味の漢字2つ（順番は自由）
+[['親□ と □党', ['善', '悪'], ['善', '悪', '友', '子', '与', '野'], '善・悪', '親善 と 悪党（善 ⇔ 悪）'],
+ ['□示 と 説□', ['暗', '明'], ['暗', '明', '表', '指', '得', '教'], '暗・明', '暗示 と 説明（暗 ⇔ 明）'],
+ ['□交 と 案□', ['外', '内'], ['外', '内', '国', '社', '親', '断'], '外・内', '外交 と 案内（外 ⇔ 内）'],
+ ['□解 と 公□', ['誤', '正'], ['誤', '正', '理', '和', '開', '平'], '誤・正', '誤解 と 公正（誤 ⇔ 正）'],
+ ['接□ と □足', ['近', '遠'], ['近', '遠', '続', '触', '満', '不'], '近・遠', '接近 と 遠足（近 ⇔ 遠）']
+].forEach((x, i) => add('q9', num(i), {
+  type: 'pick2', writable: true, prompt: '2つの□に入る、反対の意味の漢字を選ぼう（順番は自由）', stem: x[0],
+  choices: x[2], answer: x[1], answerText: x[3], exp: x[4]
+}));
+
+// ---- 練習問題10（p.117）
+[['登校', '下校', ['下校', '退校', '通校', '出校'], '登校 ⇔ 下校'],
+ ['内容', '形式', ['形式', '目次', '中身', '外容'], '内容 ⇔ 形式'],
+ ['現実', '理想', ['理想', '事実', '実現', '現在'], '現実 ⇔ 理想'],
+ ['温暖', '寒冷', ['寒冷', '冷静', '温水', '高温'], '温暖 ⇔ 寒冷'],
+ ['来年', '昨年', ['昨年', '今年', '毎年', '新年'], '来年 ⇔ 昨年（去年も可）']
+].forEach((x, i) => add('q10', num(i), {
+  type: 'choice', writable: true, prompt: '反対の意味の言葉を漢字で答えよう', stem: x[0],
+  choices: x[2], answer: x[1], answerText: x[1], exp: x[3]
+}));
+
+// ---- 要点まとめ「3 反対語」(1) 反対の意味を表す漢字（p.117）
+const B1 = [
+  ['朝', '夕', 'あさゆう'], ['今', '昔', 'こんじゃく'], ['遠', '近', 'えんきん'], ['新', '旧', 'しんきゅう'],
+  ['生', '死', 'せいし'], ['有', '無', 'うむ'], ['善', '悪', 'ぜんあく'], ['晴', '雨', 'せいう'],
+  ['出', '欠', 'しゅっけつ'], ['長', '短', 'ちょうたん'], ['干', '満', 'かんまん'], ['売', '買', 'ばいばい'],
+  ['軽', '重', 'けいちょう'], ['深', '浅', 'しんせん'], ['内', '外', 'ないがい'], ['濃', '淡', 'のうたん'],
+  ['問', '答', 'もんどう'], ['明', '暗', 'めいあん'], ['可', '否', 'かひ'], ['昼', '夜', 'ちゅうや'],
+  ['増', '減', 'ぞうげん'], ['公', '私', 'こうし'], ['因', '果', 'いんが'], ['往', '復', 'おうふく'],
+  ['吉', '凶', 'きっきょう'], ['貸', '借', 'たいしゃく'], ['興', '亡', 'こうぼう'], ['開', '閉', 'かいへい'],
+  ['大', '小', 'だいしょう'], ['難', '易', 'なんい'], ['高', '低', 'こうてい'], ['上', '下', 'じょうげ'],
+];
+B1.forEach((x, i) => add('b1', '', {
+  type: 'choice', writable: true, autoChoices: true, prompt: '反対の意味の漢字を入れよう（読み：' + x[2] + '）',
+  stem: x[0] + '—□', answer: x[1], answerText: x[1], exp: x[0] + x[1] + '（' + x[2] + '）', label: x[0] + '—' + x[1]
+}));
+
+const QMAP = Object.fromEntries(Q.map(q => [q.id, q]));
+const B1_ANSWERS = B1.map(x => x[1]);
+
+if (typeof module !== 'undefined') { module.exports = { SECTIONS, SEC, Q, QMAP, B1_ANSWERS }; }
+
+</script>
+<script>
+(function () {
+  'use strict';
+  var app = document.getElementById('app');
+  var LS_KEY = 'ruigi-hantai-weak-v1';
+  var MAX_ROUND = 3;
+
+  function lsGet() { try { return JSON.parse(localStorage.getItem(LS_KEY) || '[]'); } catch (e) { return []; } }
+  function lsSet(v) { try { localStorage.setItem(LS_KEY, JSON.stringify(v)); } catch (e) { /* ignore */ } }
+  function shuffle(a) {
+    a = a.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; });
+  }
+
+  var S = {
+    mode: 'choose',
+    shuffle: true,
+    sel: {},
+    run: null,
+    view: 'start'
+  };
+  SECTIONS.forEach(function (s) { S.sel[s.id] = true; });
+
+  function qLabel(q) {
+    var s = SEC[q.sec];
+    return s.label + (q.no || '');
+  }
+  function baseOptions(q) {
+    if (q.options) return q.options;
+    if (q.choices) return q.choices.map(function (c) { return { k: c, t: c }; });
+    return [];
+  }
+  function buildOptions(q) {
+    if (q.autoChoices) {
+      var others = shuffle(B1_ANSWERS.filter(function (a) { return a !== q.answer; })).slice(0, 3);
+      return shuffle(others.concat([q.answer])).map(function (c) { return { k: c, t: c }; });
+    }
+    if (q.choices) return shuffle(q.choices).map(function (c) { return { k: c, t: c }; });
+    return q.options;
+  }
+  function optText(o) { return o.k === o.t ? o.t : o.k + ' ' + o.t; }
+  function ansLabel(q) {
+    if (q.answerText) return q.answerText;
+    var base = baseOptions(q);
+    return [].concat(q.answer).map(function (k) {
+      var o = base.filter(function (x) { return x.k === k; })[0];
+      return o ? optText(o) : k;
+    }).join('　／　');
+  }
+  function stemLabel(q) { return q.label ? q.label : q.stem; }
+  function selectedIds() {
+    var ids = [];
+    Q.forEach(function (q) { if (S.sel[q.sec]) ids.push(q.id); });
+    return ids;
+  }
+
+  // ------------------------------------------------------------ views
+  function viewStart() {
+    var weak = lsGet().filter(function (id) { return QMAP[id]; });
+    var n = selectedIds().length;
+    var h = '<header class="top"><h1>類義語・反対語 クイズ</h1>' +
+      '<p class="sub">「言葉の意味と使い方」 p.116〜117 ／ 3周スパイラル</p></header>';
+
+    h += '<section class="card"><h2>答え方</h2><div class="seg">' +
+      '<button class="segbtn' + (S.mode === 'choose' ? ' on' : '') + '" data-a="mode" data-v="choose">えらんで答える</button>' +
+      '<button class="segbtn' + (S.mode === 'write' ? ' on' : '') + '" data-a="mode" data-v="write">紙に書いて自己採点</button></div>' +
+      '<p class="note">' + (S.mode === 'choose'
+        ? '漢字の問題も4択（や2つ選び）で答えます。'
+        : '漢字の問題は、紙に書いてから「答えを見る」で○×を自分でつけます。記号の問題は選択式のままです。') + '</p>' +
+      '<label class="chk"><input type="checkbox" data-a="shuffle"' + (S.shuffle ? ' checked' : '') + '> 問題の順番をシャッフルする</label></section>';
+
+    h += '<section class="card"><h2>範囲</h2><div class="row2">' +
+      '<button class="ghost" data-a="all">ぜんぶ選ぶ</button><button class="ghost" data-a="none">ぜんぶはずす</button></div>';
+    ['p.116', 'p.117'].forEach(function (pg) {
+      h += '<div class="pg">' + pg + '</div>';
+      SECTIONS.filter(function (s) { return s.page === pg; }).forEach(function (s) {
+        var cnt = Q.filter(function (q) { return q.sec === s.id; }).length;
+        h += '<label class="chk sec"><input type="checkbox" data-a="sec" data-id="' + s.id + '"' + (S.sel[s.id] ? ' checked' : '') + '>' +
+          '<span><b>' + esc(s.label) + '</b>　' + esc(s.title) + '<em>' + cnt + '問</em></span></label>';
+      });
+    });
+    h += '</section>';
+
+    h += '<div class="stack"><button class="primary" data-a="start"' + (n === 0 ? ' disabled' : '') + '>はじめる（' + n + '問）</button>';
+    if (weak.length) {
+      h += '<button class="secondary" data-a="startWeak">苦手だけやる（' + weak.length + '問）</button>';
+    }
+    h += '</div>';
+    return h;
+  }
+
+  function viewQ() {
+    var r = S.run, q = QMAP[r.queue[r.idx]], sec = SEC[q.sec], c = r.cur;
+    var total = r.queue.length;
+    var h = '<div class="bar"><span class="roundtag">' + r.round + '周目 / ' + MAX_ROUND + '</span>' +
+      '<span class="prog">' + (r.idx + 1) + ' / ' + total + '</span>' +
+      '<button class="ghost small" data-a="quit">やめる</button></div>' +
+      '<div class="pbar"><i style="width:' + Math.round(r.idx / total * 100) + '%"></i></div>';
+    h += '<div class="card q"><div class="src">' + esc(sec.page) + '　' + esc(qLabel(q)) + '</div>' +
+      '<div class="prompt">' + esc(q.prompt) + '</div><div class="stem">' + esc(q.stem) + '</div>';
+
+    if (c.write) {
+      if (!c.revealed) {
+        h += '<p class="note">紙に書いてから、答えを見よう。</p>' +
+          '<button class="primary" data-a="reveal">答えを見る</button>';
+      } else {
+        h += '<div class="answer big">' + esc(ansLabel(q)) + '</div>' +
+          '<div class="exp">' + esc(q.exp) + '</div>';
+        if (!c.done) {
+          h += '<div class="row2"><button class="ok" data-a="selfok">○ 書けた</button>' +
+            '<button class="ng" data-a="selfng">× まちがえた</button></div>';
+        }
+      }
+    } else {
+      h += '<div class="opts' + (c.opts.length > 4 ? ' many' : '') + '">';
+      c.opts.forEach(function (o) {
+        var cls = 'opt';
+        if (c.picked.indexOf(o.k) >= 0) cls += ' on';
+        if (c.done) {
+          var isAns = [].concat(q.answer).indexOf(o.k) >= 0;
+          if (isAns) cls += ' right';
+          else if (c.picked.indexOf(o.k) >= 0) cls += ' wrong';
+        }
+        h += '<button class="' + cls + '" data-a="opt" data-k="' + esc(o.k) + '"' + (c.done ? ' disabled' : '') + '>' + esc(optText(o)) + '</button>';
+      });
+      h += '</div>';
+      if (q.type === 'pick2' && !c.done) {
+        h += '<button class="primary" data-a="submit"' + (c.picked.length === 2 ? '' : ' disabled') + '>これで答える</button>';
+      }
+    }
+
+    if (c.done) {
+      h += '<div class="fb ' + (c.ok ? 'okc' : 'ngc') + '">' + (c.ok ? '⭕ せいかい！' : '❌ ざんねん') + '</div>';
+      if (!c.write || !c.revealed) {
+        h += '<div class="answer">答え：' + esc(ansLabel(q)) + '</div><div class="exp">' + esc(q.exp) + '</div>';
+      }
+      h += '<button class="primary" data-a="next">' + (r.idx + 1 >= total ? 'この周をおわる' : 'つぎへ') + '</button>';
+    }
+    h += '</div>';
+    return h;
+  }
+
+  function viewRound() {
+    var r = S.run;
+    var ok = r.roundTotal - r.wrong.length;
+    var h = '<header class="top"><h1>' + r.round + '周目 おわり</h1></header>' +
+      '<section class="card center"><div class="score">' + ok + ' <small>/ ' + r.roundTotal + ' 問 せいかい</small></div>' +
+      '<p>まちがえた <b>' + r.wrong.length + '問</b> を、' + (r.round + 1) + '周目でもう一度やろう。</p>' +
+      '<button class="primary" data-a="nextRound">' + (r.round + 1) + '周目へ</button></section>';
+    return h;
+  }
+
+  function viewResult() {
+    var r = S.run, total = r.ids.length;
+    var by = { 1: 0, 2: 0, 3: 0 }, left = [], missed = [];
+    r.ids.forEach(function (id) {
+      var x = r.res[id];
+      if (x.cleared) by[x.cleared]++; else left.push(id);
+      if (x.misses > 0) missed.push(id);
+    });
+    var h = '<header class="top"><h1>おつかれさま！</h1></header>' +
+      '<section class="card"><div class="stats">' +
+      '<div><b>' + by[1] + '</b><span>1周目で正解</span></div>' +
+      '<div><b>' + by[2] + '</b><span>2周目で正解</span></div>' +
+      '<div><b>' + by[3] + '</b><span>3周目で正解</span></div>' +
+      '<div class="' + (left.length ? 'warn' : '') + '"><b>' + left.length + '</b><span>まだ苦手</span></div></div>' +
+      '<p class="note">全 ' + total + ' 問</p></section>';
+
+    function list(ids) {
+      var s = '<ul class="miss">';
+      ids.forEach(function (id) {
+        var q = QMAP[id], sec = SEC[q.sec];
+        s += '<li><span class="ml">' + esc(sec.page) + '　' + esc(qLabel(q)) + '</span>' +
+          '<span class="mq">' + esc(stemLabel(q)) + '</span><span class="ma">' + esc(ansLabel(q)) + '</span></li>';
+      });
+      return s + '</ul>';
+    }
+    if (left.length) {
+      h += '<section class="card"><h2>3周しても まちがえた問題</h2>' + list(left) + '</section>';
+    }
+    var onceOnly = missed.filter(function (id) { return left.indexOf(id) < 0; });
+    if (onceOnly.length) {
+      h += '<section class="card"><h2>一度まちがえて、あとで正解した問題</h2>' + list(onceOnly) + '</section>';
+    }
+    if (!missed.length) {
+      h += '<section class="card center"><p class="score">ぜんぶ 1周目で正解！ 💮</p></section>';
+    }
+    var weak = lsGet().filter(function (id) { return QMAP[id]; });
+    h += '<div class="stack"><button class="primary" data-a="again">同じ範囲でもう一度</button>';
+    if (weak.length) h += '<button class="secondary" data-a="startWeak">苦手だけやる（' + weak.length + '問）</button>';
+    h += '<button class="ghost" data-a="home">はじめの画面へ</button></div>';
+    return h;
+  }
+
+  function render() {
+    var h;
+    if (S.view === 'start') h = viewStart();
+    else if (S.view === 'q') h = viewQ();
+    else if (S.view === 'round') h = viewRound();
+    else h = viewResult();
+    app.innerHTML = h;
+  }
+
+  // ------------------------------------------------------------ flow
+  function newCur() {
+    var r = S.run, q = QMAP[r.queue[r.idx]];
+    r.cur = {
+      opts: buildOptions(q), picked: [], done: false, ok: null,
+      write: !!(S.mode === 'write' && q.writable), revealed: false
+    };
+  }
+  function startRun(ids) {
+    if (!ids.length) return;
+    var queue = S.shuffle ? shuffle(ids) : ids.slice();
+    var res = {};
+    ids.forEach(function (id) { res[id] = { misses: 0, cleared: 0 }; });
+    S.run = { ids: ids.slice(), round: 1, queue: queue, idx: 0, wrong: [], roundTotal: queue.length, res: res, cur: null };
+    newCur();
+    S.view = 'q';
+    render(); window.scrollTo(0, 0);
+  }
+  function record(ok) {
+    var r = S.run, id = r.queue[r.idx], x = r.res[id];
+    var c = r.cur;
+    c.done = true; c.ok = ok;
+    if (ok) { if (!x.cleared) x.cleared = r.round; }
+    else { x.misses++; r.wrong.push(id); }
+  }
+  function endRound() {
+    var r = S.run;
+    if (r.wrong.length === 0 || r.round >= MAX_ROUND) { finishRun(); return; }
+    S.view = 'round';
+  }
+  function finishRun() {
+    var r = S.run;
+    var weak = lsGet().filter(function (id) { return QMAP[id]; });
+    r.ids.forEach(function (id) {
+      var x = r.res[id], i = weak.indexOf(id);
+      if (x.misses > 0) { if (i < 0) weak.push(id); }
+      else if (i >= 0) weak.splice(i, 1);
+    });
+    lsSet(weak);
+    S.view = 'result';
+  }
+  function judgeAndRecord() {
+    var r = S.run, q = QMAP[r.queue[r.idx]], c = r.cur, ok;
+    if (q.type === 'choice') ok = c.picked[0] === q.answer;
+    else ok = c.picked.length === 2 && c.picked.slice().sort().join('|') === q.answer.slice().sort().join('|');
+    record(ok);
+  }
+
+  app.addEventListener('click', function (e) {
+    var el = e.target.closest('[data-a]');
+    if (!el || el.disabled) return;
+    var a = el.getAttribute('data-a');
+    var r = S.run, q = r && r.cur ? QMAP[r.queue[r.idx]] : null, c = r ? r.cur : null;
+    if (a === 'sec' || a === 'shuffle') return; // handled in change
+    switch (a) {
+      case 'mode': S.mode = el.getAttribute('data-v'); break;
+      case 'all': SECTIONS.forEach(function (s) { S.sel[s.id] = true; }); break;
+      case 'none': SECTIONS.forEach(function (s) { S.sel[s.id] = false; }); break;
+      case 'start': startRun(selectedIds()); return;
+      case 'startWeak': startRun(lsGet().filter(function (id) { return QMAP[id]; })); return;
+      case 'again': startRun(S.run.ids.slice()); return;
+      case 'home': S.view = 'start'; break;
+      case 'quit':
+        if (!window.confirm('途中でやめますか？（この回の記録は残りません）')) return;
+        S.view = 'start'; break;
+      case 'opt':
+        if (c.done) return;
+        var k = el.getAttribute('data-k');
+        if (q.type === 'choice') { c.picked = [k]; judgeAndRecord(); }
+        else {
+          var i = c.picked.indexOf(k);
+          if (i >= 0) c.picked.splice(i, 1);
+          else if (c.picked.length < 2) c.picked.push(k);
+        }
+        break;
+      case 'submit': if (!c.done && c.picked.length === 2) judgeAndRecord(); break;
+      case 'reveal': c.revealed = true; break;
+      case 'selfok': if (!c.done) record(true); break;
+      case 'selfng': if (!c.done) record(false); break;
+      case 'next':
+        r.idx++;
+        if (r.idx >= r.queue.length) endRound(); else newCur();
+        break;
+      case 'nextRound':
+        r.round++;
+        r.queue = S.shuffle ? shuffle(r.wrong) : r.wrong.slice();
+        r.wrong = []; r.idx = 0; r.roundTotal = r.queue.length;
+        newCur(); S.view = 'q';
+        break;
+      default: return;
+    }
+    render();
+    if (a === 'next' || a === 'nextRound' || a === 'home' || a === 'quit') window.scrollTo(0, 0);
+  });
+
+  app.addEventListener('change', function (e) {
+    var el = e.target.closest('[data-a]');
+    if (!el) return;
+    var a = el.getAttribute('data-a');
+    if (a === 'sec') S.sel[el.getAttribute('data-id')] = el.checked;
+    else if (a === 'shuffle') S.shuffle = el.checked;
+    else return;
+    render();
+  });
+
+  render();
+})();
+
+</script>
+</body>
+</html>
