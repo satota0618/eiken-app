@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>夏期講習テキスト No.4（講義Ⅰ）貿易 一問一答</title>
+<style>
+  * { box-sizing: border-box; margin:0; padding:0; }
+  body {
+    font-family: "Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",sans-serif;
+    background: linear-gradient(135deg,#fef6e4 0%,#fde2e4 50%,#e2ece9 100%);
+    min-height: 100vh;
+    padding: 16px;
+    color: #3a2e2e;
+  }
+  .wrap { max-width: 560px; margin: 0 auto; }
+  header { text-align:center; margin-bottom: 16px; }
+  header h1 { font-size: 20px; color: #a0522d; line-height:1.4; }
+  header p { font-size: 13px; color:#7a6a5f; margin-top:4px; }
+
+  .card {
+    background: #fffdf8;
+    border-radius: 18px;
+    box-shadow: 0 6px 18px rgba(160,82,45,0.15);
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .round-badge {
+    display:inline-block;
+    background:#f4a261;
+    color:#fff;
+    font-size:13px;
+    font-weight:bold;
+    padding:4px 14px;
+    border-radius:20px;
+    margin-bottom:10px;
+  }
+  .progress-bar-outer {
+    background:#eee;
+    border-radius:20px;
+    height:10px;
+    overflow:hidden;
+    margin: 10px 0 16px;
+  }
+  .progress-bar-inner {
+    background: linear-gradient(90deg,#f4a261,#e76f51);
+    height:100%;
+    width:0%;
+    transition: width 0.3s ease;
+  }
+  .q-count { text-align:right; font-size:12px; color:#999; margin-bottom:4px; }
+  .src {
+    font-size:12px;
+    color:#a0522d;
+    background:#fdf0e6;
+    border-radius:8px;
+    padding:4px 10px;
+    margin-bottom:10px;
+    display:inline-block;
+    line-height:1.5;
+  }
+  .question-text {
+    font-size: 17px;
+    line-height:1.7;
+    margin-bottom: 18px;
+    font-weight:bold;
+    white-space:pre-wrap;
+  }
+  .choice-btn {
+    display:block;
+    width:100%;
+    text-align:left;
+    background:#fff;
+    border: 2px solid #e8d5c4;
+    border-radius:12px;
+    padding: 13px 16px;
+    margin-bottom:10px;
+    font-size:16px;
+    color:#3a2e2e;
+    cursor:pointer;
+    transition: all 0.15s;
+  }
+  .choice-btn:active { transform: scale(0.98); }
+  .choice-btn.correct { background:#d8f3dc; border-color:#52b788; }
+  .choice-btn.wrong { background:#ffd6d6; border-color:#e63946; }
+  .choice-btn.disabled { pointer-events:none; opacity:0.75; }
+
+  .explain-box {
+    display:none;
+    margin-top:14px;
+    background:#f1f8f5;
+    border-left: 4px solid #52b788;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size:14px;
+    line-height:1.6;
+  }
+  .next-btn {
+    display:none;
+    width:100%;
+    margin-top:14px;
+    background:#e76f51;
+    color:#fff;
+    border:none;
+    border-radius:12px;
+    padding:14px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+  }
+  .start-btn, .primary-btn {
+    display:block;
+    width:100%;
+    background:#e76f51;
+    color:#fff;
+    border:none;
+    border-radius:14px;
+    padding:16px;
+    font-size:17px;
+    font-weight:bold;
+    cursor:pointer;
+    margin-top: 8px;
+  }
+  .stage-list { font-size:14px; line-height:2; color:#5a4a3f; }
+  .result-score {
+    text-align:center;
+    font-size: 40px;
+    font-weight:bold;
+    color:#e76f51;
+    margin: 10px 0;
+  }
+  .weak-list {
+    background:#fff5f0;
+    border-radius:10px;
+    padding: 12px 14px;
+    margin-top: 12px;
+    font-size:14px;
+    line-height:1.9;
+    text-align:left;
+  }
+  .weak-list b { color:#c1440e; }
+  footer { text-align:center; font-size:11px; color:#aaa; margin-top:20px; line-height:1.6; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>夏期講習テキスト<br>No.4（講義Ⅰ）貿易 一問一答</h1>
+    <p>3周してしっかり定着させよう！</p>
+  </header>
+
+  <div id="app"></div>
+
+  <footer>夏期講習テキスト No.4（講義Ⅰ）貿易 一問一答（p.48 問1〜問18）対応<br>統計の年（2020年・2021年）はテキストのままです</footer>
+</div>
+
+<script>
+const SRC = "夏期講習テキスト No.4 講義Ⅰ 貿易 一問一答";
+
+// no: テキストの問番号 / answer: choices の正解の位置(0始まり)
+const QUESTIONS = [
+  {no:"問1", q:"工業原料を輸入し、製品にして輸出する貿易の形態を何というか。", choices:["加工貿易","中継貿易","自由貿易","保護貿易"], answer:0, note:"原料を輸入して、国内で製品に加工して輸出する貿易を加工貿易という。"},
+  {no:"問2", q:"昨日1ドル100円だった為替相場（レート）が、今日1ドル98円になるような変動を何というか。", choices:["円高（ドル安）","円安（ドル高）","インフレーション","デフレーション"], answer:0, note:"1ドルが100円→98円になると、円の価値が上がっている。これを円高（ドル安）という。"},
+  {no:"問3", q:"問2のような円高（ドル安）になった場合、日本からの輸出は有利か、不利か。", choices:["有利","不利"], answer:1, note:"日本の100円の製品は、前は1ドルで売れたが、今は約1.02ドルになる。外国での値段が上がって売れにくくなるので不利。"},
+  {no:"問4", q:"日本が貿易赤字になっている国（2021年）として、あやまっているものを1つ選びなさい。", choices:["中国","韓国","オーストラリア","インドネシア"], answer:1, note:"あやまっているのは韓国。中国・オーストラリア・インドネシアとは貿易赤字、韓国とは貿易黒字。"},
+  {no:"問5", q:"1930年代に日本の主な輸出品であった工業製品は何か。", choices:["せんい品","機械類","鉄鋼","自動車"], answer:0, note:"1930年代の日本の輸出は、せんい品（綿織物など）が中心だった。"},
+  {no:"問6", q:"1930年代に日本の主な輸入品であった工業原料は何か。", choices:["せんい原料","石油","鉄鉱石","機械類"], answer:0, note:"せんい品をつくるための原料（綿花など）を輸入していた。"},
+  {no:"問7", q:"2021年現在、日本の輸出品で第1位の金額となっている製品は何か。", choices:["機械類","自動車","鉄鋼","石油製品"], answer:0, note:"現在の日本の輸出は、機械類が第1位。"},
+  {no:"問8", q:"2021年現在、貿易総額において日本の最大の貿易相手国はどこか。", choices:["中国","アメリカ合衆国","韓国","オーストラリア"], answer:0, note:"貿易総額（輸出額＋輸入額）で日本の最大の貿易相手国は中国。"},
+  {no:"問9", q:"日本が機械類のほか、衣類、がん具などを多く輸入している国（2020年・金額）はどこか。", choices:["中国","アメリカ合衆国","サウジアラビア","オーストラリア"], answer:0, note:"衣類・がん具・機械類を多く輸入している相手国は中国。"},
+  {no:"問10", q:"日本が機械類のほか、航空機類やとうもろこしなどを多く輸入している国（2020年・金額）はどこか。", choices:["アメリカ合衆国","中国","オーストラリア","ブラジル"], answer:0, note:"航空機類・とうもろこしなどを多く輸入している相手国はアメリカ合衆国。"},
+  {no:"問11", q:"日本とアメリカ合衆国（問10の国）とは、ひんぱんに貿易まさつをおこしています。特に1970年代以降、貿易まさつの対象となった製品を1つ選びなさい。", choices:["石油","せんい製品","鉄鉱石","自動車"], answer:3, note:"せんい→鉄鋼→カラーテレビ→自動車→半導体と、貿易まさつの対象が移ってきた。この中では自動車。"},
+  {no:"問12", q:"アメリカ合衆国（問10の国）との貿易まさつ解消のために、日本がとった対策として、あやまっているものを1つ選びなさい。", choices:["輸出の自主規制","現地生産","セーフガード","一部農産物の輸入自由化"], answer:2, note:"あやまっているのはセーフガード。セーフガード（緊急輸入制限）は、輸入が急にふえたときに輸入する側が輸入を制限する制度で、日本がとった対策ではない。"},
+  {no:"問13（魚介類）", q:"次のうち、魚介類の輸入先の上位3か国（2020年・金額）はどれか。", choices:["アメリカ・タイ・オーストラリア","中国・チリ・アメリカ","中国・ベトナム・バングラデシュ"], answer:1, note:"魚介類は、中国・チリ・アメリカの順。"},
+  {no:"問13（肉類）", q:"次のうち、肉類の輸入先の上位3か国（2020年・金額）はどれか。", choices:["アメリカ・タイ・オーストラリア","中国・チリ・アメリカ","中国・ベトナム・バングラデシュ"], answer:0, note:"肉類は、アメリカ・タイ・オーストラリアの順。"},
+  {no:"問13（衣類）", q:"次のうち、衣類の輸入先の上位3か国（2020年・金額）はどれか。", choices:["アメリカ・タイ・オーストラリア","中国・チリ・アメリカ","中国・ベトナム・バングラデシュ"], answer:2, note:"衣類は、中国・ベトナム・バングラデシュの順。"},
+  {no:"問14", q:"2021年現在、日本で貿易額（輸出額と輸入額の合計）が最大の港（空港）はどこか。", choices:["成田国際空港","東京港","名古屋港","横浜港"], answer:0, note:"貿易額が最大なのは成田国際空港。"},
+  {no:"問15", q:"成田国際空港（問14の港）で、輸出品目の上位のもの（2021年・金額）を1つ選びなさい。", choices:["金（非貨幣用）","衣類","自動車","コンピュータ"], answer:0, note:"成田国際空港の輸出品目の上位は金（非貨幣用）。"},
+  {no:"問16（東京港）", q:"東京港の輸入品目の上位3位（2021年・金額）はどれか。", choices:["液化ガス・石油・衣類","たばこ・衣類・有機化合物","衣類・コンピュータ・集積回路"], answer:2, note:"東京港は、衣類・コンピュータ・集積回路。"},
+  {no:"問16（名古屋港）", q:"名古屋港の輸入品目の上位3位（2021年・金額）はどれか。", choices:["液化ガス・石油・衣類","たばこ・衣類・有機化合物","衣類・コンピュータ・集積回路"], answer:0, note:"名古屋港は、液化ガス・石油・衣類。"},
+  {no:"問16（神戸港）", q:"神戸港の輸入品目の上位3位（2021年・金額）はどれか。", choices:["液化ガス・石油・衣類","たばこ・衣類・有機化合物","衣類・コンピュータ・集積回路"], answer:1, note:"神戸港は、たばこ・衣類・有機化合物。"},
+  {no:"問17", q:"日本国内の工場を海外に移転し、現地で低コストで生産するケースがふえています。その結果、日本国内の工場が減少し、産業が衰退していくことを何というか。", choices:["産業の空洞化","加工貿易","貿易まさつ","地産地消"], answer:0, note:"国内の産業がおとろえていくことを、産業の空洞化という。"},
+  {no:"問18", q:"「環太平洋パートナーシップ協定」の略称をアルファベットで答えなさい。", choices:["TPP","EPA","FTA","WTO"], answer:0, note:"環太平洋パートナーシップ協定の略称はTPP。"}
+];
+
+let round = 1;
+let idx = 0;
+let wrongThisRound = [];
+let wrongCounts = {};
+let currentPool = [];
+
+const app = document.getElementById('app');
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function shuffleChoices(q){
+  const idxs = q.choices.map((c,i)=>i);
+  const shuffled = shuffle(idxs);
+  return {
+    no: q.no,
+    text: q.q,
+    note: q.note,
+    choices: shuffled.map(i=>q.choices[i]),
+    answerIndex: shuffled.indexOf(q.answer)
+  };
+}
+
+function renderStart(){
+  app.innerHTML = `
+    <div class="card">
+      <div class="stage-list">
+        📘 全${QUESTIONS.length}問（問1〜問18）<br>
+        🔁 3周してしっかり覚える方式<br>
+        1周目：まず全問チャレンジ<br>
+        2周目：間違えた問題を中心に復習<br>
+        3周目：最終チェック（まだ怪しい問題）
+      </div>
+      <button class="start-btn" onclick="startRound(1)">1周目スタート！</button>
+    </div>
+  `;
+}
+
+function startRound(r){
+  round = r;
+  idx = 0;
+  wrongThisRound = [];
+  if(r===1){
+    currentPool = shuffle(QUESTIONS.slice());
+  } else {
+    currentPool = shuffle(wrongCounts.__poolForRound || []);
+  }
+  if(currentPool.length===0){
+    finishRound();
+    return;
+  }
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const raw = currentPool[idx];
+  const q = shuffleChoices(raw);
+  const total = currentPool.length;
+  const pct = Math.round((idx/total)*100);
+
+  app.innerHTML = `
+    <div class="card">
+      <span class="round-badge">${round}周目</span>
+      <div class="q-count">${idx+1} / ${total} 問</div>
+      <div class="progress-bar-outer"><div class="progress-bar-inner" style="width:${pct}%"></div></div>
+      <div class="src">${SRC}｜${q.no}</div>
+      <div class="question-text">${q.text}</div>
+      <div id="choices"></div>
+      <div class="explain-box" id="explainBox"></div>
+      <button class="next-btn" id="nextBtn">次へ →</button>
+    </div>
+  `;
+
+  const choicesDiv = document.getElementById('choices');
+  q.choices.forEach((c,i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    btn.textContent = c;
+    btn.onclick = ()=>selectAnswer(i, q, raw);
+    choicesDiv.appendChild(btn);
+  });
+}
+
+function selectAnswer(i, q, raw){
+  const buttons = document.querySelectorAll('.choice-btn');
+  buttons.forEach(b=>b.classList.add('disabled'));
+  const correct = i===q.answerIndex;
+
+  buttons[q.answerIndex].classList.add('correct');
+  if(!correct){
+    buttons[i].classList.add('wrong');
+    wrongThisRound.push(raw);
+    wrongCounts[raw.q] = (wrongCounts[raw.q]||0)+1;
+  }
+
+  const explainBox = document.getElementById('explainBox');
+  explainBox.style.display = 'block';
+  explainBox.innerHTML = (correct ? '✅ 正解！ ' : '❌ 不正解… 正解は「'+q.choices[q.answerIndex]+'」') + '<br>' + (q.note||'');
+
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.style.display = 'block';
+  nextBtn.textContent = (idx+1<currentPool.length) ? '次へ →' : `${round}周目の結果を見る`;
+  nextBtn.onclick = ()=>{
+    idx++;
+    if(idx<currentPool.length){
+      renderQuestion();
+    } else {
+      finishRound();
+    }
+  };
+}
+
+function weakListHtml(list){
+  return list.map(q=>'・<b>'+q.no+'</b> '+q.q).join('<br>');
+}
+
+function finishRound(){
+  const wrongUnique = [...new Map(wrongThisRound.map(q=>[q.q,q])).values()];
+  wrongCounts.__poolForRound = wrongUnique;
+  wrongCounts.__lastPoolSize = currentPool.length;
+
+  const correctCount = currentPool.length - wrongUnique.length;
+
+  if(round<3 && wrongUnique.length>0){
+    app.innerHTML = `
+      <div class="card" style="text-align:center;">
+        <h2 style="color:#e76f51;">${round}周目 おつかれさま！</h2>
+        <div class="result-score">${correctCount} / ${currentPool.length}</div>
+        <p style="margin-bottom:14px;">間違えた ${wrongUnique.length} 問を、次の周でもう一度チェックしよう！</p>
+        <div class="weak-list"><b>間違えた問題（テキストの問番号）</b><br>${weakListHtml(wrongUnique)}</div>
+        <button class="primary-btn" onclick="startRound(${round+1})">${round+1}周目へ進む</button>
+      </div>
+    `;
+  } else if(round<3 && wrongUnique.length===0){
+    app.innerHTML = `
+      <div class="card" style="text-align:center;">
+        <h2 style="color:#52b788;">${round}周目 パーフェクト！🎉</h2>
+        <p>間違いなし！このまま最後まで確認しよう。</p>
+        <button class="primary-btn" onclick="startRound(${round+1})">${round+1}周目へ進む</button>
+      </div>
+    `;
+  } else {
+    renderFinalResult(wrongUnique, correctCount);
+  }
+}
+
+function renderFinalResult(wrongUnique, correctCount){
+  let weakHtml = '';
+  if(wrongUnique.length>0){
+    weakHtml = `<div class="weak-list"><b>まだ怪しい問題（${SRC}で見直そう）</b><br>` + weakListHtml(wrongUnique) + `</div>`;
+  } else {
+    weakHtml = `<div class="weak-list">🎉 弱点なし！バッチリ覚えられたで！</div>`;
+  }
+
+  app.innerHTML = `
+    <div class="card" style="text-align:center;">
+      <h2 style="color:#e76f51;">3周 完了！お疲れさま🎊</h2>
+      <div class="result-score">${correctCount} / ${(wrongCounts.__lastPoolSize||QUESTIONS.length)}</div>
+      ${weakHtml}
+      <button class="primary-btn" onclick="resetAll()">もう一度最初から</button>
+    </div>
+  `;
+}
+
+function resetAll(){
+  wrongCounts = {};
+  renderStart();
+}
+
+renderStart();
+</script>
+</body>
+</html>
