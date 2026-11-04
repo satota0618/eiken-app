@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>四天王寺2023 社会 一問一答</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Yomogi&display=swap');
+
+:root{
+  --paper:#F0EAD9;
+  --paper-deep:#E5DCC4;
+  --rule:#C9BFA0;
+  --margin-line:#c98a8a;
+  --ink:#22303F;
+  --ink-soft:#5b6b78;
+  --akapen:#B8262E;
+  --akapen-dark:#7e1a20;
+  --gold:#A9822F;
+  --card-shadow: 0 18px 40px rgba(34,48,63,0.18), 0 2px 6px rgba(34,48,63,0.12);
+}
+*{box-sizing:border-box;}
+html,body{height:100%;}
+body{
+  margin:0;
+  min-height:100vh;
+  background: radial-gradient(ellipse at top left, rgba(255,255,255,0.5), transparent 60%), var(--paper);
+  font-family:'Zen Kaku Gothic New', sans-serif;
+  color:var(--ink);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:28px 14px;
+  position:relative;
+  overflow-x:hidden;
+}
+body::before{
+  content:"";
+  position:fixed; inset:0;
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 27px, var(--rule) 28px),
+    repeating-linear-gradient(90deg, transparent 0 55px, var(--margin-line) 55px 56px, transparent 56px 3000px);
+  opacity:0.28;
+  pointer-events:none;
+}
+.stage{ position:relative; width:100%; max-width:560px; }
+
+/* ---------- deck picker ---------- */
+.picker-sheet{
+  background:linear-gradient(180deg, #FBF8EF, #F3EDDC 70%);
+  border-radius:6px;
+  box-shadow:var(--card-shadow);
+  padding:30px 28px;
+  border:1px solid rgba(0,0,0,0.06);
+}
+.picker-title{
+  font-family:'Shippori Mincho', serif;
+  font-weight:800;
+  font-size:20px;
+  color:var(--ink);
+  margin-bottom:2px;
+}
+.picker-sub{
+  font-size:12.5px;
+  color:var(--ink-soft);
+  margin-bottom:22px;
+}
+.deck-card{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:16px 16px;
+  border:1.5px solid var(--rule);
+  border-radius:9px;
+  background:#fff;
+  cursor:pointer;
+  margin-bottom:12px;
+  transition:transform .12s ease, box-shadow .12s ease, border-color .2s ease;
+}
+.deck-card:hover{
+  border-color:var(--akapen);
+  transform:translateY(-2px);
+  box-shadow:0 8px 18px rgba(184,38,46,0.15);
+}
+.deck-num{
+  font-family:'Shippori Mincho', serif;
+  font-weight:800;
+  font-size:13px;
+  color:#fff;
+  background:var(--ink);
+  border-radius:6px;
+  padding:6px 9px;
+  flex-shrink:0;
+}
+.deck-info{ flex:1; }
+.deck-name{
+  font-family:'Shippori Mincho', serif;
+  font-weight:800;
+  font-size:17px;
+  color:var(--ink);
+}
+.deck-meta{
+  font-size:12px;
+  color:var(--ink-soft);
+  margin-top:3px;
+}
+.deck-arrow{ color:var(--akapen); font-size:20px; }
+
+/* ---------- Ticket / lap indicator ---------- */
+.lap-ticket{ display:flex; gap:8px; justify-content:center; margin-bottom:14px; }
+.lap-punch{
+  position:relative;
+  width:96px;
+  padding:8px 6px 9px;
+  text-align:center;
+  background:#fff;
+  border:1.5px dashed var(--rule);
+  border-radius:8px;
+  font-family:'Shippori Mincho', serif;
+  font-weight:700;
+  font-size:12.5px;
+  color:var(--ink-soft);
+  transition:all .35s ease;
+}
+.lap-punch .num{ display:block; font-size:20px; font-weight:800; color:var(--ink-soft); line-height:1.3; }
+.lap-punch.active{ border-style:solid; border-color:var(--akapen); color:var(--akapen-dark); box-shadow:0 4px 10px rgba(184,38,46,0.18); }
+.lap-punch.active .num{ color:var(--akapen); }
+.lap-punch.done{ background:var(--ink); border-color:var(--ink); color:#f0ead9; }
+.lap-punch.done .num{ color:#f0ead9; }
+.lap-punch.done::after{
+  content:"済"; position:absolute; top:-9px; right:-7px;
+  width:22px;height:22px;border-radius:50%; background:var(--akapen); color:#fff;
+  font-size:11px; display:flex; align-items:center; justify-content:center;
+  font-family:'Shippori Mincho',serif; box-shadow:0 2px 4px rgba(0,0,0,.25);
+}
+
+/* ---------- Main sheet ---------- */
+.sheet{
+  position:relative;
+  background:linear-gradient(180deg, #FBF8EF, #F3EDDC 70%);
+  border-radius:6px;
+  box-shadow:var(--card-shadow);
+  padding:30px 28px 26px 40px;
+  border:1px solid rgba(0,0,0,0.06);
+}
+.sheet::before{ content:""; position:absolute; top:0; bottom:0; left:26px; width:1.5px; background:var(--margin-line); opacity:.55; }
+.head-row{ display:flex; align-items:baseline; justify-content:space-between; margin-bottom:6px; }
+.eyebrow{ font-family:'Shippori Mincho',serif; font-weight:700; font-size:13px; letter-spacing:.14em; color:var(--ink-soft); }
+.qcount{ font-family:'Shippori Mincho',serif; font-size:13px; color:var(--ink-soft); font-weight:700; }
+.qcount b{ color:var(--akapen); font-size:16px; }
+.progress-track{ height:6px; background:var(--paper-deep); border-radius:3px; overflow:hidden; margin:10px 0 22px; border:1px solid rgba(0,0,0,0.05); }
+.progress-fill{ height:100%; background:linear-gradient(90deg, var(--akapen), #d9564d); width:0%; transition:width .5s cubic-bezier(.4,0,.2,1); }
+.qnum{ display:inline-flex; align-items:center; gap:6px; font-family:'Shippori Mincho',serif; font-weight:800; font-size:15px; color:var(--akapen-dark); margin-bottom:10px; }
+.qnum .box{ width:26px;height:26px;border:2px solid var(--akapen-dark); display:flex;align-items:center;justify-content:center; border-radius:3px; font-size:13px; }
+.qtext{ font-size:17px; line-height:1.85; font-weight:500; color:var(--ink); min-height:70px; white-space:pre-wrap; }
+.answer-zone{ margin-top:18px; padding-top:16px; border-top:1.5px dashed var(--rule); min-height:64px; }
+.answer-label{ font-family:'Yomogi', cursive; color:var(--akapen); font-size:15px; margin-bottom:4px; display:flex; align-items:center; gap:6px; }
+.answer-text{ font-family:'Shippori Mincho', serif; font-weight:700; font-size:21px; color:var(--ink); animation:reveal .35s ease; }
+@keyframes reveal{ from{ opacity:0; transform:translateY(4px); } to{ opacity:1; transform:translateY(0); } }
+.badge-2026{
+  display:inline-flex; align-items:center; gap:5px;
+  margin-top:10px;
+  padding:5px 10px;
+  border-radius:20px;
+  font-size:12px; font-weight:700;
+  font-family:'Zen Kaku Gothic New', sans-serif;
+  background:#e8f4e8; color:#2a6b35;
+  border:1.5px solid #2a6b35;
+}
+.badge-2026.changed{
+  background:#fff4e0; color:#8a5a00;
+  border-color:#c98000;
+}
+.badge-2026-note{
+  display:block;
+  margin-top:5px;
+  font-size:13px;
+  color:#8a5a00;
+  font-family:'Yomogi', cursive;
+  animation:reveal .35s ease;
+}
+.btn-row{ margin-top:22px; display:flex; gap:10px; }
+.btn{ flex:1; border:none; cursor:pointer; font-family:'Zen Kaku Gothic New', sans-serif; font-weight:700; font-size:15px; padding:14px 10px; border-radius:8px; transition:transform .12s ease, box-shadow .12s ease, background .2s ease; letter-spacing:.02em; }
+.btn:active{ transform:translateY(1px) scale(0.98); }
+.btn-reveal{ background:var(--ink); color:#F0EAD9; box-shadow:0 6px 14px rgba(34,48,63,0.25); }
+.btn-reveal:hover{ background:#31435a; }
+.btn-correct{ background:#e7f0e6; color:#2f6b3a; border:1.5px solid #2f6b3a; }
+.btn-correct:hover{ background:#d9ecd8; }
+.btn-wrong{ background:#fbe9e8; color:var(--akapen-dark); border:1.5px solid var(--akapen); }
+.btn-wrong:hover{ background:#f7d9d7; }
+.stamp-wrap{ position:absolute; top:14px; right:18px; width:88px; height:88px; pointer-events:none; opacity:0; }
+.stamp-wrap.show{ animation:stampIn .5s cubic-bezier(.2,1.4,.5,1) forwards; }
+@keyframes stampIn{ 0%{ opacity:0; transform:scale(2.4) rotate(-18deg); } 60%{ opacity:1; } 100%{ opacity:.92; transform:scale(1) rotate(-10deg); } }
+.stamp-wrap svg{ width:100%; height:100%; overflow:visible; }
+.stamp-note{ position:absolute; top:60px; right:10px; font-family:'Yomogi', cursive; font-size:14px; color:var(--akapen); opacity:0; white-space:nowrap; }
+.stamp-note.show{ animation:noteIn .45s ease .25s forwards; }
+@keyframes noteIn{ from{ opacity:0; transform:translateX(6px); } to{ opacity:1; transform:translateX(0); } }
+.footer-row{ margin-top:20px; display:flex; justify-content:space-between; align-items:center; font-size:12px; color:var(--ink-soft); gap:10px; }
+.reset-link{ background:none;border:none;cursor:pointer; color:var(--ink-soft); text-decoration:underline; font-size:12px; font-family:'Zen Kaku Gothic New', sans-serif; white-space:nowrap; }
+.reset-link:hover{ color:var(--akapen); }
+.round-complete, .final-complete{ text-align:center; padding:20px 6px 6px; }
+.seal{ width:120px; height:120px; margin:0 auto 18px; }
+.rc-title{ font-family:'Shippori Mincho', serif; font-weight:800; font-size:24px; color:var(--akapen-dark); margin-bottom:6px; }
+.rc-sub{ font-size:14px; color:var(--ink-soft); margin-bottom:22px; line-height:1.7; }
+.stat-bars{ display:flex; flex-direction:column; gap:10px; margin:0 auto 24px; max-width:380px; text-align:left; }
+.stat-row{ display:flex; align-items:center; gap:10px; font-size:13px; font-weight:700; color:var(--ink-soft); }
+.stat-row .label{ width:56px; flex-shrink:0; font-family:'Shippori Mincho',serif;}
+.stat-bar-track{ flex:1;height:14px;background:var(--paper-deep);border-radius:7px;overflow:hidden; border:1px solid rgba(0,0,0,0.06); }
+.stat-bar-fill{ height:100%;border-radius:7px; background:linear-gradient(90deg,#8a9a3f,#adbf55); transition:width .8s ease; }
+.stat-row .pct{ width:44px; text-align:right; color:var(--ink); }
+.btn-next{ background:var(--akapen); color:#fff; border:none; padding:15px 30px; font-size:15px; font-weight:700; border-radius:9px; cursor:pointer; box-shadow:0 8px 18px rgba(184,38,46,0.3); font-family:'Zen Kaku Gothic New', sans-serif; }
+.btn-next:hover{ background:#9c1f26; }
+
+@media (max-width:480px){
+  .sheet{ padding:24px 16px 22px 30px; }
+  .lap-punch{ width:80px; }
+  .qtext{ font-size:15.5px; }
+}
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div class="lap-ticket" id="lapTicket"></div>
+  <div class="sheet" id="sheet"></div>
+</div>
+
+<script>
+const DECKS = {
+ "toki": {
+  "no": "No.1",
+  "title": "大問4 時事・公民（6問）",
+  "storageKey": "shitennoji2023-shakai-toki-v1",
+  "questions": [
+   {
+    "id": 1,
+    "q": "2022年1月に、海底火山が大噴火した、南太平洋の島国は？",
+    "a": "トンガ",
+    "src": "四天王寺2023 社会 大問4 問1"
+   },
+   {
+    "id": 2,
+    "q": "国会の仕事を、すべて選びなさい。\n① 内閣総理大臣を指名する　② 裁判官を裁判する　③ 予算案をつくって提出する",
+    "a": "①と②（予算案をつくるのは内閣）",
+    "src": "四天王寺2023 社会 大問4 問2"
+   },
+   {
+    "id": 3,
+    "q": "内閣の仕事を、すべて選びなさい。\n① 外国と条約を結ぶ　② 国会の召集を決める　③ 参議院の解散を決める",
+    "a": "①と②（参議院に解散はない）",
+    "src": "四天王寺2023 社会 大問4 問4"
+   },
+   {
+    "id": 4,
+    "q": "2022年に、中国へ返還されて25年を迎えた地域は？",
+    "a": "ホンコン（香港）",
+    "src": "四天王寺2023 社会 大問4 問9"
+   },
+   {
+    "id": 5,
+    "q": "参議院について正しいものを、すべて選びなさい。\n① 定数は衆議院より少ない　② 立候補できる年齢は衆議院と同じ　③ 任期は衆議院より長い",
+    "a": "①と③（立候補は30歳以上。衆議院は25歳以上）",
+    "src": "四天王寺2023 社会 大問4 問10"
+   },
+   {
+    "id": 6,
+    "q": "2022年9月に開業した西九州新幹線は、武雄温泉と、どこの市を結びますか。",
+    "a": "長崎（市）",
+    "src": "四天王寺2023 社会 大問4 問12"
+   }
+  ]
+ },
+ "chiri": {
+  "no": "No.2",
+  "title": "大問1 地理（6問）",
+  "storageKey": "shitennoji2023-shakai-chiri-v1",
+  "questions": [
+   {
+    "id": 1,
+    "q": "木曽川・長良川・揖斐川が合流する、岐阜県の海津市の低い土地で、堤防で集落や田畑を囲んだものを、何といいますか。",
+    "a": "輪中",
+    "src": "四天王寺2023 社会 大問1 問1の2"
+   },
+   {
+    "id": 2,
+    "q": "沖縄が、アメリカから日本に返された（本土復帰）のは、何年ですか。",
+    "a": "1972年",
+    "src": "四天王寺2023 社会 大問1 問1の3"
+   },
+   {
+    "id": 3,
+    "q": "「大地の公園」という意味で、ユネスコが認定する言葉は？",
+    "a": "ジオパーク",
+    "src": "四天王寺2023 社会 大問1 問1の6"
+   },
+   {
+    "id": 4,
+    "q": "川の流れや水路を改良して、水害を防ぎ、水をくらしや産業に利用できるようにすることを、何といいますか。",
+    "a": "治水",
+    "src": "四天王寺2023 社会 大問1 問2"
+   },
+   {
+    "id": 5,
+    "q": "沖縄県で、作付面積がいちばん多い作物と、いちばん少ない作物は？（稲・サトウキビ・飼料・野菜から）",
+    "a": "いちばん多い：サトウキビ／いちばん少ない：稲",
+    "src": "四天王寺2023 社会 大問1 問3"
+   },
+   {
+    "id": 6,
+    "q": "嬬恋村があり、浅間山の北側でキャベツ作りがさかんな県は？",
+    "a": "群馬県",
+    "src": "四天王寺2023 社会 大問1 問8のD"
+   }
+  ]
+ },
+ "rekishi": {
+  "no": "No.3",
+  "title": "大問2・3 歴史（5問）",
+  "storageKey": "shitennoji2023-shakai-rekishi-v1",
+  "questions": [
+   {
+    "id": 1,
+    "q": "聖武天皇のころの、正倉院の建物の造りは？",
+    "a": "校倉造",
+    "src": "四天王寺2023 社会 大問2 問1の「え」"
+   },
+   {
+    "id": 2,
+    "q": "1873年の徴兵令で、義務づけられたことは？（何才以上の男子が、何年）",
+    "a": "満20才以上の男子が、3年間、軍隊に入る",
+    "src": "四天王寺2023 社会 大問2 問5"
+   },
+   {
+    "id": 3,
+    "q": "聖武天皇が、全国に国分寺を建てることを命じた理由を、40字以内で書きなさい。",
+    "a": "全国各地で災害や反乱が起こり、仏教の力で社会の不安をしずめようと考えたため。",
+    "src": "四天王寺2023 社会 大問2 問8"
+   },
+   {
+    "id": 4,
+    "q": "遣唐使船の航路は、どう変わりましたか。また、その理由は？",
+    "a": "朝鮮半島ぞいの航路から、海をわたる航路へ。新羅との関係が悪くなったため。",
+    "src": "四天王寺2023 社会 大問3 問4"
+   },
+   {
+    "id": 5,
+    "q": "日清戦争までの女子の就学率は、50%以上？ 未満？\n男子が80%をこえたのは、日露戦争の前？ 後？",
+    "a": "50%未満／日露戦争の前",
+    "src": "四天王寺2023 社会 大問3 問7"
+   }
+  ]
+ }
+};
+
+const store = {
+  async get(k){ try{ const v = localStorage.getItem(k); return v ? {value:v} : null; }catch(e){ return (store._m||{})[k] ? {value:store._m[k]} : null; } },
+  async set(k,v){ try{ localStorage.setItem(k,v); }catch(e){ store._m = store._m||{}; store._m[k]=v; } }
+};
+
+const TOTAL_LAPS = 3;
+let currentDeckKey = null;
+let state = null;
+
+function deck(){ return DECKS[currentDeckKey]; }
+function TOTAL(){ return deck().questions.length; }
+function freshRoundQueue(){ return deck().questions.map(q=>q.id); }
+
+function defaultState(){
+  return {
+    round: 1,
+    queue: freshRoundQueue(),
+    seenFirstTry: {},
+    firstTryCorrectCount: 0,
+    roundHistory: [],
+    finished: false,
+    currentId: null,
+    revealed: false
+  };
+}
+
+async function loadDeckSummary(key){
+  try{
+    const res = await store.get(DECKS[key].storageKey);
+    if(!res) return null;
+    return JSON.parse(res.value);
+  }catch(e){ return null; }
+}
+
+async function renderPicker(){
+  document.getElementById('lapTicket').innerHTML = '';
+  const sheet = document.getElementById('sheet');
+  sheet.className = 'picker-sheet';
+  sheet.innerHTML = `
+    <div class="picker-title">四天王寺2023 社会 一問一答 3周ドリル</div>
+    <div class="picker-sub">やる回を選んでください。まちがえた問題はその周のうちに出し直され、3周やりきると正解率の伸びが見られます。</div>
+    <div id="deckList"></div>
+  `;
+  const list = document.getElementById('deckList');
+  for(const key of Object.keys(DECKS)){
+    const d = DECKS[key];
+    const st = await loadDeckSummary(key);
+    let meta = "まだ未着手";
+    if(st){
+      if(st.finished && st.round > TOTAL_LAPS) meta = "3周コンプリート済み";
+      else meta = `${st.round}周目 ・ ${Object.keys(st.seenFirstTry).length}/${d.questions.length}問クリア中`;
+    }
+    const card = document.createElement('div');
+    card.className = 'deck-card';
+    card.onclick = () => enterDeck(key);
+    card.innerHTML = `
+      <div class="deck-num">${d.no}</div>
+      <div class="deck-info">
+        <div class="deck-name">${d.title}</div>
+        <div class="deck-meta">${meta}</div>
+      </div>
+      <div class="deck-arrow">→</div>
+    `;
+    list.appendChild(card);
+  }
+}
+
+async function enterDeck(key){
+  currentDeckKey = key;
+  document.getElementById('sheet').className = 'sheet';
+  try{
+    const res = await store.get(deck().storageKey);
+    state = res ? JSON.parse(res.value) : defaultState();
+  }catch(e){
+    state = defaultState();
+  }
+  if(!state.currentId && state.queue.length){ state.currentId = state.queue[0]; }
+  render();
+}
+
+async function saveState(){
+  try{ await store.set(deck().storageKey, JSON.stringify(state)); }
+  catch(e){ console.error("save failed", e); }
+}
+
+function getQuestion(id){ return deck().questions.find(q=>q.id===id); }
+
+function renderLapTicket(){
+  const wrap = document.getElementById('lapTicket');
+  wrap.innerHTML = '';
+  for(let i=1;i<=TOTAL_LAPS;i++){
+    const div = document.createElement('div');
+    let cls = 'lap-punch';
+    if(i < state.round || (i===state.round && state.finished)) cls += ' done';
+    else if(i === state.round) cls += ' active';
+    div.className = cls;
+    div.innerHTML = `${i}周目<span class="num">${i}</span>`;
+    wrap.appendChild(div);
+  }
+}
+
+function uniqueSeenCount(){ return Object.keys(state.seenFirstTry).length; }
+
+function render(){
+  renderLapTicket();
+  const sheet = document.getElementById('sheet');
+
+  if(state.finished && state.round > TOTAL_LAPS){ renderFinal(sheet); return; }
+  if(state.queue.length === 0){ renderRoundComplete(sheet); return; }
+
+  const qid = state.currentId || state.queue[0];
+  const item = getQuestion(qid);
+  const doneCount = uniqueSeenCount();
+  const total = TOTAL();
+
+  sheet.innerHTML = `
+    <div class="head-row">
+      <span class="eyebrow">${deck().no} ${deck().title} ／ 一問一答ドリル ・ ${state.round}周目</span>
+      <span class="qcount"><b>${doneCount}</b> / ${total} 問クリア</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" style="width:${(doneCount/total*100).toFixed(1)}%"></div></div>
+
+    <div class="qnum"><span class="box">問</span>${String(item.id).padStart(2,'0')}</div>
+    <div class="qtext">${escapeHtml(item.q)}</div>
+
+    <div class="answer-zone" id="answerZone"></div>
+
+    <div class="footer-row">
+      <button class="reset-link" onclick="backToPicker()">← ほかの回へ</button>
+      <button class="reset-link" onclick="resetCurrentDeck()">この回をはじめからやり直す</button>
+    </div>
+  `;
+
+  const az = document.getElementById('answerZone');
+  if(!state.revealed){
+    az.innerHTML = `<button class="btn btn-reveal" style="width:100%" onclick="reveal()">こたえを見る</button>`;
+  }else{
+    const badge2026 = item.src ? `<span class="badge-2026">📌 ${escapeHtml(item.src)}</span>` : '';
+    az.innerHTML = `
+      <div class="answer-label">✎ 正解</div>
+      <div class="answer-text">${escapeHtml(item.a)}</div>
+      ${badge2026}
+      <div class="btn-row">
+        <button class="btn btn-correct" onclick="mark(true)">◯ わかった</button>
+        <button class="btn btn-wrong" onclick="mark(false)">✕ まちがえた</button>
+      </div>
+    `;
+  }
+}
+
+function escapeHtml(str){
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+}
+
+function reveal(){ state.revealed = true; render(); }
+
+function mark(correct){
+  const qid = state.currentId;
+  const firstTime = !(qid in state.seenFirstTry);
+  if(firstTime){
+    state.seenFirstTry[qid] = correct;
+    if(correct) state.firstTryCorrectCount++;
+  }
+  state.queue.shift();
+  if(!correct){ state.queue.push(qid); }
+
+  state.revealed = false;
+  state.currentId = state.queue.length ? state.queue[0] : null;
+
+  saveState();
+  render();
+  showStamp(correct);
+}
+
+function showStamp(correct){
+  const sheet = document.getElementById('sheet');
+  const wrap = document.createElement('div');
+  wrap.className = 'stamp-wrap show';
+  wrap.innerHTML = correct ? stampCircleSVG() : stampCrossSVG();
+  sheet.appendChild(wrap);
+
+  const note = document.createElement('div');
+  note.className = 'stamp-note show';
+  note.textContent = correct ? "せいかい！" : "つぎ、がんばろう";
+  sheet.appendChild(note);
+
+  setTimeout(()=>{ wrap.remove(); note.remove(); }, 900);
+}
+
+function stampCircleSVG(){
+  return `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="38" fill="none" stroke="#B8262E" stroke-width="7" stroke-linecap="round"/></svg>`;
+}
+function stampCrossSVG(){
+  return `<svg viewBox="0 0 100 100">
+    <line x1="24" y1="24" x2="76" y2="76" stroke="#B8262E" stroke-width="7" stroke-linecap="round"/>
+    <line x1="76" y1="24" x2="24" y2="76" stroke="#B8262E" stroke-width="7" stroke-linecap="round"/>
+  </svg>`;
+}
+
+function sealSVG(label){
+  const t = (typeof label === 'number') ? label + '周' : String(label);
+  const fs = t.length > 2 ? 28 : 36;
+  return `<svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" fill="none" stroke="#B8262E" stroke-width="5"/><circle cx="60" cy="60" r="44" fill="none" stroke="#B8262E" stroke-width="1.5"/><text x="60" y="${60+fs*0.36}" text-anchor="middle" font-family="Shippori Mincho, serif" font-weight="800" font-size="${fs}" fill="#B8262E">${t}</text></svg>`;
+}
+
+function renderRoundComplete(sheet){
+  const total = TOTAL();
+  const accuracy = Math.round((state.firstTryCorrectCount / total) * 100);
+  sheet.innerHTML = `
+    <div class="round-complete">
+      <div class="seal">${sealSVG(state.round)}</div>
+      <div class="rc-title">${state.round}周目、クリア！</div>
+      <div class="rc-sub">1回目で正解できたのは ${state.firstTryCorrectCount} / ${total} 問（${accuracy}%）でした。<br>まちがえた問題は、この周の中で正解するまで出題されました。</div>
+      <button class="btn-next" onclick="nextRound()">${state.round < TOTAL_LAPS ? (state.round+1)+'周目へ進む' : '結果を見る'}</button>
+    </div>
+  `;
+}
+
+function nextRound(){
+  const total = TOTAL();
+  state.roundHistory.push({round: state.round, accuracy: Math.round((state.firstTryCorrectCount/total)*100)});
+  if(state.round >= TOTAL_LAPS){
+    state.finished = true;
+    state.round = TOTAL_LAPS + 1;
+  }else{
+    state.round += 1;
+    state.queue = freshRoundQueue();
+    state.seenFirstTry = {};
+    state.firstTryCorrectCount = 0;
+    state.currentId = state.queue[0];
+    state.revealed = false;
+  }
+  saveState();
+  render();
+}
+
+function renderFinal(sheet){
+  const bars = state.roundHistory.map(r=>`
+    <div class="stat-row">
+      <span class="label">${r.round}周目</span>
+      <div class="stat-bar-track"><div class="stat-bar-fill" style="width:${r.accuracy}%"></div></div>
+      <span class="pct">${r.accuracy}%</span>
+    </div>
+  `).join('');
+  sheet.innerHTML = `
+    <div class="final-complete">
+      <div class="seal">${sealSVG('合格')}</div>
+      <div class="rc-title">3周、コンプリート！</div>
+      <div class="rc-sub">「${deck().title}」の一問一答を3周やりきりました。回を重ねるごとの正解率はこちら。</div>
+      <div class="stat-bars">${bars}</div>
+      <div class="footer-row" style="justify-content:center; gap:14px;">
+        <button class="reset-link" onclick="backToPicker()">← ほかの回へ</button>
+        <button class="btn-next" onclick="resetCurrentDeck()">もう一度さいしょから</button>
+      </div>
+    </div>
+  `;
+}
+
+async function resetCurrentDeck(){
+  state = defaultState();
+  state.currentId = state.queue[0];
+  await saveState();
+  render();
+}
+
+function backToPicker(){
+  currentDeckKey = null;
+  state = null;
+  renderPicker();
+}
+
+renderPicker();
+</script>
+</body>
+</html>
