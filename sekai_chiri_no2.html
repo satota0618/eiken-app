@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>夏期講習テキスト No.2（講義Ⅰ）世界の国々(1) アジア・中東・アフリカ 一問一答</title>
+<style>
+  * { box-sizing: border-box; margin:0; padding:0; }
+  body {
+    font-family: "Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",sans-serif;
+    background: linear-gradient(135deg,#fef6e4 0%,#fde2e4 50%,#e2ece9 100%);
+    min-height: 100vh;
+    padding: 16px;
+    color: #3a2e2e;
+  }
+  .wrap { max-width: 560px; margin: 0 auto; }
+  header { text-align:center; margin-bottom: 16px; }
+  header h1 { font-size: 20px; color: #a0522d; line-height:1.4; }
+  header p { font-size: 13px; color:#7a6a5f; margin-top:4px; }
+
+  .card {
+    background: #fffdf8;
+    border-radius: 18px;
+    box-shadow: 0 6px 18px rgba(160,82,45,0.15);
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .round-badge {
+    display:inline-block;
+    background:#f4a261;
+    color:#fff;
+    font-size:13px;
+    font-weight:bold;
+    padding:4px 14px;
+    border-radius:20px;
+    margin-bottom:10px;
+  }
+  .progress-bar-outer {
+    background:#eee;
+    border-radius:20px;
+    height:10px;
+    overflow:hidden;
+    margin: 10px 0 16px;
+  }
+  .progress-bar-inner {
+    background: linear-gradient(90deg,#f4a261,#e76f51);
+    height:100%;
+    width:0%;
+    transition: width 0.3s ease;
+  }
+  .q-count { text-align:right; font-size:12px; color:#999; margin-bottom:4px; }
+  .src {
+    font-size:12px;
+    color:#a0522d;
+    background:#fdf0e6;
+    border-radius:8px;
+    padding:4px 10px;
+    margin-bottom:10px;
+    display:inline-block;
+    line-height:1.5;
+  }
+  .question-text {
+    font-size: 17px;
+    line-height:1.7;
+    margin-bottom: 18px;
+    font-weight:bold;
+    white-space:pre-wrap;
+  }
+  .choice-btn {
+    display:block;
+    width:100%;
+    text-align:left;
+    background:#fff;
+    border: 2px solid #e8d5c4;
+    border-radius:12px;
+    padding: 13px 16px;
+    margin-bottom:10px;
+    font-size:16px;
+    color:#3a2e2e;
+    cursor:pointer;
+    transition: all 0.15s;
+  }
+  .choice-btn:active { transform: scale(0.98); }
+  .choice-btn.correct { background:#d8f3dc; border-color:#52b788; }
+  .choice-btn.wrong { background:#ffd6d6; border-color:#e63946; }
+  .choice-btn.disabled { pointer-events:none; opacity:0.75; }
+
+  .explain-box {
+    display:none;
+    margin-top:14px;
+    background:#f1f8f5;
+    border-left: 4px solid #52b788;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size:14px;
+    line-height:1.6;
+  }
+  .next-btn {
+    display:none;
+    width:100%;
+    margin-top:14px;
+    background:#e76f51;
+    color:#fff;
+    border:none;
+    border-radius:12px;
+    padding:14px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+  }
+  .start-btn, .primary-btn {
+    display:block;
+    width:100%;
+    background:#e76f51;
+    color:#fff;
+    border:none;
+    border-radius:14px;
+    padding:16px;
+    font-size:17px;
+    font-weight:bold;
+    cursor:pointer;
+    margin-top: 8px;
+  }
+  .stage-list { font-size:14px; line-height:2; color:#5a4a3f; }
+  .result-score {
+    text-align:center;
+    font-size: 40px;
+    font-weight:bold;
+    color:#e76f51;
+    margin: 10px 0;
+  }
+  .weak-list {
+    background:#fff5f0;
+    border-radius:10px;
+    padding: 12px 14px;
+    margin-top: 12px;
+    font-size:14px;
+    line-height:1.9;
+    text-align:left;
+  }
+  .weak-list b { color:#c1440e; }
+  footer { text-align:center; font-size:11px; color:#aaa; margin-top:20px; line-height:1.6; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>夏期講習テキスト No.2（講義Ⅰ）<br>世界の国々(1) アジア・中東・アフリカ<br>一問一答</h1>
+    <p>3周してしっかり定着させよう！</p>
+  </header>
+
+  <div id="app"></div>
+
+  <footer>夏期講習テキスト No.2（講義Ⅰ）世界の国々(1) 一問一答（p.23 問1〜問16）対応<br>問17（地図・国旗）は入っていません</footer>
+</div>
+
+<script>
+const SRC = "夏期講習テキスト No.2 講義Ⅰ 世界の国々(1)";
+
+// no: テキストの問番号 / answer: choices の正解の位置(0始まり)
+const QUESTIONS = [
+  {"no": "問1", "q": "中華人民共和国に位置する世界最大の城壁を何というか。", "choices": ["万里の長城", "紫禁城", "敦煌の石窟", "天安門"], "answer": 0, "note": "中国にある世界最大の城壁は万里の長城。"},
+  {"no": "問2", "q": "2015年まで中華人民共和国で実施されていた、人口増加をおさえるための政策を何というか。", "choices": ["一人っ子政策", "改革開放政策", "文化大革命", "経済特区"], "answer": 0, "note": "夫婦1組に子ども1人までとした一人っ子政策が2015年まで行われた。"},
+  {"no": "問3", "q": "大韓民国における女性の正装である民族衣装は何か。", "choices": ["チマ・チョゴリ", "アオザイ", "サリー", "チャイナドレス"], "answer": 0, "note": "韓国の女性の正装はチマ・チョゴリ。アオザイはベトナム、サリーはインドの民族衣装。"},
+  {"no": "問4", "q": "大韓民国で使用される表音文字を何というか。", "choices": ["ハングル", "ひらがな", "漢字", "アラビア文字"], "answer": 0, "note": "韓国で使われる表音文字はハングル。"},
+  {"no": "問5", "q": "インドネシアの主な宗教は何か。", "choices": ["イスラム教", "ヒンドゥー教", "仏教", "キリスト教"], "answer": 0, "note": "インドネシアは、イスラム教徒が多い国。"},
+  {"no": "問6", "q": "タイで輸出が特にさかんな農作物は何か。", "choices": ["米", "小麦", "コーヒー豆", "茶"], "answer": 0, "note": "タイは米の輸出がさかん。"},
+  {"no": "問7", "q": "インドの主な宗教は何か。", "choices": ["ヒンドゥー教", "イスラム教", "仏教", "キリスト教"], "answer": 0, "note": "インドは、ヒンドゥー教徒が多い国。"},
+  {"no": "問8", "q": "インドで神聖な動物とされており、世界有数の飼育頭数となっている動物は何か。", "choices": ["牛", "豚", "ラクダ", "羊"], "answer": 0, "note": "インドでは牛が神聖な動物とされている。"},
+  {"no": "問9", "q": "イスラム教において、イスラム暦で9月にあたり、日の出ている間は飲食をしない月を何というか。", "choices": ["ラマダン（ラマダーン）", "ハッジ", "ハラル", "ヒジュラ"], "answer": 0, "note": "イスラム暦の9月はラマダン。日の出ている間は飲食をしない。"},
+  {"no": "問10", "q": "サウジアラビアの代表的な料理で、炊いた米の上に肉や魚・野菜をのせたものを何というか。", "choices": ["カプサ", "ナン", "ケバブ", "ビリヤニ"], "answer": 0, "note": "炊いた米に肉や魚・野菜をのせた料理はカプサ。"},
+  {"no": "問11", "q": "イスラム教徒が食べたり、飲んだりしてはいけないものを、次から2つ選びなさい。\n〔牛肉　ぶた肉　とり肉　羊肉　コーヒー　紅茶　酒　コーラ〕", "choices": ["ぶた肉・酒", "牛肉・ぶた肉", "酒・コーラ", "羊肉・コーヒー"], "answer": 0, "note": "イスラム教徒が食べたり飲んだりしてはいけないのは、ぶた肉と酒。"},
+  {"no": "問12", "q": "サウジアラビアにある、イスラム教最大の聖地を何というか。", "choices": ["メッカ", "メディナ", "エルサレム", "リヤド"], "answer": 0, "note": "イスラム教最大の聖地はメッカ（サウジアラビア）。"},
+  {"no": "問13", "q": "イスラエルを建国した民族を何というか。", "choices": ["ユダヤ民族（ユダヤ人）", "アラブ民族", "ペルシア民族", "クルド民族"], "answer": 0, "note": "イスラエルを建国したのはユダヤ民族（ユダヤ人）。"},
+  {"no": "問14", "q": "南アフリカ共和国で1991年に法的に廃止された、人種隔離政策の名前は何か。", "choices": ["アパルトヘイト", "カースト制度", "ホロコースト", "ジェノサイド"], "answer": 0, "note": "南アフリカ共和国の人種隔離政策はアパルトヘイト。"},
+  {"no": "問15", "q": "エジプトを流れる世界最長の河川を何というか。", "choices": ["ナイル川", "アマゾン川", "ニジェール川", "コンゴ川"], "answer": 0, "note": "エジプトを流れる世界最長の河川はナイル川。"},
+  {"no": "問16", "q": "エジプトにある、地中海と紅海を結んでいる運河を何というか。", "choices": ["スエズ運河", "パナマ運河", "キール運河", "コリントス運河"], "answer": 0, "note": "地中海と紅海を結ぶ運河はスエズ運河。"}
+];
+
+let round = 1;
+let idx = 0;
+let wrongThisRound = [];
+let wrongCounts = {};
+let currentPool = [];
+
+const app = document.getElementById('app');
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function shuffleChoices(q){
+  const idxs = q.choices.map((c,i)=>i);
+  const shuffled = shuffle(idxs);
+  return {
+    no: q.no,
+    text: q.q,
+    note: q.note,
+    choices: shuffled.map(i=>q.choices[i]),
+    answerIndex: shuffled.indexOf(q.answer)
+  };
+}
+
+function renderStart(){
+  app.innerHTML = `
+    <div class="card">
+      <div class="stage-list">
+        📘 全${QUESTIONS.length}問（問1〜問16）<br>
+        🔁 3周してしっかり覚える方式<br>
+        1周目：まず全問チャレンジ<br>
+        2周目：間違えた問題を中心に復習<br>
+        3周目：最終チェック（まだ怪しい問題）
+      </div>
+      <button class="start-btn" onclick="startRound(1)">1周目スタート！</button>
+    </div>
+  `;
+}
+
+function startRound(r){
+  round = r;
+  idx = 0;
+  wrongThisRound = [];
+  if(r===1){
+    currentPool = shuffle(QUESTIONS.slice());
+  } else {
+    currentPool = shuffle(wrongCounts.__poolForRound || []);
+  }
+  if(currentPool.length===0){
+    finishRound();
+    return;
+  }
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const raw = currentPool[idx];
+  const q = shuffleChoices(raw);
+  const total = currentPool.length;
+  const pct = Math.round((idx/total)*100);
+
+  app.innerHTML = `
+    <div class="card">
+      <span class="round-badge">${round}周目</span>
+      <div class="q-count">${idx+1} / ${total} 問</div>
+      <div class="progress-bar-outer"><div class="progress-bar-inner" style="width:${pct}%"></div></div>
+      <div class="src">${SRC}｜${q.no}</div>
+      <div class="question-text">${q.text}</div>
+      <div id="choices"></div>
+      <div class="explain-box" id="explainBox"></div>
+      <button class="next-btn" id="nextBtn">次へ →</button>
+    </div>
+  `;
+
+  const choicesDiv = document.getElementById('choices');
+  q.choices.forEach((c,i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    btn.textContent = c;
+    btn.onclick = ()=>selectAnswer(i, q, raw);
+    choicesDiv.appendChild(btn);
+  });
+}
+
+function selectAnswer(i, q, raw){
+  const buttons = document.querySelectorAll('.choice-btn');
+  buttons.forEach(b=>b.classList.add('disabled'));
+  const correct = i===q.answerIndex;
+
+  buttons[q.answerIndex].classList.add('correct');
+  if(!correct){
+    buttons[i].classList.add('wrong');
+    wrongThisRound.push(raw);
+    wrongCounts[raw.q] = (wrongCounts[raw.q]||0)+1;
+  }
+
+  const explainBox = document.getElementById('explainBox');
+  explainBox.style.display = 'block';
+  explainBox.innerHTML = (correct ? '✅ 正解！ ' : '❌ 不正解… 正解は「'+q.choices[q.answerIndex]+'」') + '<br>' + (q.note||'');
+
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.style.display = 'block';
+  nextBtn.textContent = (idx+1<currentPool.length) ? '次へ →' : `${round}周目の結果を見る`;
+  nextBtn.onclick = ()=>{
+    idx++;
+    if(idx<currentPool.length){
+      renderQuestion();
+    } else {
+      finishRound();
+    }
+  };
+}
+
+function weakListHtml(list){
+  return list.map(q=>'・<b>'+q.no+'</b> '+q.q).join('<br>');
+}
+
+function finishRound(){
+  const wrongUnique = [...new Map(wrongThisRound.map(q=>[q.q,q])).values()];
+  wrongCounts.__poolForRound = wrongUnique;
+  wrongCounts.__lastPoolSize = currentPool.length;
+
+  const correctCount = currentPool.length - wrongUnique.length;
+
+  if(round<3 && wrongUnique.length>0){
+    app.innerHTML = `
+      <div class="card" style="text-align:center;">
+        <h2 style="color:#e76f51;">${round}周目 おつかれさま！</h2>
+        <div class="result-score">${correctCount} / ${currentPool.length}</div>
+        <p style="margin-bottom:14px;">間違えた ${wrongUnique.length} 問を、次の周でもう一度チェックしよう！</p>
+        <div class="weak-list"><b>間違えた問題（テキストの問番号）</b><br>${weakListHtml(wrongUnique)}</div>
+        <button class="primary-btn" onclick="startRound(${round+1})">${round+1}周目へ進む</button>
+      </div>
+    `;
+  } else if(round<3 && wrongUnique.length===0){
+    app.innerHTML = `
+      <div class="card" style="text-align:center;">
+        <h2 style="color:#52b788;">${round}周目 パーフェクト！🎉</h2>
+        <p>間違いなし！このまま最後まで確認しよう。</p>
+        <button class="primary-btn" onclick="startRound(${round+1})">${round+1}周目へ進む</button>
+      </div>
+    `;
+  } else {
+    renderFinalResult(wrongUnique, correctCount);
+  }
+}
+
+function renderFinalResult(wrongUnique, correctCount){
+  let weakHtml = '';
+  if(wrongUnique.length>0){
+    weakHtml = `<div class="weak-list"><b>まだ怪しい問題（${SRC}で見直そう）</b><br>` + weakListHtml(wrongUnique) + `</div>`;
+  } else {
+    weakHtml = `<div class="weak-list">🎉 弱点なし！バッチリ覚えられたで！</div>`;
+  }
+
+  app.innerHTML = `
+    <div class="card" style="text-align:center;">
+      <h2 style="color:#e76f51;">3周 完了！お疲れさま🎊</h2>
+      <div class="result-score">${correctCount} / ${(wrongCounts.__lastPoolSize||QUESTIONS.length)}</div>
+      ${weakHtml}
+      <button class="primary-btn" onclick="resetAll()">もう一度最初から</button>
+    </div>
+  `;
+}
+
+function resetAll(){
+  wrongCounts = {};
+  renderStart();
+}
+
+renderStart();
+</script>
+</body>
+</html>
