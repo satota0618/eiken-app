@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>夏期講習テキスト No.3（講義Ⅰ）世界地理 一問一答</title>
+<style>
+  * { box-sizing: border-box; margin:0; padding:0; }
+  body {
+    font-family: "Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",sans-serif;
+    background: linear-gradient(135deg,#fef6e4 0%,#fde2e4 50%,#e2ece9 100%);
+    min-height: 100vh;
+    padding: 16px;
+    color: #3a2e2e;
+  }
+  .wrap { max-width: 560px; margin: 0 auto; }
+  header { text-align:center; margin-bottom: 16px; }
+  header h1 { font-size: 20px; color: #a0522d; line-height:1.4; }
+  header p { font-size: 13px; color:#7a6a5f; margin-top:4px; }
+
+  .card {
+    background: #fffdf8;
+    border-radius: 18px;
+    box-shadow: 0 6px 18px rgba(160,82,45,0.15);
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .round-badge {
+    display:inline-block;
+    background:#f4a261;
+    color:#fff;
+    font-size:13px;
+    font-weight:bold;
+    padding:4px 14px;
+    border-radius:20px;
+    margin-bottom:10px;
+  }
+  .progress-bar-outer {
+    background:#eee;
+    border-radius:20px;
+    height:10px;
+    overflow:hidden;
+    margin: 10px 0 16px;
+  }
+  .progress-bar-inner {
+    background: linear-gradient(90deg,#f4a261,#e76f51);
+    height:100%;
+    width:0%;
+    transition: width 0.3s ease;
+  }
+  .q-count { text-align:right; font-size:12px; color:#999; margin-bottom:4px; }
+  .src {
+    font-size:12px;
+    color:#a0522d;
+    background:#fdf0e6;
+    border-radius:8px;
+    padding:4px 10px;
+    margin-bottom:10px;
+    display:inline-block;
+    line-height:1.5;
+  }
+  .question-text {
+    font-size: 17px;
+    line-height:1.7;
+    margin-bottom: 18px;
+    font-weight:bold;
+    white-space:pre-wrap;
+  }
+  .choice-btn {
+    display:block;
+    width:100%;
+    text-align:left;
+    background:#fff;
+    border: 2px solid #e8d5c4;
+    border-radius:12px;
+    padding: 13px 16px;
+    margin-bottom:10px;
+    font-size:16px;
+    color:#3a2e2e;
+    cursor:pointer;
+    transition: all 0.15s;
+  }
+  .choice-btn:active { transform: scale(0.98); }
+  .choice-btn.correct { background:#d8f3dc; border-color:#52b788; }
+  .choice-btn.wrong { background:#ffd6d6; border-color:#e63946; }
+  .choice-btn.disabled { pointer-events:none; opacity:0.75; }
+
+  .explain-box {
+    display:none;
+    margin-top:14px;
+    background:#f1f8f5;
+    border-left: 4px solid #52b788;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size:14px;
+    line-height:1.6;
+  }
+  .next-btn {
+    display:none;
+    width:100%;
+    margin-top:14px;
+    background:#e76f51;
+    color:#fff;
+    border:none;
+    border-radius:12px;
+    padding:14px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+  }
+  .start-btn, .primary-btn {
+    display:block;
+    width:100%;
+    background:#e76f51;
+    color:#fff;
+    border:none;
+    border-radius:14px;
+    padding:16px;
+    font-size:17px;
+    font-weight:bold;
+    cursor:pointer;
+    margin-top: 8px;
+  }
+  .stage-list { font-size:14px; line-height:2; color:#5a4a3f; }
+  .result-score {
+    text-align:center;
+    font-size: 40px;
+    font-weight:bold;
+    color:#e76f51;
+    margin: 10px 0;
+  }
+  .weak-list {
+    background:#fff5f0;
+    border-radius:10px;
+    padding: 12px 14px;
+    margin-top: 12px;
+    font-size:14px;
+    line-height:1.9;
+    text-align:left;
+  }
+  .weak-list b { color:#c1440e; }
+  footer { text-align:center; font-size:11px; color:#aaa; margin-top:20px; line-height:1.6; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>夏期講習テキスト<br>No.3（講義Ⅰ）世界地理 一問一答</h1>
+    <p>3周してしっかり定着させよう！</p>
+  </header>
+
+  <div id="app"></div>
+
+  <footer>夏期講習テキスト No.3（講義Ⅰ）世界地理 一問一答（p.35 問1〜問15）対応<br>統計の年（2021年）はテキストのままです</footer>
+</div>
+
+<script>
+const SRC = "夏期講習テキスト No.3 講義Ⅰ 一問一答";
+
+// no: テキストの問番号 / answer: choices の正解の位置(0始まり)
+const QUESTIONS = [
+  {"no": "問1", "q": "フランスにおける発電電力量の多くをしめる発電方法は何か。", "choices": ["原子力発電", "火力発電", "水力発電", "風力発電"], "answer": 0, "note": "フランスは原子力発電の割合がとても高い。"},
+  {"no": "問2", "q": "ヨーロッパ最大の工業国であるドイツにある、最大の工業地域の名前は何か。", "choices": ["ルール工業地域", "ミッドランド工業地域", "ロレーヌ工業地域", "五大湖沿岸工業地域"], "answer": 0, "note": "ドイツ最大の工業地域はルール工業地域（炭田をもとに発達）。"},
+  {"no": "問3", "q": "1989年に市民の手でつぶされた、冷戦あるいはドイツ分裂の象徴を「（　）の壁」という。（　）にあてはまる都市の名前は何か。", "choices": ["ベルリン", "ボン", "ミュンヘン", "ハンブルク"], "answer": 0, "note": "1989年にベルリンの壁がつぶされ、翌1990年に東西ドイツが統一された。"},
+  {"no": "問4", "q": "イギリスは、ウェールズ・スコットランド・北アイルランドともうひとつの地域からなっています。残りのひとつの地域の名前は何か。", "choices": ["イングランド", "アイルランド", "ブルターニュ", "ノルマンディー"], "answer": 0, "note": "イギリスは、イングランド・ウェールズ・スコットランド・北アイルランドの4つの地域からなる。"},
+  {"no": "問5", "q": "ダイナマイトの発明者として知られるアルフレッド＝ノーベルの出身国の首都の名前は何か。", "choices": ["ストックホルム", "オスロ", "ヘルシンキ", "コペンハーゲン"], "answer": 0, "note": "ノーベルはスウェーデンの出身。首都はストックホルム。"},
+  {"no": "問6", "q": "高緯度地域にあるノルウェーで見られる、夏に1日中太陽が沈まない現象を何というか。", "choices": ["白夜", "極夜", "オーロラ", "偏西風"], "answer": 0, "note": "夏に太陽が沈まない（または沈んでも暗くならない）現象を白夜という。"},
+  {"no": "問7", "q": "九州とほぼ同じ大きさであるオランダの国土面積の約4分の1を占める干拓地を、カタカナ4字で何というか。", "choices": ["ポルダー", "フィヨルド", "ラグーン", "プレーリー"], "answer": 0, "note": "海をせき止めて陸地にした干拓地をポルダーという。"},
+  {"no": "問8", "q": "イタリアのローマ市内にある、世界最小の独立国の名前は何か。", "choices": ["バチカン市国", "モナコ", "サンマリノ", "リヒテンシュタイン"], "answer": 0, "note": "ローマ市内にあるバチカン市国が世界最小の独立国。"},
+  {"no": "問9", "q": "アメリカ合衆国の国旗に描かれている星の数は、現在の州の数を示しています。その数は何か。", "choices": ["50", "13", "48", "52"], "answer": 0, "note": "星は50個（州の数）。赤と白の線13本は、独立当時の13州を表す。"},
+  {"no": "問10", "q": "「自由の女神像」や国際連合の本部などがある、アメリカ合衆国の都市の名前は何か。", "choices": ["ニューヨーク", "ワシントンD.C.", "ロサンゼルス", "シカゴ"], "answer": 0, "note": "自由の女神像も国際連合の本部も、ニューヨークにある。"},
+  {"no": "問11", "q": "先住民以外にも多くの人種・民族が住むために、アメリカ合衆国は「人種の（　）」といわれることがあります。（　）にあてはまる語句をカタカナ6字で答えなさい。", "choices": ["サラダボウル", "メルティングポット", "モザイク", "ヒスパニック"], "answer": 0, "note": "「人種のるつぼ」ともいわれるが、カタカナ6字ならサラダボウル。"},
+  {"no": "問12", "q": "北部にイヌイットとよばれる民族が住む、世界で2番目に面積が大きい国の名前は何か。", "choices": ["カナダ", "ロシア", "アメリカ合衆国", "ブラジル"], "answer": 0, "note": "世界で2番目に面積が大きい国はカナダ。北部にイヌイットが住む。"},
+  {"no": "問13", "q": "コーヒー豆の生産量（2021年）が世界一の国の名前は何か。", "choices": ["ブラジル", "コロンビア", "ベトナム", "エチオピア"], "answer": 0, "note": "コーヒー豆の生産量が世界一なのはブラジル。"},
+  {"no": "問14", "q": "オーストラリアの先住民を何というか。カタカナで答えなさい。", "choices": ["アボリジニ", "マオリ", "イヌイット", "アイヌ"], "answer": 0, "note": "オーストラリアの先住民はアボリジニ。マオリはニュージーランドの先住民。"},
+  {"no": "問15", "q": "欧州連合のアルファベットでの略称を何というか。", "choices": ["EU", "UN", "NATO", "ASEAN"], "answer": 0, "note": "欧州連合（European Union）の略称はEU。"}
+];
+
+let round = 1;
+let idx = 0;
+let wrongThisRound = [];
+let wrongCounts = {};
+let currentPool = [];
+
+const app = document.getElementById('app');
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function shuffleChoices(q){
+  const idxs = q.choices.map((c,i)=>i);
+  const shuffled = shuffle(idxs);
+  return {
+    no: q.no,
+    text: q.q,
+    note: q.note,
+    choices: shuffled.map(i=>q.choices[i]),
+    answerIndex: shuffled.indexOf(q.answer)
+  };
+}
+
+function renderStart(){
+  app.innerHTML = `
+    <div class="card">
+      <div class="stage-list">
+        📘 全${QUESTIONS.length}問（問1〜問15）<br>
+        🔁 3周してしっかり覚える方式<br>
+        1周目：まず全問チャレンジ<br>
+        2周目：間違えた問題を中心に復習<br>
+        3周目：最終チェック（まだ怪しい問題）
+      </div>
+      <button class="start-btn" onclick="startRound(1)">1周目スタート！</button>
+    </div>
+  `;
+}
+
+function startRound(r){
+  round = r;
+  idx = 0;
+  wrongThisRound = [];
+  if(r===1){
+    currentPool = shuffle(QUESTIONS.slice());
+  } else {
+    currentPool = shuffle(wrongCounts.__poolForRound || []);
+  }
+  if(currentPool.length===0){
+    finishRound();
+    return;
+  }
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const raw = currentPool[idx];
+  const q = shuffleChoices(raw);
+  const total = currentPool.length;
+  const pct = Math.round((idx/total)*100);
+
+  app.innerHTML = `
+    <div class="card">
+      <span class="round-badge">${round}周目</span>
+      <div class="q-count">${idx+1} / ${total} 問</div>
+      <div class="progress-bar-outer"><div class="progress-bar-inner" style="width:${pct}%"></div></div>
+      <div class="src">${SRC}｜${q.no}</div>
+      <div class="question-text">${q.text}</div>
+      <div id="choices"></div>
+      <div class="explain-box" id="explainBox"></div>
+      <button class="next-btn" id="nextBtn">次へ →</button>
+    </div>
+  `;
+
+  const choicesDiv = document.getElementById('choices');
+  q.choices.forEach((c,i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    btn.textContent = c;
+    btn.onclick = ()=>selectAnswer(i, q, raw);
+    choicesDiv.appendChild(btn);
+  });
+}
+
+function selectAnswer(i, q, raw){
+  const buttons = document.querySelectorAll('.choice-btn');
+  buttons.forEach(b=>b.classList.add('disabled'));
+  const correct = i===q.answerIndex;
+
+  buttons[q.answerIndex].classList.add('correct');
+  if(!correct){
+    buttons[i].classList.add('wrong');
+    wrongThisRound.push(raw);
+    wrongCounts[raw.q] = (wrongCounts[raw.q]||0)+1;
+  }
+
+  const explainBox = document.getElementById('explainBox');
+  explainBox.style.display = 'block';
+  explainBox.innerHTML = (correct ? '✅ 正解！ ' : '❌ 不正解… 正解は「'+q.choices[q.answerIndex]+'」') + '<br>' + (q.note||'');
+
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.style.display = 'block';
+  nextBtn.textContent = (idx+1<currentPool.length) ? '次へ →' : `${round}周目の結果を見る`;
+  nextBtn.onclick = ()=>{
+    idx++;
+    if(idx<currentPool.length){
+      renderQuestion();
+    } else {
+      finishRound();
+    }
+  };
+}
+
+function weakListHtml(list){
+  return list.map(q=>'・<b>'+q.no+'</b> '+q.q).join('<br>');
+}
+
+function finishRound(){
+  const wrongUnique = [...new Map(wrongThisRound.map(q=>[q.q,q])).values()];
+  wrongCounts.__poolForRound = wrongUnique;
+  wrongCounts.__lastPoolSize = currentPool.length;
+
+  const correctCount = currentPool.length - wrongUnique.length;
+
+  if(round<3 && wrongUnique.length>0){
+    app.innerHTML = `
+      <div class="card" style="text-align:center;">
+        <h2 style="color:#e76f51;">${round}周目 おつかれさま！</h2>
+        <div class="result-score">${correctCount} / ${currentPool.length}</div>
+        <p style="margin-bottom:14px;">間違えた ${wrongUnique.length} 問を、次の周でもう一度チェックしよう！</p>
+        <div class="weak-list"><b>間違えた問題（テキストの問番号）</b><br>${weakListHtml(wrongUnique)}</div>
+        <button class="primary-btn" onclick="startRound(${round+1})">${round+1}周目へ進む</button>
+      </div>
+    `;
+  } else if(round<3 && wrongUnique.length===0){
+    app.innerHTML = `
+      <div class="card" style="text-align:center;">
+        <h2 style="color:#52b788;">${round}周目 パーフェクト！🎉</h2>
+        <p>間違いなし！このまま最後まで確認しよう。</p>
+        <button class="primary-btn" onclick="startRound(${round+1})">${round+1}周目へ進む</button>
+      </div>
+    `;
+  } else {
+    renderFinalResult(wrongUnique, correctCount);
+  }
+}
+
+function renderFinalResult(wrongUnique, correctCount){
+  let weakHtml = '';
+  if(wrongUnique.length>0){
+    weakHtml = `<div class="weak-list"><b>まだ怪しい問題（${SRC}で見直そう）</b><br>` + weakListHtml(wrongUnique) + `</div>`;
+  } else {
+    weakHtml = `<div class="weak-list">🎉 弱点なし！バッチリ覚えられたで！</div>`;
+  }
+
+  app.innerHTML = `
+    <div class="card" style="text-align:center;">
+      <h2 style="color:#e76f51;">3周 完了！お疲れさま🎊</h2>
+      <div class="result-score">${correctCount} / ${(wrongCounts.__lastPoolSize||QUESTIONS.length)}</div>
+      ${weakHtml}
+      <button class="primary-btn" onclick="resetAll()">もう一度最初から</button>
+    </div>
+  `;
+}
+
+function resetAll(){
+  wrongCounts = {};
+  renderStart();
+}
+
+renderStart();
+</script>
+</body>
+</html>
