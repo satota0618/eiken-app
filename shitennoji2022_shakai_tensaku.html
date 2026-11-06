@@ -329,6 +329,49 @@ const TOTAL_LAPS = 3;
 let currentDeckKey = null;
 let state = null;
 
+
+/* ---- 次にやる日（当日・翌日・1週間後） ---- */
+const WD = ['日','月','火','水','木','金','土'];
+function ymd(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function fromYmd(t){ const [y,m,d]=t.split('-').map(Number); return new Date(y,m-1,d); }
+function addDays(t,n){ const d=fromYmd(t); d.setDate(d.getDate()+n); return ymd(d); }
+function fmtMD(t){ const d=fromYmd(t); return (d.getMonth()+1)+'/'+d.getDate()+'('+WD[d.getDay()]+')'; }
+function schedKey(key){ return DECKS[key].storageKey+'-sched'; }
+async function loadSched(key){
+  try{ const r = await store.get(schedKey(key)); return r ? (JSON.parse(r.value).dates||[]) : []; }
+  catch(e){ return []; }
+}
+async function recordSitting(){
+  const dates = await loadSched(currentDeckKey);
+  dates.push(ymd(new Date()));
+  try{ await store.set(schedKey(currentDeckKey), JSON.stringify({dates})); }catch(e){}
+  return dates;
+}
+function nextInfo(dates){
+  if(!dates.length) return null;
+  const offs = [0,1,7];
+  if(dates.length >= 3) return {done:true};
+  const due = addDays(dates[0], offs[dates.length]);
+  const today = ymd(new Date());
+  return {done:false, n:dates.length+1, due, status: due<today ? 'over' : (due===today ? 'today' : 'later')};
+}
+function schedHTML(dates){
+  const offs = [0,1,7], names=['1回目（当日）','2回目（翌日）','3回目（1週間後）'];
+  if(!dates.length) return '';
+  const rows = names.map((nm,i)=>{
+    const done = i < dates.length;
+    const when = done ? dates[i] : addDays(dates[0], offs[i]);
+    return `<div class="stat-row"><span class="label" style="width:120px">${nm}</span><span style="flex:1">${fmtMD(when)}</span><span class="pct">${done?'✓ おわり':'これから'}</span></div>`;
+  }).join('');
+  return `<div class="stat-bars" style="margin-bottom:18px"><div style="font-weight:700;margin-bottom:6px">次にやる日</div>${rows}</div>`;
+}
+function nextText(info){
+  if(!info) return '';
+  if(info.done) return '3回おわり';
+  const lab = info.status==='over' ? '（すぎてる！）' : info.status==='today' ? '（きょう！）' : '';
+  return `${info.n}回目は ${fmtMD(info.due)}${lab}`;
+}
+
 function deck(){ return DECKS[currentDeckKey]; }
 function TOTAL(){ return deck().questions.length; }
 function freshRoundQueue(){ return deck().questions.map(q=>q.id); }
@@ -372,6 +415,8 @@ async function renderPicker(){
       if(st.finished && st.round > TOTAL_LAPS) meta = "3周コンプリート済み";
       else meta = `${st.round}周目 ・ ${Object.keys(st.seenFirstTry).length}/${d.questions.length}問クリア中`;
     }
+    const nx = nextText(nextInfo(await loadSched(key)));
+    if(nx) meta += ' ・ ' + nx;
     const card = document.createElement('div');
     card.className = 'deck-card';
     card.onclick = () => enterDeck(key);
@@ -539,12 +584,13 @@ function renderRoundComplete(sheet){
   `;
 }
 
-function nextRound(){
+async function nextRound(){
   const total = TOTAL();
   state.roundHistory.push({round: state.round, accuracy: Math.round((state.firstTryCorrectCount/total)*100)});
   if(state.round >= TOTAL_LAPS){
     state.finished = true;
     state.round = TOTAL_LAPS + 1;
+    state.sched = await recordSitting();
   }else{
     state.round += 1;
     state.queue = freshRoundQueue();
@@ -569,8 +615,9 @@ function renderFinal(sheet){
     <div class="final-complete">
       <div class="seal">${sealSVG('合格')}</div>
       <div class="rc-title">3周、コンプリート！</div>
-      <div class="rc-sub">「${deck().title}」の一問一答を3周やりきりました。回を重ねるごとの正解率はこちら。</div>
+      <div class="rc-sub">「${deck().title}」を3周やりきりました。回を重ねるごとの正解率と、次にやる日はこちら。</div>
       <div class="stat-bars">${bars}</div>
+      ${schedHTML(state.sched||[])}
       <div class="footer-row" style="justify-content:center; gap:14px;">
         <button class="reset-link" onclick="backToPicker()">← ほかの回へ</button>
         <button class="btn-next" onclick="resetCurrentDeck()">もう一度さいしょから</button>
