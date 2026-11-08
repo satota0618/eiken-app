@@ -1,0 +1,1781 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>時事問題 一問一答 3周ドリル（2026）</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Yomogi&display=swap');
+
+:root{
+  --paper:#F0EAD9;
+  --paper-deep:#E5DCC4;
+  --rule:#C9BFA0;
+  --margin-line:#c98a8a;
+  --ink:#22303F;
+  --ink-soft:#5b6b78;
+  --akapen:#B8262E;
+  --akapen-dark:#7e1a20;
+  --gold:#A9822F;
+  --card-shadow: 0 18px 40px rgba(34,48,63,0.18), 0 2px 6px rgba(34,48,63,0.12);
+}
+*{box-sizing:border-box;}
+html,body{height:100%;}
+body{
+  margin:0;
+  min-height:100vh;
+  background: radial-gradient(ellipse at top left, rgba(255,255,255,0.5), transparent 60%), var(--paper);
+  font-family:'Zen Kaku Gothic New', sans-serif;
+  color:var(--ink);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:28px 14px;
+  position:relative;
+  overflow-x:hidden;
+}
+body::before{
+  content:"";
+  position:fixed; inset:0;
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 27px, var(--rule) 28px),
+    repeating-linear-gradient(90deg, transparent 0 55px, var(--margin-line) 55px 56px, transparent 56px 3000px);
+  opacity:0.28;
+  pointer-events:none;
+}
+.stage{ position:relative; width:100%; max-width:560px; }
+
+/* ---------- deck picker ---------- */
+.picker-sheet{
+  background:linear-gradient(180deg, #FBF8EF, #F3EDDC 70%);
+  border-radius:6px;
+  box-shadow:var(--card-shadow);
+  padding:30px 28px;
+  border:1px solid rgba(0,0,0,0.06);
+}
+.picker-title{
+  font-family:'Shippori Mincho', serif;
+  font-weight:800;
+  font-size:20px;
+  color:var(--ink);
+  margin-bottom:2px;
+}
+.picker-sub{
+  font-size:12.5px;
+  color:var(--ink-soft);
+  margin-bottom:22px;
+}
+.deck-card{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:16px 16px;
+  border:1.5px solid var(--rule);
+  border-radius:9px;
+  background:#fff;
+  cursor:pointer;
+  margin-bottom:12px;
+  transition:transform .12s ease, box-shadow .12s ease, border-color .2s ease;
+}
+.deck-card:hover{
+  border-color:var(--akapen);
+  transform:translateY(-2px);
+  box-shadow:0 8px 18px rgba(184,38,46,0.15);
+}
+.deck-num{
+  font-family:'Shippori Mincho', serif;
+  font-weight:800;
+  font-size:13px;
+  color:#fff;
+  background:var(--ink);
+  border-radius:6px;
+  padding:6px 9px;
+  flex-shrink:0;
+}
+.deck-info{ flex:1; }
+.deck-name{
+  font-family:'Shippori Mincho', serif;
+  font-weight:800;
+  font-size:17px;
+  color:var(--ink);
+}
+.deck-meta{
+  font-size:12px;
+  color:var(--ink-soft);
+  margin-top:3px;
+}
+.deck-arrow{ color:var(--akapen); font-size:20px; }
+
+/* ---------- Ticket / lap indicator ---------- */
+.lap-ticket{ display:flex; gap:8px; justify-content:center; margin-bottom:14px; }
+.lap-punch{
+  position:relative;
+  width:96px;
+  padding:8px 6px 9px;
+  text-align:center;
+  background:#fff;
+  border:1.5px dashed var(--rule);
+  border-radius:8px;
+  font-family:'Shippori Mincho', serif;
+  font-weight:700;
+  font-size:12.5px;
+  color:var(--ink-soft);
+  transition:all .35s ease;
+}
+.lap-punch .num{ display:block; font-size:20px; font-weight:800; color:var(--ink-soft); line-height:1.3; }
+.lap-punch.active{ border-style:solid; border-color:var(--akapen); color:var(--akapen-dark); box-shadow:0 4px 10px rgba(184,38,46,0.18); }
+.lap-punch.active .num{ color:var(--akapen); }
+.lap-punch.done{ background:var(--ink); border-color:var(--ink); color:#f0ead9; }
+.lap-punch.done .num{ color:#f0ead9; }
+.lap-punch.done::after{
+  content:"済"; position:absolute; top:-9px; right:-7px;
+  width:22px;height:22px;border-radius:50%; background:var(--akapen); color:#fff;
+  font-size:11px; display:flex; align-items:center; justify-content:center;
+  font-family:'Shippori Mincho',serif; box-shadow:0 2px 4px rgba(0,0,0,.25);
+}
+
+/* ---------- Main sheet ---------- */
+.sheet{
+  position:relative;
+  background:linear-gradient(180deg, #FBF8EF, #F3EDDC 70%);
+  border-radius:6px;
+  box-shadow:var(--card-shadow);
+  padding:30px 28px 26px 40px;
+  border:1px solid rgba(0,0,0,0.06);
+}
+.sheet::before{ content:""; position:absolute; top:0; bottom:0; left:26px; width:1.5px; background:var(--margin-line); opacity:.55; }
+.head-row{ display:flex; align-items:baseline; justify-content:space-between; margin-bottom:6px; }
+.eyebrow{ font-family:'Shippori Mincho',serif; font-weight:700; font-size:13px; letter-spacing:.14em; color:var(--ink-soft); }
+.qcount{ font-family:'Shippori Mincho',serif; font-size:13px; color:var(--ink-soft); font-weight:700; }
+.qcount b{ color:var(--akapen); font-size:16px; }
+.progress-track{ height:6px; background:var(--paper-deep); border-radius:3px; overflow:hidden; margin:10px 0 22px; border:1px solid rgba(0,0,0,0.05); }
+.progress-fill{ height:100%; background:linear-gradient(90deg, var(--akapen), #d9564d); width:0%; transition:width .5s cubic-bezier(.4,0,.2,1); }
+.qnum{ display:inline-flex; align-items:center; gap:6px; font-family:'Shippori Mincho',serif; font-weight:800; font-size:15px; color:var(--akapen-dark); margin-bottom:10px; }
+.qnum .box{ width:26px;height:26px;border:2px solid var(--akapen-dark); display:flex;align-items:center;justify-content:center; border-radius:3px; font-size:13px; }
+.qtext{ font-size:17px; line-height:1.85; font-weight:500; color:var(--ink); min-height:70px; white-space:pre-wrap; }
+.answer-zone{ margin-top:18px; padding-top:16px; border-top:1.5px dashed var(--rule); min-height:64px; }
+.answer-label{ font-family:'Yomogi', cursive; color:var(--akapen); font-size:15px; margin-bottom:4px; display:flex; align-items:center; gap:6px; }
+.answer-text{ font-family:'Shippori Mincho', serif; font-weight:700; font-size:21px; color:var(--ink); animation:reveal .35s ease; }
+@keyframes reveal{ from{ opacity:0; transform:translateY(4px); } to{ opacity:1; transform:translateY(0); } }
+.badge-2026{
+  display:inline-flex; align-items:center; gap:5px;
+  margin-top:10px;
+  padding:5px 10px;
+  border-radius:20px;
+  font-size:12px; font-weight:700;
+  font-family:'Zen Kaku Gothic New', sans-serif;
+  background:#e8f4e8; color:#2a6b35;
+  border:1.5px solid #2a6b35;
+}
+.badge-2026.changed{
+  background:#fff4e0; color:#8a5a00;
+  border-color:#c98000;
+}
+.badge-2026-note{
+  display:block;
+  margin-top:5px;
+  font-size:13px;
+  color:#8a5a00;
+  font-family:'Yomogi', cursive;
+  animation:reveal .35s ease;
+}
+.btn-row{ margin-top:22px; display:flex; gap:10px; }
+.btn{ flex:1; border:none; cursor:pointer; font-family:'Zen Kaku Gothic New', sans-serif; font-weight:700; font-size:15px; padding:14px 10px; border-radius:8px; transition:transform .12s ease, box-shadow .12s ease, background .2s ease; letter-spacing:.02em; }
+.btn:active{ transform:translateY(1px) scale(0.98); }
+.btn-reveal{ background:var(--ink); color:#F0EAD9; box-shadow:0 6px 14px rgba(34,48,63,0.25); }
+.btn-reveal:hover{ background:#31435a; }
+.btn-correct{ background:#e7f0e6; color:#2f6b3a; border:1.5px solid #2f6b3a; }
+.btn-correct:hover{ background:#d9ecd8; }
+.btn-wrong{ background:#fbe9e8; color:var(--akapen-dark); border:1.5px solid var(--akapen); }
+.btn-wrong:hover{ background:#f7d9d7; }
+.stamp-wrap{ position:absolute; top:14px; right:18px; width:88px; height:88px; pointer-events:none; opacity:0; }
+.stamp-wrap.show{ animation:stampIn .5s cubic-bezier(.2,1.4,.5,1) forwards; }
+@keyframes stampIn{ 0%{ opacity:0; transform:scale(2.4) rotate(-18deg); } 60%{ opacity:1; } 100%{ opacity:.92; transform:scale(1) rotate(-10deg); } }
+.stamp-wrap svg{ width:100%; height:100%; overflow:visible; }
+.stamp-note{ position:absolute; top:60px; right:10px; font-family:'Yomogi', cursive; font-size:14px; color:var(--akapen); opacity:0; white-space:nowrap; }
+.stamp-note.show{ animation:noteIn .45s ease .25s forwards; }
+@keyframes noteIn{ from{ opacity:0; transform:translateX(6px); } to{ opacity:1; transform:translateX(0); } }
+.footer-row{ margin-top:20px; display:flex; justify-content:space-between; align-items:center; font-size:12px; color:var(--ink-soft); gap:10px; }
+.reset-link{ background:none;border:none;cursor:pointer; color:var(--ink-soft); text-decoration:underline; font-size:12px; font-family:'Zen Kaku Gothic New', sans-serif; white-space:nowrap; }
+.reset-link:hover{ color:var(--akapen); }
+.round-complete, .final-complete{ text-align:center; padding:20px 6px 6px; }
+.seal{ width:120px; height:120px; margin:0 auto 18px; }
+.rc-title{ font-family:'Shippori Mincho', serif; font-weight:800; font-size:24px; color:var(--akapen-dark); margin-bottom:6px; }
+.rc-sub{ font-size:14px; color:var(--ink-soft); margin-bottom:22px; line-height:1.7; }
+.stat-bars{ display:flex; flex-direction:column; gap:10px; margin:0 auto 24px; max-width:380px; text-align:left; }
+.stat-row{ display:flex; align-items:center; gap:10px; font-size:13px; font-weight:700; color:var(--ink-soft); }
+.stat-row .label{ width:56px; flex-shrink:0; font-family:'Shippori Mincho',serif;}
+.stat-bar-track{ flex:1;height:14px;background:var(--paper-deep);border-radius:7px;overflow:hidden; border:1px solid rgba(0,0,0,0.06); }
+.stat-bar-fill{ height:100%;border-radius:7px; background:linear-gradient(90deg,#8a9a3f,#adbf55); transition:width .8s ease; }
+.stat-row .pct{ width:44px; text-align:right; color:var(--ink); }
+.btn-next{ background:var(--akapen); color:#fff; border:none; padding:15px 30px; font-size:15px; font-weight:700; border-radius:9px; cursor:pointer; box-shadow:0 8px 18px rgba(184,38,46,0.3); font-family:'Zen Kaku Gothic New', sans-serif; }
+.btn-next:hover{ background:#9c1f26; }
+
+@media (max-width:480px){
+  .sheet{ padding:24px 16px 22px 30px; }
+  .lap-punch{ width:80px; }
+  .qtext{ font-size:15.5px; }
+}
+
+.mapbox{position:relative;width:100%;line-height:0;cursor:zoom-in}
+.mapbox img{width:100%;display:block;border:1px solid var(--rule);border-radius:4px;background:#fff}
+.mapbox svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.map-hint{font-size:11.5px;color:var(--ink-soft);margin-top:4px}
+.zoom-ov{position:fixed;inset:0;z-index:99;background:#fff;overflow:auto}
+.zoom-ov .mapbox{width:max(100vw,900px);cursor:zoom-out}
+.zoom-hint{position:sticky;top:0;left:0;z-index:2;background:#22303F;color:#fff;font-size:13px;padding:8px 12px}
+.note-box{margin-top:12px;padding:10px 12px;border-left:3px solid var(--gold);background:#fff;border-radius:0 6px 6px 0;font-size:14px;line-height:1.7;color:var(--ink)}
+.note-label{display:inline-block;margin-right:8px;font-family:'Shippori Mincho',serif;font-weight:800;font-size:12px;color:var(--gold)}
+.next-box{margin:0 auto 22px;max-width:380px;padding:14px 16px;border:1.5px solid var(--gold);border-radius:9px;background:#fff;text-align:center}
+.next-label{font-family:'Shippori Mincho',serif;font-weight:700;font-size:12px;letter-spacing:.14em;color:var(--gold)}
+.next-date{font-family:'Shippori Mincho',serif;font-weight:800;font-size:26px;color:var(--ink);margin:4px 0}
+.next-sub{font-size:12.5px;color:var(--ink-soft);line-height:1.6}
+.btn-cal{margin-top:12px;font-family:inherit;font-weight:700;font-size:15px;color:var(--ink);background:#fff;border:1.5px solid var(--gold);border-radius:8px;padding:10px 18px;cursor:pointer}
+.btn-cal:active{transform:translateY(1px)}
+.next-note{margin-top:6px;font-size:11.5px;color:var(--ink-soft)}
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div class="lap-ticket" id="lapTicket"></div>
+  <div class="sheet" id="sheet"></div>
+</div>
+
+<script>
+const DECKS = {
+ "ch1": {
+  "no": "第1章",
+  "title": "政治と社会（15問）",
+  "cal": "時事問題ドリル 第1章 政治と社会",
+  "storageKey": "jiji-2026-ch1-v1",
+  "questions": [
+   {
+    "id": 1,
+    "q": "2025年10月に第104代内閣総理大臣に指名され、2026年の衆議院選挙後に第105代内閣総理大臣に就任した人物はだれ？",
+    "a": "高市早苗（たかいち さなえ）",
+    "n": "",
+    "src": "時事問題 一問一答 第1章 政治と社会 問1"
+   },
+   {
+    "id": 2,
+    "q": "2025年10月から与党となった、大阪市に本部がある政党を何という？",
+    "a": "日本維新（いしん）の会",
+    "n": "",
+    "src": "時事問題 一問一答 第1章 政治と社会 問2"
+   },
+   {
+    "id": 3,
+    "q": "衆議院議員の定数は何名？",
+    "a": "465名",
+    "n": "参議院議員の定数は248名です。",
+    "src": "時事問題 一問一答 第1章 政治と社会 問3"
+   },
+   {
+    "id": 4,
+    "q": "衆議院議員の任期は何年？",
+    "a": "4年",
+    "n": "衆議院は解散があるので、4年より前に任期が終わることがあります。参議院は6年。",
+    "src": "時事問題 一問一答 第1章 政治と社会 問4"
+   },
+   {
+    "id": 5,
+    "q": "衆議院議員の被選挙権は何歳以上？",
+    "a": "（満）25歳以上",
+    "n": "参議院議員と都道府県知事は30歳以上です。",
+    "src": "時事問題 一問一答 第1章 政治と社会 問5"
+   },
+   {
+    "id": 6,
+    "q": "選挙の投票日に投票に行けない人が、事前に投票を行う制度を何という？",
+    "a": "期日前投票（きじつまえとうひょう）",
+    "n": "",
+    "src": "時事問題 一問一答 第1章 政治と社会 問6"
+   },
+   {
+    "id": 7,
+    "q": "2026年度の歳出（国の支出）で、もっとも多くの割合を占めるものを選び、記号で答えなさい。\nア 国債費　イ 社会保障関係費　ウ 公共事業関係費　エ 地方交付税交付金",
+    "a": "イ（社会保障関係費）",
+    "n": "",
+    "src": "時事問題 一問一答 第1章 政治と社会 問7"
+   },
+   {
+    "id": 8,
+    "q": "2027年4月から2年間限定で、食料品の消費税は何%になる予定？",
+    "a": "1%",
+    "n": "",
+    "src": "時事問題 一問一答 第1章 政治と社会 問8"
+   },
+   {
+    "id": 9,
+    "q": "2025年の出生数にもっとも近いものを選び、記号で答えなさい。\nア 27万人　イ 67万人　ウ 127万人　エ 167万人",
+    "a": "イ（67万人）",
+    "n": "",
+    "src": "時事問題 一問一答 第1章 政治と社会 問9"
+   },
+   {
+    "id": 10,
+    "q": "通学や仕事をしながら、身内の介護や家事を行う18歳未満の人々を何という？",
+    "a": "ヤングケアラー",
+    "n": "",
+    "src": "時事問題 一問一答 第1章 政治と社会 問10"
+   },
+   {
+    "id": 11,
+    "q": "5年に1度行われる、日本に住むすべての人と世帯を対象とする、国のもっとも重要な統計調査を何という？",
+    "a": "国勢調査（こくせいちょうさ）",
+    "n": "",
+    "src": "時事問題 一問一答 第1章 政治と社会 問11"
+   },
+   {
+    "id": 12,
+    "q": "天皇の国事行為は、（　※　）の助言と承認によって行われます。（　※　）にあてはまる語句は？",
+    "a": "内閣",
+    "n": "",
+    "src": "時事問題 一問一答 第1章 政治と社会 問12"
+   },
+   {
+    "id": 13,
+    "q": "武器輸出三原則が出された1967年当時の内閣総理大臣はだれ？",
+    "a": "佐藤栄作（さとう えいさく）",
+    "n": "佐藤栄作は非核三原則も示し、ノーベル平和賞を受賞しました。",
+    "src": "時事問題 一問一答 第1章 政治と社会 問13"
+   },
+   {
+    "id": 14,
+    "q": "2026年4月施行の改正（　※　）により、日本で共同親権が導入されました。（　※　）にあてはまる語句は？",
+    "a": "民法",
+    "n": "",
+    "src": "時事問題 一問一答 第1章 政治と社会 問14"
+   },
+   {
+    "id": 15,
+    "q": "日本の国旗の法律上の名称は？",
+    "a": "日章旗（にっしょうき）",
+    "n": "ふだん「日の丸」とよばれている旗です。",
+    "src": "時事問題 一問一答 第1章 政治と社会 問15"
+   }
+  ]
+ },
+ "ch2": {
+  "no": "第2章",
+  "title": "経済と暮らし（15問）",
+  "cal": "時事問題ドリル 第2章 経済と暮らし",
+  "storageKey": "jiji-2026-ch2-v1",
+  "questions": [
+   {
+    "id": 1,
+    "q": "2026年、イランによる実質的な封鎖が行われた海峡を何という？",
+    "a": "ホルムズ海峡",
+    "n": "",
+    "src": "時事問題 一問一答 第2章 経済と暮らし 問1"
+   },
+   {
+    "id": 2,
+    "q": "石油から精製される、プラスチックなどの原料となるものを何という？",
+    "a": "ナフサ",
+    "n": "",
+    "src": "時事問題 一問一答 第2章 経済と暮らし 問2"
+   },
+   {
+    "id": 3,
+    "q": "ガソリン税（揮発油税と地方揮発油税）は、直接税・間接税のどちら？",
+    "a": "間接税",
+    "n": "税を納める人と、実際に負担する人がちがう税が間接税です（消費税など）。",
+    "src": "時事問題 一問一答 第2章 経済と暮らし 問3"
+   },
+   {
+    "id": 4,
+    "q": "「1ドル＝100円」が「1ドル＝160円」になるような変化を「円（　A　）ドル（　B　）」といいます。A・Bにあてはまる語句は？",
+    "a": "A：安　B：高（円安ドル高）",
+    "n": "",
+    "src": "時事問題 一問一答 第2章 経済と暮らし 問4"
+   },
+   {
+    "id": 5,
+    "q": "一定の期間において、国内で生産された付加価値の金額の総合計を、アルファベット3字で何という？",
+    "a": "GDP",
+    "n": "日本語では「国内総生産」。",
+    "src": "時事問題 一問一答 第2章 経済と暮らし 問5"
+   },
+   {
+    "id": 6,
+    "q": "物価が上がり続けることを何という？",
+    "a": "インフレーション（インフレ）",
+    "n": "",
+    "src": "時事問題 一問一答 第2章 経済と暮らし 問6"
+   },
+   {
+    "id": 7,
+    "q": "消費量が多く、国民生活上の重要性が高いことから、2026年に「指定野菜」となったものは？",
+    "a": "ブロッコリー",
+    "n": "",
+    "src": "時事問題 一問一答 第2章 経済と暮らし 問7"
+   },
+   {
+    "id": 8,
+    "q": "人工知能の略称をアルファベット2字で答えなさい。",
+    "a": "AI",
+    "n": "",
+    "src": "時事問題 一問一答 第2章 経済と暮らし 問8"
+   },
+   {
+    "id": 9,
+    "q": "知的財産権の1つで、その作品を「生み出した者」が持つ権利を何という？",
+    "a": "著作権（ちょさくけん）",
+    "n": "",
+    "src": "時事問題 一問一答 第2章 経済と暮らし 問9"
+   },
+   {
+    "id": 10,
+    "q": "電子マネーやクレジットカード等、現金を用いずに支払いを行うことを何という？",
+    "a": "キャッシュレス決済",
+    "n": "",
+    "src": "時事問題 一問一答 第2章 経済と暮らし 問10"
+   },
+   {
+    "id": 11,
+    "q": "主に社会保障・税・災害対策の分野で活用され、効率化を目指す個人番号カードの通称は？（カタカナで）",
+    "a": "マイナンバーカード",
+    "n": "",
+    "src": "時事問題 一問一答 第2章 経済と暮らし 問11"
+   },
+   {
+    "id": 12,
+    "q": "高齢者や障がい者などにとっての、くらしにおける妨げを取り除くことを何という？",
+    "a": "バリアフリー",
+    "n": "",
+    "src": "時事問題 一問一答 第2章 経済と暮らし 問12"
+   },
+   {
+    "id": 13,
+    "q": "自転車の青切符（交通反則通告制度）の対象となるのは何歳以上の人？",
+    "a": "16歳以上",
+    "n": "青切符は、反則金を納めることで手続きが終わる制度です。",
+    "src": "時事問題 一問一答 第2章 経済と暮らし 問13"
+   },
+   {
+    "id": 14,
+    "q": "水銀を使用した製品の製造・流通を規制する条約を何という？",
+    "a": "水俣（みなまた）条約",
+    "n": "",
+    "src": "時事問題 一問一答 第2章 経済と暮らし 問14"
+   },
+   {
+    "id": 15,
+    "q": "近年利用が進んでいる、発光ダイオードの略称をアルファベット3字で答えなさい。",
+    "a": "LED",
+    "n": "",
+    "src": "時事問題 一問一答 第2章 経済と暮らし 問15"
+   }
+  ]
+ },
+ "ch3": {
+  "no": "第3章",
+  "title": "海外の出来事（15問）",
+  "cal": "時事問題ドリル 第3章 海外の出来事",
+  "storageKey": "jiji-2026-ch3-v1",
+  "questions": [
+   {
+    "id": 1,
+    "q": "2025年に就任したアメリカ大統領はだれ？",
+    "a": "ドナルド・トランプ",
+    "n": "",
+    "src": "時事問題 一問一答 第3章 海外の出来事 問1"
+   },
+   {
+    "id": 2,
+    "q": "2026年にアメリカ・イスラエルが攻撃を行い、指導者アリ・ハメネイ師が殺害された国はどこ？",
+    "a": "イラン",
+    "n": "",
+    "src": "時事問題 一問一答 第3章 海外の出来事 問2"
+   },
+   {
+    "id": 3,
+    "q": "ハマス（ハマース）が実効支配するパレスチナの地区を何という？",
+    "a": "ガザ（ガザ地区）",
+    "n": "",
+    "src": "時事問題 一問一答 第3章 海外の出来事 問3"
+   },
+   {
+    "id": 4,
+    "q": "ハマスと対立する、1948年にユダヤ民族によって建国された国を何という？",
+    "a": "イスラエル",
+    "n": "",
+    "src": "時事問題 一問一答 第3章 海外の出来事 問4"
+   },
+   {
+    "id": 5,
+    "q": "難民の保護・救済などを行う、国際連合難民高等弁務官事務所の略称を、アルファベットで答えなさい。",
+    "a": "UNHCR",
+    "n": "",
+    "src": "時事問題 一問一答 第3章 海外の出来事 問5"
+   },
+   {
+    "id": 6,
+    "q": "赤根智子氏が所長を務める組織（2026年9月現在）を何という？",
+    "a": "国際刑事裁判所（こくさいけいじさいばんしょ）",
+    "n": "略称はICC。",
+    "src": "時事問題 一問一答 第3章 海外の出来事 問6"
+   },
+   {
+    "id": 7,
+    "q": "2026年8月にロシアのプーチン大統領が初めて訪問した、日本固有の北方領土に数えられる島はどこ？",
+    "a": "択捉島（えとろふとう）",
+    "n": "",
+    "src": "時事問題 一問一答 第3章 海外の出来事 問7"
+   },
+   {
+    "id": 8,
+    "q": "サグラダ・ファミリアがあることで知られるバルセロナは、どこの国の都市？",
+    "a": "スペイン",
+    "n": "",
+    "src": "時事問題 一問一答 第3章 海外の出来事 問8"
+   },
+   {
+    "id": 9,
+    "q": "ローマ教皇は、キリスト教の何という宗派の最高指導者？",
+    "a": "カトリック",
+    "n": "",
+    "src": "時事問題 一問一答 第3章 海外の出来事 問9"
+   },
+   {
+    "id": 10,
+    "q": "ローマ教皇が元首を務める国はどこ？",
+    "a": "バチカン市国",
+    "n": "世界でいちばん小さい国です。",
+    "src": "時事問題 一問一答 第3章 海外の出来事 問10"
+   },
+   {
+    "id": 11,
+    "q": "2026年末に退任予定の、国際連合の事務総長はだれ？",
+    "a": "アントニオ・グテーレス",
+    "n": "",
+    "src": "時事問題 一問一答 第3章 海外の出来事 問11"
+   },
+   {
+    "id": 12,
+    "q": "安全保障理事会の常任理事国が有する権限は何？",
+    "a": "拒否権（きょひけん）",
+    "n": "常任理事国は、アメリカ・イギリス・フランス・ロシア・中国の5か国。",
+    "src": "時事問題 一問一答 第3章 海外の出来事 問12"
+   },
+   {
+    "id": 13,
+    "q": "日本はアメリカの「核の（　※　）」によって守られている国です。（　※　）にあてはまる語句は？",
+    "a": "傘（核の傘）",
+    "n": "",
+    "src": "時事問題 一問一答 第3章 海外の出来事 問13"
+   },
+   {
+    "id": 14,
+    "q": "2023年に中国を抜き、人口が世界一多くなった国はどこ？",
+    "a": "インド",
+    "n": "",
+    "src": "時事問題 一問一答 第3章 海外の出来事 問14"
+   },
+   {
+    "id": 15,
+    "q": "2023年に人口が世界一になった国（前の問題の国）の、国民の多くが信仰している宗教は何？",
+    "a": "ヒンドゥー教",
+    "n": "",
+    "src": "時事問題 一問一答 第3章 海外の出来事 問15"
+   }
+  ]
+ },
+ "ch4": {
+  "no": "第4章",
+  "title": "文化とスポーツ（15問）",
+  "cal": "時事問題ドリル 第4章 文化とスポーツ",
+  "storageKey": "jiji-2026-ch4-v1",
+  "questions": [
+   {
+    "id": 1,
+    "q": "2026年冬季オリンピックが行われた、ミラノとコルティナダンペッツォがある国はどこ？",
+    "a": "イタリア",
+    "n": "",
+    "src": "時事問題 一問一答 第4章 文化とスポーツ 問1"
+   },
+   {
+    "id": 2,
+    "q": "オリンピックの後に開かれる、障がい者のスポーツ大会を何という？",
+    "a": "パラリンピック",
+    "n": "",
+    "src": "時事問題 一問一答 第4章 文化とスポーツ 問2"
+   },
+   {
+    "id": 3,
+    "q": "2026年にサッカー・ワールドカップが開催された3つの国はどこ？",
+    "a": "アメリカ・カナダ・メキシコ",
+    "n": "",
+    "src": "時事問題 一問一答 第4章 文化とスポーツ 問3"
+   },
+   {
+    "id": 4,
+    "q": "2026年のサッカー・ワールドカップで日本と対戦した国として、誤っているものを選び、記号で答えなさい。\nア ブラジル　イ オランダ　ウ スウェーデン　エ スペイン",
+    "a": "エ（スペイン）",
+    "n": "",
+    "src": "時事問題 一問一答 第4章 文化とスポーツ 問4"
+   },
+   {
+    "id": 5,
+    "q": "訪日外国人旅行客を表す言葉を、カタカナ6字で答えなさい。",
+    "a": "インバウンド",
+    "n": "反対に、日本から海外へ行く旅行は「アウトバウンド」。",
+    "src": "時事問題 一問一答 第4章 文化とスポーツ 問5"
+   },
+   {
+    "id": 6,
+    "q": "観光客の増加や観光開発が、地域や住民にもたらす弊害を何という？",
+    "a": "オーバーツーリズム（観光公害）",
+    "n": "",
+    "src": "時事問題 一問一答 第4章 文化とスポーツ 問6"
+   },
+   {
+    "id": 7,
+    "q": "2026年に、日本で飼育されていた全頭が中国へ返還された動物は何？",
+    "a": "パンダ（ジャイアントパンダ）",
+    "n": "",
+    "src": "時事問題 一問一答 第4章 文化とスポーツ 問7"
+   },
+   {
+    "id": 8,
+    "q": "2026年7月から3000円に引き上げられた、日本から出国する際にかかる税を何という？",
+    "a": "国際観光旅客税（出国税）",
+    "n": "",
+    "src": "時事問題 一問一答 第4章 文化とスポーツ 問8"
+   },
+   {
+    "id": 9,
+    "q": "SDGsは「（　※　）な開発目標」の略称です。（　※　）にあてはまる語句を、漢字4字で答えなさい。",
+    "a": "持続可能（じぞくかのう）",
+    "n": "",
+    "src": "時事問題 一問一答 第4章 文化とスポーツ 問9"
+   },
+   {
+    "id": 10,
+    "q": "見た目などを理由に商品として売ることができなくなった食品を、必要な人や団体に無償で提供する取り組みを何という？",
+    "a": "フードバンク",
+    "n": "",
+    "src": "時事問題 一問一答 第4章 文化とスポーツ 問10"
+   },
+   {
+    "id": 11,
+    "q": "地域の活性化や雇用なども含む、人や地球環境、社会に配慮した消費やサービスを何という？",
+    "a": "エシカル消費",
+    "n": "",
+    "src": "時事問題 一問一答 第4章 文化とスポーツ 問11"
+   },
+   {
+    "id": 12,
+    "q": "社会的・文化的な男女の違い（性別）を何という？",
+    "a": "ジェンダー",
+    "n": "",
+    "src": "時事問題 一問一答 第4章 文化とスポーツ 問12"
+   },
+   {
+    "id": 13,
+    "q": "世界遺産・無形文化遺産・世界の記憶などの登録を行う、国際連合の専門機関を答えなさい。",
+    "a": "ユネスコ（UNESCO・国際連合教育科学文化機関）",
+    "n": "本部はフランスのパリです。",
+    "src": "時事問題 一問一答 第4章 文化とスポーツ 問13"
+   },
+   {
+    "id": 14,
+    "q": "2026年に世界文化遺産に登録された「飛鳥・藤原の宮都」が位置する都道府県はどこ？",
+    "a": "奈良県",
+    "n": "",
+    "src": "時事問題 一問一答 第4章 文化とスポーツ 問14"
+   },
+   {
+    "id": 15,
+    "q": "2026年に世界文化遺産に登録された「飛鳥・藤原の宮都」に関係する人物として、誤っているものを選び、記号で答えなさい。\nア 蘇我馬子　イ 天智天皇　ウ 持統天皇　エ 聖武天皇",
+    "a": "エ（聖武天皇）",
+    "n": "聖武天皇は、平城京（奈良時代）の天皇です。飛鳥・藤原の時代より後の人物。",
+    "src": "時事問題 一問一答 第4章 文化とスポーツ 問15"
+   }
+  ]
+ },
+ "ch5": {
+  "no": "第5章",
+  "title": "自然と科学（15問）",
+  "cal": "時事問題ドリル 第5章 自然と科学",
+  "storageKey": "jiji-2026-ch5-v1",
+  "questions": [
+   {
+    "id": 1,
+    "q": "2026年7月に最大震度7の地震が発生し、大きな被害を受けた都道府県はどこ？",
+    "a": "熊本県",
+    "n": "",
+    "src": "時事問題 一問一答 第5章 自然と科学 問1"
+   },
+   {
+    "id": 2,
+    "q": "2026年5月から運用が始まった新たな防災気象情報のうち、レベル5（最高の警戒レベル）にあたる情報を何という？",
+    "a": "特別警報",
+    "n": "",
+    "src": "時事問題 一問一答 第5章 自然と科学 問2"
+   },
+   {
+    "id": 3,
+    "q": "次々と発生する発達した積乱雲が列をなしたように連なり、数時間にわたってほぼ同じ場所を通過、またはとどまることでつくりだされる、強い降水をともなう雨域を何という？",
+    "a": "線状降水帯（せんじょうこうすいたい）",
+    "n": "",
+    "src": "時事問題 一問一答 第5章 自然と科学 問3"
+   },
+   {
+    "id": 4,
+    "q": "自然災害による被害を予測し、その被害の範囲や程度、避難経路や避難場所などを記した地図を何という？",
+    "a": "ハザードマップ",
+    "n": "",
+    "src": "時事問題 一問一答 第5章 自然と科学 問4"
+   },
+   {
+    "id": 5,
+    "q": "本の103ページ・5番の地図記号（石碑のような形の記号）が表すものは何？",
+    "a": "自然災害伝承碑（しぜんさいがいでんしょうひ）",
+    "n": "過去の災害の教訓を、後の世代に伝えるための碑です。",
+    "src": "時事問題 一問一答 第5章 自然と科学 問5"
+   },
+   {
+    "id": 6,
+    "q": "最高気温40℃以上の日を何という？",
+    "a": "酷暑日（こくしょび）",
+    "n": "",
+    "src": "時事問題 一問一答 第5章 自然と科学 問6"
+   },
+   {
+    "id": 7,
+    "q": "温室効果ガスの排出量と吸収量の差し引きをゼロにすることで、排出量を実質ゼロにすることを何という？",
+    "a": "カーボンニュートラル",
+    "n": "",
+    "src": "時事問題 一問一答 第5章 自然と科学 問7"
+   },
+   {
+    "id": 8,
+    "q": "牛のゲップに含まれる温室効果ガスを何という？（カタカナ3字）",
+    "a": "メタン",
+    "n": "",
+    "src": "時事問題 一問一答 第5章 自然と科学 問8"
+   },
+   {
+    "id": 9,
+    "q": "2015年のCOP21で採択された、気候変動に関する国際的な枠組みを何という？",
+    "a": "パリ協定",
+    "n": "",
+    "src": "時事問題 一問一答 第5章 自然と科学 問9"
+   },
+   {
+    "id": 10,
+    "q": "日本においてヒグマが生息する都道府県はどこ？",
+    "a": "北海道",
+    "n": "",
+    "src": "時事問題 一問一答 第5章 自然と科学 問10"
+   },
+   {
+    "id": 11,
+    "q": "日本語で「大地の公園」を意味し、自然について学び、楽しむことができる場所を何という？",
+    "a": "ジオパーク",
+    "n": "",
+    "src": "時事問題 一問一答 第5章 自然と科学 問11"
+   },
+   {
+    "id": 12,
+    "q": "西日本の太平洋側の海底にある巨大な溝を「南海（　※　）」といいます。（　※　）にあてはまる語句は？",
+    "a": "トラフ",
+    "n": "",
+    "src": "時事問題 一問一答 第5章 自然と科学 問12"
+   },
+   {
+    "id": 13,
+    "q": "2026年に国連総会で、使用を推奨することが採択された世界地図の図法を何という？",
+    "a": "イコールアース図法",
+    "n": "",
+    "src": "時事問題 一問一答 第5章 自然と科学 問13"
+   },
+   {
+    "id": 14,
+    "q": "日本における、政府全体の宇宙開発利用を技術で支える中核的実施機関を何という？",
+    "a": "JAXA（宇宙航空研究開発機構）",
+    "n": "",
+    "src": "時事問題 一問一答 第5章 自然と科学 問14"
+   },
+   {
+    "id": 15,
+    "q": "2026年11月に設置が予定されている庁は何？",
+    "a": "防災庁",
+    "n": "",
+    "src": "時事問題 一問一答 第5章 自然と科学 問15"
+   }
+  ]
+ },
+ "all": {
+  "no": "総まとめ",
+  "title": "全章（75問）",
+  "cal": "時事問題ドリル 総まとめ（全章）",
+  "storageKey": "jiji-2026-all-v1",
+  "questions": [
+   {
+    "id": 1,
+    "lab": "1-1",
+    "q": "2025年10月に第104代内閣総理大臣に指名され、2026年の衆議院選挙後に第105代内閣総理大臣に就任した人物はだれ？",
+    "a": "高市早苗（たかいち さなえ）",
+    "n": "",
+    "src": "時事問題 一問一答 第1章 政治と社会 問1"
+   },
+   {
+    "id": 2,
+    "lab": "1-2",
+    "q": "2025年10月から与党となった、大阪市に本部がある政党を何という？",
+    "a": "日本維新（いしん）の会",
+    "n": "",
+    "src": "時事問題 一問一答 第1章 政治と社会 問2"
+   },
+   {
+    "id": 3,
+    "lab": "1-3",
+    "q": "衆議院議員の定数は何名？",
+    "a": "465名",
+    "n": "参議院議員の定数は248名です。",
+    "src": "時事問題 一問一答 第1章 政治と社会 問3"
+   },
+   {
+    "id": 4,
+    "lab": "1-4",
+    "q": "衆議院議員の任期は何年？",
+    "a": "4年",
+    "n": "衆議院は解散があるので、4年より前に任期が終わることがあります。参議院は6年。",
+    "src": "時事問題 一問一答 第1章 政治と社会 問4"
+   },
+   {
+    "id": 5,
+    "lab": "1-5",
+    "q": "衆議院議員の被選挙権は何歳以上？",
+    "a": "（満）25歳以上",
+    "n": "参議院議員と都道府県知事は30歳以上です。",
+    "src": "時事問題 一問一答 第1章 政治と社会 問5"
+   },
+   {
+    "id": 6,
+    "lab": "1-6",
+    "q": "選挙の投票日に投票に行けない人が、事前に投票を行う制度を何という？",
+    "a": "期日前投票（きじつまえとうひょう）",
+    "n": "",
+    "src": "時事問題 一問一答 第1章 政治と社会 問6"
+   },
+   {
+    "id": 7,
+    "lab": "1-7",
+    "q": "2026年度の歳出（国の支出）で、もっとも多くの割合を占めるものを選び、記号で答えなさい。\nア 国債費　イ 社会保障関係費　ウ 公共事業関係費　エ 地方交付税交付金",
+    "a": "イ（社会保障関係費）",
+    "n": "",
+    "src": "時事問題 一問一答 第1章 政治と社会 問7"
+   },
+   {
+    "id": 8,
+    "lab": "1-8",
+    "q": "2027年4月から2年間限定で、食料品の消費税は何%になる予定？",
+    "a": "1%",
+    "n": "",
+    "src": "時事問題 一問一答 第1章 政治と社会 問8"
+   },
+   {
+    "id": 9,
+    "lab": "1-9",
+    "q": "2025年の出生数にもっとも近いものを選び、記号で答えなさい。\nア 27万人　イ 67万人　ウ 127万人　エ 167万人",
+    "a": "イ（67万人）",
+    "n": "",
+    "src": "時事問題 一問一答 第1章 政治と社会 問9"
+   },
+   {
+    "id": 10,
+    "lab": "1-10",
+    "q": "通学や仕事をしながら、身内の介護や家事を行う18歳未満の人々を何という？",
+    "a": "ヤングケアラー",
+    "n": "",
+    "src": "時事問題 一問一答 第1章 政治と社会 問10"
+   },
+   {
+    "id": 11,
+    "lab": "1-11",
+    "q": "5年に1度行われる、日本に住むすべての人と世帯を対象とする、国のもっとも重要な統計調査を何という？",
+    "a": "国勢調査（こくせいちょうさ）",
+    "n": "",
+    "src": "時事問題 一問一答 第1章 政治と社会 問11"
+   },
+   {
+    "id": 12,
+    "lab": "1-12",
+    "q": "天皇の国事行為は、（　※　）の助言と承認によって行われます。（　※　）にあてはまる語句は？",
+    "a": "内閣",
+    "n": "",
+    "src": "時事問題 一問一答 第1章 政治と社会 問12"
+   },
+   {
+    "id": 13,
+    "lab": "1-13",
+    "q": "武器輸出三原則が出された1967年当時の内閣総理大臣はだれ？",
+    "a": "佐藤栄作（さとう えいさく）",
+    "n": "佐藤栄作は非核三原則も示し、ノーベル平和賞を受賞しました。",
+    "src": "時事問題 一問一答 第1章 政治と社会 問13"
+   },
+   {
+    "id": 14,
+    "lab": "1-14",
+    "q": "2026年4月施行の改正（　※　）により、日本で共同親権が導入されました。（　※　）にあてはまる語句は？",
+    "a": "民法",
+    "n": "",
+    "src": "時事問題 一問一答 第1章 政治と社会 問14"
+   },
+   {
+    "id": 15,
+    "lab": "1-15",
+    "q": "日本の国旗の法律上の名称は？",
+    "a": "日章旗（にっしょうき）",
+    "n": "ふだん「日の丸」とよばれている旗です。",
+    "src": "時事問題 一問一答 第1章 政治と社会 問15"
+   },
+   {
+    "id": 16,
+    "lab": "2-1",
+    "q": "2026年、イランによる実質的な封鎖が行われた海峡を何という？",
+    "a": "ホルムズ海峡",
+    "n": "",
+    "src": "時事問題 一問一答 第2章 経済と暮らし 問1"
+   },
+   {
+    "id": 17,
+    "lab": "2-2",
+    "q": "石油から精製される、プラスチックなどの原料となるものを何という？",
+    "a": "ナフサ",
+    "n": "",
+    "src": "時事問題 一問一答 第2章 経済と暮らし 問2"
+   },
+   {
+    "id": 18,
+    "lab": "2-3",
+    "q": "ガソリン税（揮発油税と地方揮発油税）は、直接税・間接税のどちら？",
+    "a": "間接税",
+    "n": "税を納める人と、実際に負担する人がちがう税が間接税です（消費税など）。",
+    "src": "時事問題 一問一答 第2章 経済と暮らし 問3"
+   },
+   {
+    "id": 19,
+    "lab": "2-4",
+    "q": "「1ドル＝100円」が「1ドル＝160円」になるような変化を「円（　A　）ドル（　B　）」といいます。A・Bにあてはまる語句は？",
+    "a": "A：安　B：高（円安ドル高）",
+    "n": "",
+    "src": "時事問題 一問一答 第2章 経済と暮らし 問4"
+   },
+   {
+    "id": 20,
+    "lab": "2-5",
+    "q": "一定の期間において、国内で生産された付加価値の金額の総合計を、アルファベット3字で何という？",
+    "a": "GDP",
+    "n": "日本語では「国内総生産」。",
+    "src": "時事問題 一問一答 第2章 経済と暮らし 問5"
+   },
+   {
+    "id": 21,
+    "lab": "2-6",
+    "q": "物価が上がり続けることを何という？",
+    "a": "インフレーション（インフレ）",
+    "n": "",
+    "src": "時事問題 一問一答 第2章 経済と暮らし 問6"
+   },
+   {
+    "id": 22,
+    "lab": "2-7",
+    "q": "消費量が多く、国民生活上の重要性が高いことから、2026年に「指定野菜」となったものは？",
+    "a": "ブロッコリー",
+    "n": "",
+    "src": "時事問題 一問一答 第2章 経済と暮らし 問7"
+   },
+   {
+    "id": 23,
+    "lab": "2-8",
+    "q": "人工知能の略称をアルファベット2字で答えなさい。",
+    "a": "AI",
+    "n": "",
+    "src": "時事問題 一問一答 第2章 経済と暮らし 問8"
+   },
+   {
+    "id": 24,
+    "lab": "2-9",
+    "q": "知的財産権の1つで、その作品を「生み出した者」が持つ権利を何という？",
+    "a": "著作権（ちょさくけん）",
+    "n": "",
+    "src": "時事問題 一問一答 第2章 経済と暮らし 問9"
+   },
+   {
+    "id": 25,
+    "lab": "2-10",
+    "q": "電子マネーやクレジットカード等、現金を用いずに支払いを行うことを何という？",
+    "a": "キャッシュレス決済",
+    "n": "",
+    "src": "時事問題 一問一答 第2章 経済と暮らし 問10"
+   },
+   {
+    "id": 26,
+    "lab": "2-11",
+    "q": "主に社会保障・税・災害対策の分野で活用され、効率化を目指す個人番号カードの通称は？（カタカナで）",
+    "a": "マイナンバーカード",
+    "n": "",
+    "src": "時事問題 一問一答 第2章 経済と暮らし 問11"
+   },
+   {
+    "id": 27,
+    "lab": "2-12",
+    "q": "高齢者や障がい者などにとっての、くらしにおける妨げを取り除くことを何という？",
+    "a": "バリアフリー",
+    "n": "",
+    "src": "時事問題 一問一答 第2章 経済と暮らし 問12"
+   },
+   {
+    "id": 28,
+    "lab": "2-13",
+    "q": "自転車の青切符（交通反則通告制度）の対象となるのは何歳以上の人？",
+    "a": "16歳以上",
+    "n": "青切符は、反則金を納めることで手続きが終わる制度です。",
+    "src": "時事問題 一問一答 第2章 経済と暮らし 問13"
+   },
+   {
+    "id": 29,
+    "lab": "2-14",
+    "q": "水銀を使用した製品の製造・流通を規制する条約を何という？",
+    "a": "水俣（みなまた）条約",
+    "n": "",
+    "src": "時事問題 一問一答 第2章 経済と暮らし 問14"
+   },
+   {
+    "id": 30,
+    "lab": "2-15",
+    "q": "近年利用が進んでいる、発光ダイオードの略称をアルファベット3字で答えなさい。",
+    "a": "LED",
+    "n": "",
+    "src": "時事問題 一問一答 第2章 経済と暮らし 問15"
+   },
+   {
+    "id": 31,
+    "lab": "3-1",
+    "q": "2025年に就任したアメリカ大統領はだれ？",
+    "a": "ドナルド・トランプ",
+    "n": "",
+    "src": "時事問題 一問一答 第3章 海外の出来事 問1"
+   },
+   {
+    "id": 32,
+    "lab": "3-2",
+    "q": "2026年にアメリカ・イスラエルが攻撃を行い、指導者アリ・ハメネイ師が殺害された国はどこ？",
+    "a": "イラン",
+    "n": "",
+    "src": "時事問題 一問一答 第3章 海外の出来事 問2"
+   },
+   {
+    "id": 33,
+    "lab": "3-3",
+    "q": "ハマス（ハマース）が実効支配するパレスチナの地区を何という？",
+    "a": "ガザ（ガザ地区）",
+    "n": "",
+    "src": "時事問題 一問一答 第3章 海外の出来事 問3"
+   },
+   {
+    "id": 34,
+    "lab": "3-4",
+    "q": "ハマスと対立する、1948年にユダヤ民族によって建国された国を何という？",
+    "a": "イスラエル",
+    "n": "",
+    "src": "時事問題 一問一答 第3章 海外の出来事 問4"
+   },
+   {
+    "id": 35,
+    "lab": "3-5",
+    "q": "難民の保護・救済などを行う、国際連合難民高等弁務官事務所の略称を、アルファベットで答えなさい。",
+    "a": "UNHCR",
+    "n": "",
+    "src": "時事問題 一問一答 第3章 海外の出来事 問5"
+   },
+   {
+    "id": 36,
+    "lab": "3-6",
+    "q": "赤根智子氏が所長を務める組織（2026年9月現在）を何という？",
+    "a": "国際刑事裁判所（こくさいけいじさいばんしょ）",
+    "n": "略称はICC。",
+    "src": "時事問題 一問一答 第3章 海外の出来事 問6"
+   },
+   {
+    "id": 37,
+    "lab": "3-7",
+    "q": "2026年8月にロシアのプーチン大統領が初めて訪問した、日本固有の北方領土に数えられる島はどこ？",
+    "a": "択捉島（えとろふとう）",
+    "n": "",
+    "src": "時事問題 一問一答 第3章 海外の出来事 問7"
+   },
+   {
+    "id": 38,
+    "lab": "3-8",
+    "q": "サグラダ・ファミリアがあることで知られるバルセロナは、どこの国の都市？",
+    "a": "スペイン",
+    "n": "",
+    "src": "時事問題 一問一答 第3章 海外の出来事 問8"
+   },
+   {
+    "id": 39,
+    "lab": "3-9",
+    "q": "ローマ教皇は、キリスト教の何という宗派の最高指導者？",
+    "a": "カトリック",
+    "n": "",
+    "src": "時事問題 一問一答 第3章 海外の出来事 問9"
+   },
+   {
+    "id": 40,
+    "lab": "3-10",
+    "q": "ローマ教皇が元首を務める国はどこ？",
+    "a": "バチカン市国",
+    "n": "世界でいちばん小さい国です。",
+    "src": "時事問題 一問一答 第3章 海外の出来事 問10"
+   },
+   {
+    "id": 41,
+    "lab": "3-11",
+    "q": "2026年末に退任予定の、国際連合の事務総長はだれ？",
+    "a": "アントニオ・グテーレス",
+    "n": "",
+    "src": "時事問題 一問一答 第3章 海外の出来事 問11"
+   },
+   {
+    "id": 42,
+    "lab": "3-12",
+    "q": "安全保障理事会の常任理事国が有する権限は何？",
+    "a": "拒否権（きょひけん）",
+    "n": "常任理事国は、アメリカ・イギリス・フランス・ロシア・中国の5か国。",
+    "src": "時事問題 一問一答 第3章 海外の出来事 問12"
+   },
+   {
+    "id": 43,
+    "lab": "3-13",
+    "q": "日本はアメリカの「核の（　※　）」によって守られている国です。（　※　）にあてはまる語句は？",
+    "a": "傘（核の傘）",
+    "n": "",
+    "src": "時事問題 一問一答 第3章 海外の出来事 問13"
+   },
+   {
+    "id": 44,
+    "lab": "3-14",
+    "q": "2023年に中国を抜き、人口が世界一多くなった国はどこ？",
+    "a": "インド",
+    "n": "",
+    "src": "時事問題 一問一答 第3章 海外の出来事 問14"
+   },
+   {
+    "id": 45,
+    "lab": "3-15",
+    "q": "2023年に人口が世界一になった国（前の問題の国）の、国民の多くが信仰している宗教は何？",
+    "a": "ヒンドゥー教",
+    "n": "",
+    "src": "時事問題 一問一答 第3章 海外の出来事 問15"
+   },
+   {
+    "id": 46,
+    "lab": "4-1",
+    "q": "2026年冬季オリンピックが行われた、ミラノとコルティナダンペッツォがある国はどこ？",
+    "a": "イタリア",
+    "n": "",
+    "src": "時事問題 一問一答 第4章 文化とスポーツ 問1"
+   },
+   {
+    "id": 47,
+    "lab": "4-2",
+    "q": "オリンピックの後に開かれる、障がい者のスポーツ大会を何という？",
+    "a": "パラリンピック",
+    "n": "",
+    "src": "時事問題 一問一答 第4章 文化とスポーツ 問2"
+   },
+   {
+    "id": 48,
+    "lab": "4-3",
+    "q": "2026年にサッカー・ワールドカップが開催された3つの国はどこ？",
+    "a": "アメリカ・カナダ・メキシコ",
+    "n": "",
+    "src": "時事問題 一問一答 第4章 文化とスポーツ 問3"
+   },
+   {
+    "id": 49,
+    "lab": "4-4",
+    "q": "2026年のサッカー・ワールドカップで日本と対戦した国として、誤っているものを選び、記号で答えなさい。\nア ブラジル　イ オランダ　ウ スウェーデン　エ スペイン",
+    "a": "エ（スペイン）",
+    "n": "",
+    "src": "時事問題 一問一答 第4章 文化とスポーツ 問4"
+   },
+   {
+    "id": 50,
+    "lab": "4-5",
+    "q": "訪日外国人旅行客を表す言葉を、カタカナ6字で答えなさい。",
+    "a": "インバウンド",
+    "n": "反対に、日本から海外へ行く旅行は「アウトバウンド」。",
+    "src": "時事問題 一問一答 第4章 文化とスポーツ 問5"
+   },
+   {
+    "id": 51,
+    "lab": "4-6",
+    "q": "観光客の増加や観光開発が、地域や住民にもたらす弊害を何という？",
+    "a": "オーバーツーリズム（観光公害）",
+    "n": "",
+    "src": "時事問題 一問一答 第4章 文化とスポーツ 問6"
+   },
+   {
+    "id": 52,
+    "lab": "4-7",
+    "q": "2026年に、日本で飼育されていた全頭が中国へ返還された動物は何？",
+    "a": "パンダ（ジャイアントパンダ）",
+    "n": "",
+    "src": "時事問題 一問一答 第4章 文化とスポーツ 問7"
+   },
+   {
+    "id": 53,
+    "lab": "4-8",
+    "q": "2026年7月から3000円に引き上げられた、日本から出国する際にかかる税を何という？",
+    "a": "国際観光旅客税（出国税）",
+    "n": "",
+    "src": "時事問題 一問一答 第4章 文化とスポーツ 問8"
+   },
+   {
+    "id": 54,
+    "lab": "4-9",
+    "q": "SDGsは「（　※　）な開発目標」の略称です。（　※　）にあてはまる語句を、漢字4字で答えなさい。",
+    "a": "持続可能（じぞくかのう）",
+    "n": "",
+    "src": "時事問題 一問一答 第4章 文化とスポーツ 問9"
+   },
+   {
+    "id": 55,
+    "lab": "4-10",
+    "q": "見た目などを理由に商品として売ることができなくなった食品を、必要な人や団体に無償で提供する取り組みを何という？",
+    "a": "フードバンク",
+    "n": "",
+    "src": "時事問題 一問一答 第4章 文化とスポーツ 問10"
+   },
+   {
+    "id": 56,
+    "lab": "4-11",
+    "q": "地域の活性化や雇用なども含む、人や地球環境、社会に配慮した消費やサービスを何という？",
+    "a": "エシカル消費",
+    "n": "",
+    "src": "時事問題 一問一答 第4章 文化とスポーツ 問11"
+   },
+   {
+    "id": 57,
+    "lab": "4-12",
+    "q": "社会的・文化的な男女の違い（性別）を何という？",
+    "a": "ジェンダー",
+    "n": "",
+    "src": "時事問題 一問一答 第4章 文化とスポーツ 問12"
+   },
+   {
+    "id": 58,
+    "lab": "4-13",
+    "q": "世界遺産・無形文化遺産・世界の記憶などの登録を行う、国際連合の専門機関を答えなさい。",
+    "a": "ユネスコ（UNESCO・国際連合教育科学文化機関）",
+    "n": "本部はフランスのパリです。",
+    "src": "時事問題 一問一答 第4章 文化とスポーツ 問13"
+   },
+   {
+    "id": 59,
+    "lab": "4-14",
+    "q": "2026年に世界文化遺産に登録された「飛鳥・藤原の宮都」が位置する都道府県はどこ？",
+    "a": "奈良県",
+    "n": "",
+    "src": "時事問題 一問一答 第4章 文化とスポーツ 問14"
+   },
+   {
+    "id": 60,
+    "lab": "4-15",
+    "q": "2026年に世界文化遺産に登録された「飛鳥・藤原の宮都」に関係する人物として、誤っているものを選び、記号で答えなさい。\nア 蘇我馬子　イ 天智天皇　ウ 持統天皇　エ 聖武天皇",
+    "a": "エ（聖武天皇）",
+    "n": "聖武天皇は、平城京（奈良時代）の天皇です。飛鳥・藤原の時代より後の人物。",
+    "src": "時事問題 一問一答 第4章 文化とスポーツ 問15"
+   },
+   {
+    "id": 61,
+    "lab": "5-1",
+    "q": "2026年7月に最大震度7の地震が発生し、大きな被害を受けた都道府県はどこ？",
+    "a": "熊本県",
+    "n": "",
+    "src": "時事問題 一問一答 第5章 自然と科学 問1"
+   },
+   {
+    "id": 62,
+    "lab": "5-2",
+    "q": "2026年5月から運用が始まった新たな防災気象情報のうち、レベル5（最高の警戒レベル）にあたる情報を何という？",
+    "a": "特別警報",
+    "n": "",
+    "src": "時事問題 一問一答 第5章 自然と科学 問2"
+   },
+   {
+    "id": 63,
+    "lab": "5-3",
+    "q": "次々と発生する発達した積乱雲が列をなしたように連なり、数時間にわたってほぼ同じ場所を通過、またはとどまることでつくりだされる、強い降水をともなう雨域を何という？",
+    "a": "線状降水帯（せんじょうこうすいたい）",
+    "n": "",
+    "src": "時事問題 一問一答 第5章 自然と科学 問3"
+   },
+   {
+    "id": 64,
+    "lab": "5-4",
+    "q": "自然災害による被害を予測し、その被害の範囲や程度、避難経路や避難場所などを記した地図を何という？",
+    "a": "ハザードマップ",
+    "n": "",
+    "src": "時事問題 一問一答 第5章 自然と科学 問4"
+   },
+   {
+    "id": 65,
+    "lab": "5-5",
+    "q": "本の103ページ・5番の地図記号（石碑のような形の記号）が表すものは何？",
+    "a": "自然災害伝承碑（しぜんさいがいでんしょうひ）",
+    "n": "過去の災害の教訓を、後の世代に伝えるための碑です。",
+    "src": "時事問題 一問一答 第5章 自然と科学 問5"
+   },
+   {
+    "id": 66,
+    "lab": "5-6",
+    "q": "最高気温40℃以上の日を何という？",
+    "a": "酷暑日（こくしょび）",
+    "n": "",
+    "src": "時事問題 一問一答 第5章 自然と科学 問6"
+   },
+   {
+    "id": 67,
+    "lab": "5-7",
+    "q": "温室効果ガスの排出量と吸収量の差し引きをゼロにすることで、排出量を実質ゼロにすることを何という？",
+    "a": "カーボンニュートラル",
+    "n": "",
+    "src": "時事問題 一問一答 第5章 自然と科学 問7"
+   },
+   {
+    "id": 68,
+    "lab": "5-8",
+    "q": "牛のゲップに含まれる温室効果ガスを何という？（カタカナ3字）",
+    "a": "メタン",
+    "n": "",
+    "src": "時事問題 一問一答 第5章 自然と科学 問8"
+   },
+   {
+    "id": 69,
+    "lab": "5-9",
+    "q": "2015年のCOP21で採択された、気候変動に関する国際的な枠組みを何という？",
+    "a": "パリ協定",
+    "n": "",
+    "src": "時事問題 一問一答 第5章 自然と科学 問9"
+   },
+   {
+    "id": 70,
+    "lab": "5-10",
+    "q": "日本においてヒグマが生息する都道府県はどこ？",
+    "a": "北海道",
+    "n": "",
+    "src": "時事問題 一問一答 第5章 自然と科学 問10"
+   },
+   {
+    "id": 71,
+    "lab": "5-11",
+    "q": "日本語で「大地の公園」を意味し、自然について学び、楽しむことができる場所を何という？",
+    "a": "ジオパーク",
+    "n": "",
+    "src": "時事問題 一問一答 第5章 自然と科学 問11"
+   },
+   {
+    "id": 72,
+    "lab": "5-12",
+    "q": "西日本の太平洋側の海底にある巨大な溝を「南海（　※　）」といいます。（　※　）にあてはまる語句は？",
+    "a": "トラフ",
+    "n": "",
+    "src": "時事問題 一問一答 第5章 自然と科学 問12"
+   },
+   {
+    "id": 73,
+    "lab": "5-13",
+    "q": "2026年に国連総会で、使用を推奨することが採択された世界地図の図法を何という？",
+    "a": "イコールアース図法",
+    "n": "",
+    "src": "時事問題 一問一答 第5章 自然と科学 問13"
+   },
+   {
+    "id": 74,
+    "lab": "5-14",
+    "q": "日本における、政府全体の宇宙開発利用を技術で支える中核的実施機関を何という？",
+    "a": "JAXA（宇宙航空研究開発機構）",
+    "n": "",
+    "src": "時事問題 一問一答 第5章 自然と科学 問14"
+   },
+   {
+    "id": 75,
+    "lab": "5-15",
+    "q": "2026年11月に設置が予定されている庁は何？",
+    "a": "防災庁",
+    "n": "",
+    "src": "時事問題 一問一答 第5章 自然と科学 問15"
+   }
+  ]
+ }
+};
+
+const store = {
+  async get(k){ try{ const v = localStorage.getItem(k); return v ? {value:v} : null; }catch(e){ return (store._m||{})[k] ? {value:store._m[k]} : null; } },
+  async set(k,v){ try{ localStorage.setItem(k,v); }catch(e){ store._m = store._m||{}; store._m[k]=v; } }
+};
+
+const TOTAL_LAPS = 3;
+const REVIEW_DAYS = 7;
+function ymd(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function addDaysISO(iso,n){ const a=iso.split('-').map(Number); return ymd(new Date(a[0],a[1]-1,a[2]+n)); }
+function daysUntil(iso){ const a=iso.split('-').map(Number); const t=new Date(a[0],a[1]-1,a[2]); const n=new Date(); const t0=new Date(n.getFullYear(),n.getMonth(),n.getDate()); return Math.round((t-t0)/86400000); }
+function fmtJP(iso){ const a=iso.split('-').map(Number); const w='日月火水木金土'[new Date(a[0],a[1]-1,a[2]).getDay()]; return a[1]+'/'+a[2]+'（'+w+'）'; }
+
+function calTitle(){ return deck().cal + 'をやる日'; }
+function calDetails(){
+  const n = (state && state.weakIds) ? state.weakIds.length : 0;
+  return n ? ('前回まちがえた'+n+'問を、もう一度。まちがえたら、また0になるまで。') : '全問で、もう一度。まちがえたら、0になるまで。';
+}
+function gcalUrl(){
+  if(!state || !state.nextDate) return '#';
+  const d = state.nextDate.replace(/-/g,'');
+  const nd = addDaysISO(state.nextDate,1).replace(/-/g,'');
+  return 'https://calendar.google.com/calendar/render?action=TEMPLATE'
+    + '&text=' + encodeURIComponent(calTitle())
+    + '&dates=' + d + '/' + nd
+    + '&details=' + encodeURIComponent(calDetails());
+}
+function buildIcs(){
+  const d = state.nextDate.replace(/-/g,'');
+  const nd = addDaysISO(state.nextDate,1).replace(/-/g,'');
+  const stamp = new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,'');
+  return [
+    'BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//jiji-drill//JP','CALSCALE:GREGORIAN',
+    'BEGIN:VEVENT',
+    'UID:jiji-'+currentDeckKey+'-'+d+'@drill',
+    'DTSTAMP:'+stamp,
+    'DTSTART;VALUE=DATE:'+d,
+    'DTEND;VALUE=DATE:'+nd,
+    'SUMMARY:'+calTitle(),
+    'DESCRIPTION:'+calDetails(),
+    'BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:'+calTitle(),'TRIGGER;RELATED=START:PT8H','END:VALARM',
+    'END:VEVENT','END:VCALENDAR'
+  ].join('\r\n');
+}
+async function addToCalendar(){
+  if(!state || !state.nextDate) return;
+  const ics = buildIcs();
+  const fname = 'jiji-drill.ics';
+  try{
+    const file = new File([ics], fname, {type:'text/calendar'});
+    if(navigator.canShare && navigator.canShare({files:[file]})){
+      await navigator.share({files:[file], title: calTitle()});
+      return;
+    }
+  }catch(e){ if(e && e.name === 'AbortError') return; }
+  try{
+    const blob = new Blob([ics], {type:'text/calendar;charset=utf-8'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = fname;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url), 10000);
+  }catch(e){
+    alert('うまく入りませんでした。上の「Googleカレンダーに入れる」を使ってください。');
+  }
+}
+
+let currentDeckKey = null;
+let state = null;
+
+function deck(){ return DECKS[currentDeckKey]; }
+function TOTAL(){ return (state && state.roundTotal) ? state.roundTotal : deck().questions.length; }
+function freshRoundQueue(){ return deck().questions.map(q=>q.id); }
+
+function defaultState(){
+  return {
+    round: 1,
+    queue: freshRoundQueue(),
+    seenFirstTry: {},
+    firstTryCorrectCount: 0,
+    roundHistory: [],
+    finished: false,
+    currentId: null,
+    revealed: false,
+    roundTotal: deck().questions.length,
+    everWrong: {}
+  };
+}
+
+async function loadDeckSummary(key){
+  try{
+    const res = await store.get(DECKS[key].storageKey);
+    if(!res) return null;
+    return JSON.parse(res.value);
+  }catch(e){ return null; }
+}
+
+async function renderPicker(){
+  document.getElementById('lapTicket').innerHTML = '';
+  const sheet = document.getElementById('sheet');
+  sheet.className = 'picker-sheet';
+  sheet.innerHTML = `
+    <div class="picker-title">時事問題 一問一答 3周ドリル（2026）</div>
+    <div class="picker-sub">やる章を選んでください。1周目は全問。2周目からは前の周でまちがえた問題だけ出て、まちがいが0になるまでくり返します。0になると、つぎにやる日が出ます。</div>
+    <div id="deckList"></div>
+  `;
+  const list = document.getElementById('deckList');
+  for(const key of Object.keys(DECKS)){
+    const d = DECKS[key];
+    const st = await loadDeckSummary(key);
+    let meta = "まだ未着手";
+    if(st){
+      if(st.finished && st.nextDate){ const dl = daysUntil(st.nextDate); meta = dl>0 ? ('まちがい0 ・ つぎにやる日 '+fmtJP(st.nextDate)+'（あと'+dl+'日）') : (dl===0 ? '今日が、つぎにやる日です！' : ('つぎにやる日('+fmtJP(st.nextDate)+')をすぎています')); }
+      else if(st.finished) meta = 'まちがい0 ・ 完了';
+      else meta = `${st.round}周目 ・ ${Object.keys(st.seenFirstTry).length}/${st.roundTotal||d.questions.length}問クリア中`;
+    }
+    const card = document.createElement('div');
+    card.className = 'deck-card';
+    card.onclick = () => enterDeck(key);
+    card.innerHTML = `
+      <div class="deck-num">${d.no}</div>
+      <div class="deck-info">
+        <div class="deck-name">${d.title}</div>
+        <div class="deck-meta">${meta}</div>
+      </div>
+      <div class="deck-arrow">→</div>
+    `;
+    list.appendChild(card);
+  }
+}
+
+async function enterDeck(key){
+  currentDeckKey = key;
+  document.getElementById('sheet').className = 'sheet';
+  try{
+    const res = await store.get(deck().storageKey);
+    state = res ? JSON.parse(res.value) : defaultState();
+    if(res && state.roundTotal === undefined){ state = defaultState(); }
+  }catch(e){
+    state = defaultState();
+  }
+  if(!state.currentId && state.queue.length){ state.currentId = state.queue[0]; }
+  render();
+}
+
+async function saveState(){
+  try{ await store.set(deck().storageKey, JSON.stringify(state)); }
+  catch(e){ console.error("save failed", e); }
+}
+
+function getQuestion(id){ return deck().questions.find(q=>q.id===id); }
+
+function renderLapTicket(){
+  const wrap = document.getElementById('lapTicket');
+  wrap.innerHTML = '';
+  for(let i=1;i<=Math.max(TOTAL_LAPS,state.round);i++){
+    const div = document.createElement('div');
+    let cls = 'lap-punch';
+    if(i < state.round || (i===state.round && state.finished)) cls += ' done';
+    else if(i === state.round) cls += ' active';
+    div.className = cls;
+    div.innerHTML = `${i}周目<span class="num">${i}</span>`;
+    wrap.appendChild(div);
+  }
+}
+
+function uniqueSeenCount(){ return Object.keys(state.seenFirstTry).length; }
+
+function render(){
+  renderLapTicket();
+  const sheet = document.getElementById('sheet');
+
+  if(state.finished){ renderFinal(sheet); return; }
+  if(state.queue.length === 0){ renderRoundComplete(sheet); return; }
+
+  const qid = state.currentId || state.queue[0];
+  const item = getQuestion(qid);
+  const doneCount = uniqueSeenCount();
+  const total = TOTAL();
+
+  sheet.innerHTML = `
+    <div class="head-row">
+      <span class="eyebrow">${deck().no} ${deck().title} ／ 一問一答ドリル ・ ${state.round}周目</span>
+      <span class="qcount"><b>${doneCount}</b> / ${total} 問クリア</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" style="width:${(doneCount/total*100).toFixed(1)}%"></div></div>
+
+    <div class="qnum"><span class="box">問</span>${(item.lab || String(item.id).padStart(2,'0'))}</div>
+    <div class="qtext">${escapeHtml(item.q)}</div>
+    ${(()=>{const m = state.revealed ? (item.aimg||item.img) : item.img; return m ? `<div class="qmap" style="margin:10px 0">${m}</div>` : '';})()}
+
+    <div class="answer-zone" id="answerZone"></div>
+
+    <div class="footer-row">
+      <button class="reset-link" onclick="backToPicker()">← ほかの章へ</button>
+      <button class="reset-link" onclick="resetCurrentDeck()">この章をはじめからやり直す</button>
+    </div>
+  `;
+
+  const az = document.getElementById('answerZone');
+  if(!state.revealed){
+    az.innerHTML = `<button class="btn btn-reveal" style="width:100%" onclick="reveal()">こたえを見る</button>`;
+  }else{
+    const badge2026 = item.src ? `<span class="badge-2026">📌 ${escapeHtml(item.src)}</span>` : '';
+    az.innerHTML = `
+      <div class="answer-label">✎ 正解</div>
+      <div class="answer-text">${escapeHtml(item.a)}</div>${item.n ? `<div class="note-box"><span class="note-label">解説</span>${escapeHtml(item.n)}</div>` : ""}
+      ${badge2026}
+      <div class="btn-row">
+        <button class="btn btn-correct" onclick="mark(true)">◯ わかった</button>
+        <button class="btn btn-wrong" onclick="mark(false)">✕ まちがえた</button>
+      </div>
+    `;
+  }
+}
+
+function escapeHtml(str){
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+}
+
+function reveal(){ state.revealed = true; render(); }
+
+function mark(correct){
+  const qid = state.currentId;
+  const firstTime = !(qid in state.seenFirstTry);
+  if(firstTime){
+    state.seenFirstTry[qid] = correct;
+    if(correct) state.firstTryCorrectCount++;
+  }
+  state.queue.shift();
+  if(!correct){ state.queue.push(qid); }
+
+  state.revealed = false;
+  state.currentId = state.queue.length ? state.queue[0] : null;
+
+  saveState();
+  render();
+  showStamp(correct);
+}
+
+function showStamp(correct){
+  const sheet = document.getElementById('sheet');
+  const wrap = document.createElement('div');
+  wrap.className = 'stamp-wrap show';
+  wrap.innerHTML = correct ? stampCircleSVG() : stampCrossSVG();
+  sheet.appendChild(wrap);
+
+  const note = document.createElement('div');
+  note.className = 'stamp-note show';
+  note.textContent = correct ? "せいかい！" : "つぎ、がんばろう";
+  sheet.appendChild(note);
+
+  setTimeout(()=>{ wrap.remove(); note.remove(); }, 900);
+}
+
+function stampCircleSVG(){
+  return `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="38" fill="none" stroke="#B8262E" stroke-width="7" stroke-linecap="round"/></svg>`;
+}
+function stampCrossSVG(){
+  return `<svg viewBox="0 0 100 100">
+    <line x1="24" y1="24" x2="76" y2="76" stroke="#B8262E" stroke-width="7" stroke-linecap="round"/>
+    <line x1="76" y1="24" x2="24" y2="76" stroke="#B8262E" stroke-width="7" stroke-linecap="round"/>
+  </svg>`;
+}
+
+function sealSVG(label){
+  const t = (typeof label === 'number') ? label + '周' : String(label);
+  const fs = t.length > 2 ? 28 : 36;
+  return `<svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" fill="none" stroke="#B8262E" stroke-width="5"/><circle cx="60" cy="60" r="44" fill="none" stroke="#B8262E" stroke-width="1.5"/><text x="60" y="${60+fs*0.36}" text-anchor="middle" font-family="Shippori Mincho, serif" font-weight="800" font-size="${fs}" fill="#B8262E">${t}</text></svg>`;
+}
+
+function renderRoundComplete(sheet){
+  const total = TOTAL();
+  const accuracy = Math.round((state.firstTryCorrectCount / total) * 100);
+  sheet.innerHTML = `
+    <div class="round-complete">
+      <div class="seal">${sealSVG(state.round)}</div>
+      <div class="rc-title">${state.round}周目、クリア！</div>
+      <div class="rc-sub">1回目で正解できたのは ${state.firstTryCorrectCount} / ${total} 問（${accuracy}%）でした。<br>まちがえた問題は、この周の中で正解するまで出題されました。${(wrongIds().length>0) ? '<br>次の周は、この周で最初にまちがえた問題だけ出ます。' : '<br>最初にまちがえた問題はありませんでした。'}</div>
+      <button class="btn-next" onclick="nextRound()">${(wrongIds().length>0) ? (state.round+1)+'周目へ進む（まちがえた'+wrongIds().length+'問）' : '結果を見る'}</button>
+    </div>
+  `;
+}
+
+function wrongIds(){ return deck().questions.map(q=>q.id).filter(id=>state.seenFirstTry[id]===false); }
+
+function nextRound(){
+  const total = TOTAL();
+  const wrong = wrongIds();
+  state.roundHistory.push({round: state.round, accuracy: Math.round((state.firstTryCorrectCount/total)*100), correct: state.firstTryCorrectCount, total: total});
+  state.everWrong = state.everWrong || {};
+  wrong.forEach(id=>{ state.everWrong[id] = true; });
+  if(wrong.length === 0){
+    state.finished = true;
+    state.weakIds = deck().questions.map(q=>q.id).filter(id=>state.everWrong[id]);
+    state.finishedOn = ymd(new Date());
+    state.nextDate = addDaysISO(state.finishedOn, REVIEW_DAYS);
+  }else{
+    state.round += 1;
+    state.queue = wrong.slice();
+    state.roundTotal = wrong.length;
+    state.seenFirstTry = {};
+    state.firstTryCorrectCount = 0;
+    state.currentId = state.queue[0];
+    state.revealed = false;
+  }
+  saveState();
+  render();
+}
+
+function renderFinal(sheet){
+  const bars = state.roundHistory.map(r=>`
+    <div class="stat-row">
+      <span class="label">${r.round}周目</span>
+      <div class="stat-bar-track"><div class="stat-bar-fill" style="width:${r.accuracy}%"></div></div>
+      <span class="pct">${r.accuracy}%<small style="display:block;font-weight:400;font-size:10px">${r.correct!==undefined ? r.correct+"/"+r.total+"問" : ""}</small></span>
+    </div>
+  `).join('');
+  sheet.innerHTML = `
+    <div class="final-complete">
+      <div class="seal">${sealSVG('合格')}</div>
+      <div class="rc-title">${state.roundHistory.length===1 ? "1周でぜんぶ正解！" : state.roundHistory.length+"周で、まちがい0！"}</div>
+      <div class="rc-sub">「${deck().title}」の一問一答を${state.roundHistory.length}周やりきりました。回を重ねるごとの正解率はこちら。</div>
+      <div class="stat-bars">${bars}</div>
+      ${state.nextDate ? `<div class="next-box"><div class="next-label">つぎにやる日</div><div class="next-date">${fmtJP(state.nextDate)}</div><div class="next-sub">${REVIEW_DAYS}日後 ・ ${(state.weakIds && state.weakIds.length) ? 'まちがえた'+state.weakIds.length+'問だけ、もう一度。' : 'まちがいなし。全問で、もう一度。'}まちがえたら、また0になるまで。</div><a class="btn-cal" style="display:inline-block;text-decoration:none" href="${gcalUrl()}" target="_blank" rel="noopener">Googleカレンダーに入れる</a><br><button class="btn-cal" onclick="addToCalendar()">iPhoneのカレンダー（.ics）</button><div class="next-note">うまく開かないときは、Googleカレンダーのほうを使ってください。</div></div>` : ""}
+      <div class="footer-row" style="justify-content:center; gap:10px 14px; flex-wrap:wrap;">
+        <button class="reset-link" onclick="backToPicker()">← ほかの章へ</button>
+        ${(state.weakIds && state.weakIds.length) ? `<button class="btn-next" onclick="startSession('weak')">まちがえた問題だけ（${state.weakIds.length}問）</button><button class="btn-cal" onclick="startSession('all')">全問をやる</button>` : `<button class="btn-next" onclick="startSession('all')">全問をやる</button>`}
+      </div>
+    </div>
+  `;
+}
+
+async function resetCurrentDeck(){
+  state = defaultState();
+  state.currentId = state.queue[0];
+  await saveState();
+  render();
+}
+
+async function startSession(mode){
+  const weak = (state && state.weakIds) ? state.weakIds.slice() : [];
+  const ns = defaultState();
+  if(mode === 'weak' && weak.length > 0){
+    ns.queue = weak;
+    ns.roundTotal = weak.length;
+  }
+  state = ns;
+  state.currentId = state.queue[0];
+  await saveState();
+  render();
+}
+
+function backToPicker(){
+  currentDeckKey = null;
+  state = null;
+  renderPicker();
+}
+
+renderPicker();
+</script>
