@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>濃度 てんびん図 3周ドリル</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Yomogi&display=swap');
+
+:root{
+  --paper:#F0EAD9;
+  --paper-deep:#E5DCC4;
+  --rule:#C9BFA0;
+  --margin-line:#c98a8a;
+  --ink:#22303F;
+  --ink-soft:#5b6b78;
+  --akapen:#B8262E;
+  --akapen-dark:#7e1a20;
+  --gold:#A9822F;
+  --card-shadow: 0 18px 40px rgba(34,48,63,0.18), 0 2px 6px rgba(34,48,63,0.12);
+}
+*{box-sizing:border-box;}
+html,body{height:100%;}
+body{
+  margin:0;
+  min-height:100vh;
+  background: radial-gradient(ellipse at top left, rgba(255,255,255,0.5), transparent 60%), var(--paper);
+  font-family:'Zen Kaku Gothic New', sans-serif;
+  color:var(--ink);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:28px 14px;
+  position:relative;
+  overflow-x:hidden;
+}
+body::before{
+  content:"";
+  position:fixed; inset:0;
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 27px, var(--rule) 28px),
+    repeating-linear-gradient(90deg, transparent 0 55px, var(--margin-line) 55px 56px, transparent 56px 3000px);
+  opacity:0.28;
+  pointer-events:none;
+}
+.stage{ position:relative; width:100%; max-width:560px; }
+
+/* ---------- deck picker ---------- */
+.picker-sheet{
+  background:linear-gradient(180deg, #FBF8EF, #F3EDDC 70%);
+  border-radius:6px;
+  box-shadow:var(--card-shadow);
+  padding:30px 28px;
+  border:1px solid rgba(0,0,0,0.06);
+}
+.picker-title{
+  font-family:'Shippori Mincho', serif;
+  font-weight:800;
+  font-size:20px;
+  color:var(--ink);
+  margin-bottom:2px;
+}
+.picker-sub{
+  font-size:12.5px;
+  color:var(--ink-soft);
+  margin-bottom:22px;
+}
+.deck-card{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:16px 16px;
+  border:1.5px solid var(--rule);
+  border-radius:9px;
+  background:#fff;
+  cursor:pointer;
+  margin-bottom:12px;
+  transition:transform .12s ease, box-shadow .12s ease, border-color .2s ease;
+}
+.deck-card:hover{
+  border-color:var(--akapen);
+  transform:translateY(-2px);
+  box-shadow:0 8px 18px rgba(184,38,46,0.15);
+}
+.deck-num{
+  font-family:'Shippori Mincho', serif;
+  font-weight:800;
+  font-size:13px;
+  color:#fff;
+  background:var(--ink);
+  border-radius:6px;
+  padding:6px 9px;
+  flex-shrink:0;
+}
+.deck-info{ flex:1; }
+.deck-name{
+  font-family:'Shippori Mincho', serif;
+  font-weight:800;
+  font-size:17px;
+  color:var(--ink);
+}
+.deck-meta{
+  font-size:12px;
+  color:var(--ink-soft);
+  margin-top:3px;
+}
+.deck-arrow{ color:var(--akapen); font-size:20px; }
+
+/* ---------- Ticket / lap indicator ---------- */
+.lap-ticket{ display:flex; gap:8px; justify-content:center; margin-bottom:14px; }
+.lap-punch{
+  position:relative;
+  width:96px;
+  padding:8px 6px 9px;
+  text-align:center;
+  background:#fff;
+  border:1.5px dashed var(--rule);
+  border-radius:8px;
+  font-family:'Shippori Mincho', serif;
+  font-weight:700;
+  font-size:12.5px;
+  color:var(--ink-soft);
+  transition:all .35s ease;
+}
+.lap-punch .num{ display:block; font-size:20px; font-weight:800; color:var(--ink-soft); line-height:1.3; }
+.lap-punch.active{ border-style:solid; border-color:var(--akapen); color:var(--akapen-dark); box-shadow:0 4px 10px rgba(184,38,46,0.18); }
+.lap-punch.active .num{ color:var(--akapen); }
+.lap-punch.done{ background:var(--ink); border-color:var(--ink); color:#f0ead9; }
+.lap-punch.done .num{ color:#f0ead9; }
+.lap-punch.done::after{
+  content:"済"; position:absolute; top:-9px; right:-7px;
+  width:22px;height:22px;border-radius:50%; background:var(--akapen); color:#fff;
+  font-size:11px; display:flex; align-items:center; justify-content:center;
+  font-family:'Shippori Mincho',serif; box-shadow:0 2px 4px rgba(0,0,0,.25);
+}
+
+/* ---------- Main sheet ---------- */
+.sheet{
+  position:relative;
+  background:linear-gradient(180deg, #FBF8EF, #F3EDDC 70%);
+  border-radius:6px;
+  box-shadow:var(--card-shadow);
+  padding:30px 28px 26px 40px;
+  border:1px solid rgba(0,0,0,0.06);
+}
+.sheet::before{ content:""; position:absolute; top:0; bottom:0; left:26px; width:1.5px; background:var(--margin-line); opacity:.55; }
+.head-row{ display:flex; align-items:baseline; justify-content:space-between; margin-bottom:6px; }
+.eyebrow{ font-family:'Shippori Mincho',serif; font-weight:700; font-size:13px; letter-spacing:.14em; color:var(--ink-soft); }
+.qcount{ font-family:'Shippori Mincho',serif; font-size:13px; color:var(--ink-soft); font-weight:700; }
+.qcount b{ color:var(--akapen); font-size:16px; }
+.progress-track{ height:6px; background:var(--paper-deep); border-radius:3px; overflow:hidden; margin:10px 0 22px; border:1px solid rgba(0,0,0,0.05); }
+.progress-fill{ height:100%; background:linear-gradient(90deg, var(--akapen), #d9564d); width:0%; transition:width .5s cubic-bezier(.4,0,.2,1); }
+.qnum{ display:inline-flex; align-items:center; gap:6px; font-family:'Shippori Mincho',serif; font-weight:800; font-size:15px; color:var(--akapen-dark); margin-bottom:10px; }
+.qnum .box{ width:26px;height:26px;border:2px solid var(--akapen-dark); display:flex;align-items:center;justify-content:center; border-radius:3px; font-size:13px; }
+.qtext{ font-size:17px; line-height:1.85; font-weight:500; color:var(--ink); min-height:70px; white-space:pre-wrap; }
+.answer-zone{ margin-top:18px; padding-top:16px; border-top:1.5px dashed var(--rule); min-height:64px; }
+.answer-label{ font-family:'Yomogi', cursive; color:var(--akapen); font-size:15px; margin-bottom:4px; display:flex; align-items:center; gap:6px; }
+.answer-text{ font-family:'Shippori Mincho', serif; font-weight:700; font-size:21px; color:var(--ink); animation:reveal .35s ease; }
+@keyframes reveal{ from{ opacity:0; transform:translateY(4px); } to{ opacity:1; transform:translateY(0); } }
+.badge-2026{
+  display:inline-flex; align-items:center; gap:5px;
+  margin-top:10px;
+  padding:5px 10px;
+  border-radius:20px;
+  font-size:12px; font-weight:700;
+  font-family:'Zen Kaku Gothic New', sans-serif;
+  background:#e8f4e8; color:#2a6b35;
+  border:1.5px solid #2a6b35;
+}
+.badge-2026.changed{
+  background:#fff4e0; color:#8a5a00;
+  border-color:#c98000;
+}
+.badge-2026-note{
+  display:block;
+  margin-top:5px;
+  font-size:13px;
+  color:#8a5a00;
+  font-family:'Yomogi', cursive;
+  animation:reveal .35s ease;
+}
+.btn-row{ margin-top:22px; display:flex; gap:10px; }
+.btn{ flex:1; border:none; cursor:pointer; font-family:'Zen Kaku Gothic New', sans-serif; font-weight:700; font-size:15px; padding:14px 10px; border-radius:8px; transition:transform .12s ease, box-shadow .12s ease, background .2s ease; letter-spacing:.02em; }
+.btn:active{ transform:translateY(1px) scale(0.98); }
+.btn-reveal{ background:var(--ink); color:#F0EAD9; box-shadow:0 6px 14px rgba(34,48,63,0.25); }
+.btn-reveal:hover{ background:#31435a; }
+.btn-correct{ background:#e7f0e6; color:#2f6b3a; border:1.5px solid #2f6b3a; }
+.btn-correct:hover{ background:#d9ecd8; }
+.btn-wrong{ background:#fbe9e8; color:var(--akapen-dark); border:1.5px solid var(--akapen); }
+.btn-wrong:hover{ background:#f7d9d7; }
+.stamp-wrap{ position:absolute; top:14px; right:18px; width:88px; height:88px; pointer-events:none; opacity:0; }
+.stamp-wrap.show{ animation:stampIn .5s cubic-bezier(.2,1.4,.5,1) forwards; }
+@keyframes stampIn{ 0%{ opacity:0; transform:scale(2.4) rotate(-18deg); } 60%{ opacity:1; } 100%{ opacity:.92; transform:scale(1) rotate(-10deg); } }
+.stamp-wrap svg{ width:100%; height:100%; overflow:visible; }
+.stamp-note{ position:absolute; top:60px; right:10px; font-family:'Yomogi', cursive; font-size:14px; color:var(--akapen); opacity:0; white-space:nowrap; }
+.stamp-note.show{ animation:noteIn .45s ease .25s forwards; }
+@keyframes noteIn{ from{ opacity:0; transform:translateX(6px); } to{ opacity:1; transform:translateX(0); } }
+.footer-row{ margin-top:20px; display:flex; justify-content:space-between; align-items:center; font-size:12px; color:var(--ink-soft); gap:10px; }
+.reset-link{ background:none;border:none;cursor:pointer; color:var(--ink-soft); text-decoration:underline; font-size:12px; font-family:'Zen Kaku Gothic New', sans-serif; white-space:nowrap; }
+.reset-link:hover{ color:var(--akapen); }
+.round-complete, .final-complete{ text-align:center; padding:20px 6px 6px; }
+.seal{ width:120px; height:120px; margin:0 auto 18px; }
+.rc-title{ font-family:'Shippori Mincho', serif; font-weight:800; font-size:24px; color:var(--akapen-dark); margin-bottom:6px; }
+.rc-sub{ font-size:14px; color:var(--ink-soft); margin-bottom:22px; line-height:1.7; }
+.stat-bars{ display:flex; flex-direction:column; gap:10px; margin:0 auto 24px; max-width:380px; text-align:left; }
+.stat-row{ display:flex; align-items:center; gap:10px; font-size:13px; font-weight:700; color:var(--ink-soft); }
+.stat-row .label{ width:56px; flex-shrink:0; font-family:'Shippori Mincho',serif;}
+.stat-bar-track{ flex:1;height:14px;background:var(--paper-deep);border-radius:7px;overflow:hidden; border:1px solid rgba(0,0,0,0.06); }
+.stat-bar-fill{ height:100%;border-radius:7px; background:linear-gradient(90deg,#8a9a3f,#adbf55); transition:width .8s ease; }
+.stat-row .pct{ width:44px; text-align:right; color:var(--ink); }
+.btn-next{ background:var(--akapen); color:#fff; border:none; padding:15px 30px; font-size:15px; font-weight:700; border-radius:9px; cursor:pointer; box-shadow:0 8px 18px rgba(184,38,46,0.3); font-family:'Zen Kaku Gothic New', sans-serif; }
+.btn-next:hover{ background:#9c1f26; }
+
+@media (max-width:480px){
+  .sheet{ padding:24px 16px 22px 30px; }
+  .lap-punch{ width:80px; }
+  .qtext{ font-size:15.5px; }
+}
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div class="lap-ticket" id="lapTicket"></div>
+  <div class="sheet" id="sheet"></div>
+</div>
+
+<script>
+const DECKS = {
+ "nodo": {
+  "no": "No.1",
+  "title": "濃度 てんびん図・逆比と入れかえ（浜学園 第644回 大問2(6)から・6問）",
+  "storageKey": "hama644-nodo-v1",
+  "questions": [
+   {
+    "id": 1,
+    "q": "てんびん図の【ルール】。0%の水と、8%の食塩水を混ぜて、5.6%にした。水と8%の食塩水は、どちらが多い？\nまた、図の2つの距離（0%〜5.6%、5.6%〜8%）を求めて、重さの比（水：8%の食塩水）を答えよう。",
+    "a": "8%の食塩水のほうが多い（支点の5.6%が、8%に近いから）\n距離は、0〜5.6＝5.6、5.6〜8＝2.4\n重さの比は、距離の逆。水：8%の食塩水＝2.4：5.6＝3：7",
+    "src": "浜学園 第644回 公開学力テスト 小6算数（2026/11/8） 大問2(6)の下ごしらえ",
+    "img": "<svg viewBox=\"0 0 360 150\" xmlns=\"http://www.w3.org/2000/svg\" style=\"width:100%;max-width:380px;background:#fffdf6;border:1px solid #bbb;border-radius:6px\"><line x1=\"50\" y1=\"90\" x2=\"310\" y2=\"90\" stroke=\"#222\" stroke-width=\"3\"/><line x1=\"50\" y1=\"76\" x2=\"50\" y2=\"104\" stroke=\"#222\" stroke-width=\"3\"/><line x1=\"310\" y1=\"76\" x2=\"310\" y2=\"104\" stroke=\"#222\" stroke-width=\"3\"/><polygon points=\"232.0,94 220.0,120 244.0,120\" fill=\"#c9a24a\" stroke=\"#222\" stroke-width=\"2\"/><text x=\"50\" y=\"66\" font-size=\"17\" text-anchor=\"middle\" font-weight=\"700\">0%（水）</text><text x=\"310\" y=\"66\" font-size=\"17\" text-anchor=\"middle\" font-weight=\"700\">8%</text><text x=\"232.0\" y=\"142\" font-size=\"17\" text-anchor=\"middle\" font-weight=\"700\" fill=\"#a02020\">5.6%</text></svg>",
+    "aimg": "<svg viewBox=\"0 0 360 150\" xmlns=\"http://www.w3.org/2000/svg\" style=\"width:100%;max-width:380px;background:#fffdf6;border:1px solid #bbb;border-radius:6px\"><line x1=\"50\" y1=\"90\" x2=\"310\" y2=\"90\" stroke=\"#222\" stroke-width=\"3\"/><line x1=\"50\" y1=\"76\" x2=\"50\" y2=\"104\" stroke=\"#222\" stroke-width=\"3\"/><line x1=\"310\" y1=\"76\" x2=\"310\" y2=\"104\" stroke=\"#222\" stroke-width=\"3\"/><polygon points=\"232.0,94 220.0,120 244.0,120\" fill=\"#c9a24a\" stroke=\"#222\" stroke-width=\"2\"/><text x=\"50\" y=\"66\" font-size=\"17\" text-anchor=\"middle\" font-weight=\"700\">0%（水）</text><text x=\"310\" y=\"66\" font-size=\"17\" text-anchor=\"middle\" font-weight=\"700\">8%</text><text x=\"232.0\" y=\"142\" font-size=\"17\" text-anchor=\"middle\" font-weight=\"700\" fill=\"#a02020\">5.6%</text><text x=\"141.0\" y=\"84\" font-size=\"15\" text-anchor=\"middle\" fill=\"#1d5fa8\">5.6</text><text x=\"271.0\" y=\"84\" font-size=\"15\" text-anchor=\"middle\" fill=\"#1d5fa8\">2.4</text><text x=\"50\" y=\"142\" font-size=\"14\" text-anchor=\"middle\" fill=\"#a02020\">重さ 3</text><text x=\"310\" y=\"142\" font-size=\"14\" text-anchor=\"middle\" fill=\"#a02020\">重さ 7</text></svg>"
+   },
+   {
+    "id": 2,
+    "q": "10%の食塩水 100g と、4%の食塩水 200g を混ぜた。何%になる？\n（てんびん図で、近いのはどっち？ 重さの比は 1：2。距離の比は、その逆）",
+    "a": "6%\n（重さの比は 10%：4% ＝ 1：2。距離は逆の 2：1。濃度の差は 10−4＝6 なので、4%からの距離は 6×1/3＝2。4＋2＝6%）",
+    "src": "浜学園 第644回 公開学力テスト 小6算数（2026/11/8） 大問2(6)の下ごしらえ",
+    "img": "<svg viewBox=\"0 0 360 150\" xmlns=\"http://www.w3.org/2000/svg\" style=\"width:100%;max-width:380px;background:#fffdf6;border:1px solid #bbb;border-radius:6px\"><line x1=\"50\" y1=\"90\" x2=\"310\" y2=\"90\" stroke=\"#222\" stroke-width=\"3\"/><line x1=\"50\" y1=\"76\" x2=\"50\" y2=\"104\" stroke=\"#222\" stroke-width=\"3\"/><line x1=\"310\" y1=\"76\" x2=\"310\" y2=\"104\" stroke=\"#222\" stroke-width=\"3\"/><polygon points=\"136.66666666666666,94 124.66666666666666,120 148.66666666666666,120\" fill=\"#c9a24a\" stroke=\"#222\" stroke-width=\"2\"/><text x=\"50\" y=\"66\" font-size=\"17\" text-anchor=\"middle\" font-weight=\"700\">4%（200g）</text><text x=\"310\" y=\"66\" font-size=\"17\" text-anchor=\"middle\" font-weight=\"700\">10%（100g）</text><text x=\"136.66666666666666\" y=\"142\" font-size=\"17\" text-anchor=\"middle\" font-weight=\"700\" fill=\"#a02020\">？</text></svg>",
+    "aimg": "<svg viewBox=\"0 0 360 150\" xmlns=\"http://www.w3.org/2000/svg\" style=\"width:100%;max-width:380px;background:#fffdf6;border:1px solid #bbb;border-radius:6px\"><line x1=\"50\" y1=\"90\" x2=\"310\" y2=\"90\" stroke=\"#222\" stroke-width=\"3\"/><line x1=\"50\" y1=\"76\" x2=\"50\" y2=\"104\" stroke=\"#222\" stroke-width=\"3\"/><line x1=\"310\" y1=\"76\" x2=\"310\" y2=\"104\" stroke=\"#222\" stroke-width=\"3\"/><polygon points=\"136.66666666666666,94 124.66666666666666,120 148.66666666666666,120\" fill=\"#c9a24a\" stroke=\"#222\" stroke-width=\"2\"/><text x=\"50\" y=\"66\" font-size=\"17\" text-anchor=\"middle\" font-weight=\"700\">4%（200g）</text><text x=\"310\" y=\"66\" font-size=\"17\" text-anchor=\"middle\" font-weight=\"700\">10%（100g）</text><text x=\"136.66666666666666\" y=\"142\" font-size=\"17\" text-anchor=\"middle\" font-weight=\"700\" fill=\"#a02020\">6%</text><text x=\"93.33333333333333\" y=\"84\" font-size=\"15\" text-anchor=\"middle\" fill=\"#1d5fa8\">2</text><text x=\"223.33333333333331\" y=\"84\" font-size=\"15\" text-anchor=\"middle\" fill=\"#1d5fa8\">4</text><text x=\"50\" y=\"142\" font-size=\"14\" text-anchor=\"middle\" fill=\"#a02020\">重さ 2</text><text x=\"310\" y=\"142\" font-size=\"14\" text-anchor=\"middle\" fill=\"#a02020\">重さ 1</text></svg>"
+   },
+   {
+    "id": 3,
+    "q": "6%の食塩水 200g に、12%の食塩水を混ぜて、10%にしたい。12%の食塩水は、何g混ぜればいい？",
+    "a": "400g\n（距離は、6→10＝4、10→12＝2。重さの比は距離の逆で、6%：12%＝2：4＝1：2。6%が200gなので、12%は400g）",
+    "src": "浜学園 第644回 公開学力テスト 小6算数（2026/11/8） 大問2(6)の下ごしらえ",
+    "img": "<svg viewBox=\"0 0 360 150\" xmlns=\"http://www.w3.org/2000/svg\" style=\"width:100%;max-width:380px;background:#fffdf6;border:1px solid #bbb;border-radius:6px\"><line x1=\"50\" y1=\"90\" x2=\"310\" y2=\"90\" stroke=\"#222\" stroke-width=\"3\"/><line x1=\"50\" y1=\"76\" x2=\"50\" y2=\"104\" stroke=\"#222\" stroke-width=\"3\"/><line x1=\"310\" y1=\"76\" x2=\"310\" y2=\"104\" stroke=\"#222\" stroke-width=\"3\"/><polygon points=\"223.33333333333331,94 211.33333333333331,120 235.33333333333331,120\" fill=\"#c9a24a\" stroke=\"#222\" stroke-width=\"2\"/><text x=\"50\" y=\"66\" font-size=\"17\" text-anchor=\"middle\" font-weight=\"700\">6%（200g）</text><text x=\"310\" y=\"66\" font-size=\"17\" text-anchor=\"middle\" font-weight=\"700\">12%（？g）</text><text x=\"223.33333333333331\" y=\"142\" font-size=\"17\" text-anchor=\"middle\" font-weight=\"700\" fill=\"#a02020\">10%</text></svg>",
+    "aimg": "<svg viewBox=\"0 0 360 150\" xmlns=\"http://www.w3.org/2000/svg\" style=\"width:100%;max-width:380px;background:#fffdf6;border:1px solid #bbb;border-radius:6px\"><line x1=\"50\" y1=\"90\" x2=\"310\" y2=\"90\" stroke=\"#222\" stroke-width=\"3\"/><line x1=\"50\" y1=\"76\" x2=\"50\" y2=\"104\" stroke=\"#222\" stroke-width=\"3\"/><line x1=\"310\" y1=\"76\" x2=\"310\" y2=\"104\" stroke=\"#222\" stroke-width=\"3\"/><polygon points=\"223.33333333333331,94 211.33333333333331,120 235.33333333333331,120\" fill=\"#c9a24a\" stroke=\"#222\" stroke-width=\"2\"/><text x=\"50\" y=\"66\" font-size=\"17\" text-anchor=\"middle\" font-weight=\"700\">6%（200g）</text><text x=\"310\" y=\"66\" font-size=\"17\" text-anchor=\"middle\" font-weight=\"700\">12%（400g）</text><text x=\"223.33333333333331\" y=\"142\" font-size=\"17\" text-anchor=\"middle\" font-weight=\"700\" fill=\"#a02020\">10%</text><text x=\"136.66666666666666\" y=\"84\" font-size=\"15\" text-anchor=\"middle\" fill=\"#1d5fa8\">4</text><text x=\"266.66666666666663\" y=\"84\" font-size=\"15\" text-anchor=\"middle\" fill=\"#1d5fa8\">2</text><text x=\"50\" y=\"142\" font-size=\"14\" text-anchor=\"middle\" fill=\"#a02020\">重さ 1</text><text x=\"310\" y=\"142\" font-size=\"14\" text-anchor=\"middle\" fill=\"#a02020\">重さ 2</text></svg>"
+   },
+   {
+    "id": 4,
+    "q": "濃度が8%の食塩水が350gあります。ここから何gかの食塩水を捨て、捨てた食塩水と同じ重さの水を加えると、濃度が5.6%の食塩水ができました。捨てた食塩水の重さは何gですか。\n（「捨てて、同じ重さの水を足す」＝入れかえ。てんびん図でも、食塩の量でも解けるよ）",
+    "a": "105g\n【てんびん図】0%の水と8%の残り→5.6%。距離は5.6と2.4なので、重さの比は 水：残り＝3：7。全体は350gだから、水（＝捨てた分）は 350×3/10＝105g\n【倍で考える】5.6÷8＝0.7倍 → 捨てたのは 1−0.7＝0.3倍 → 350×0.3＝105g",
+    "src": "浜学園 第644回 公開学力テスト 小6算数（2026/11/8） 大問2(6)",
+    "aimg": "<svg viewBox=\"0 0 360 150\" xmlns=\"http://www.w3.org/2000/svg\" style=\"width:100%;max-width:380px;background:#fffdf6;border:1px solid #bbb;border-radius:6px\"><line x1=\"50\" y1=\"90\" x2=\"310\" y2=\"90\" stroke=\"#222\" stroke-width=\"3\"/><line x1=\"50\" y1=\"76\" x2=\"50\" y2=\"104\" stroke=\"#222\" stroke-width=\"3\"/><line x1=\"310\" y1=\"76\" x2=\"310\" y2=\"104\" stroke=\"#222\" stroke-width=\"3\"/><polygon points=\"232.0,94 220.0,120 244.0,120\" fill=\"#c9a24a\" stroke=\"#222\" stroke-width=\"2\"/><text x=\"50\" y=\"66\" font-size=\"17\" text-anchor=\"middle\" font-weight=\"700\">0%（水）</text><text x=\"310\" y=\"66\" font-size=\"17\" text-anchor=\"middle\" font-weight=\"700\">8%（残り）</text><text x=\"232.0\" y=\"142\" font-size=\"17\" text-anchor=\"middle\" font-weight=\"700\" fill=\"#a02020\">5.6%</text><text x=\"141.0\" y=\"84\" font-size=\"15\" text-anchor=\"middle\" fill=\"#1d5fa8\">5.6</text><text x=\"271.0\" y=\"84\" font-size=\"15\" text-anchor=\"middle\" fill=\"#1d5fa8\">2.4</text><text x=\"50\" y=\"142\" font-size=\"14\" text-anchor=\"middle\" fill=\"#a02020\">重さ 3</text><text x=\"310\" y=\"142\" font-size=\"14\" text-anchor=\"middle\" fill=\"#a02020\">重さ 7</text></svg>"
+   },
+   {
+    "id": 5,
+    "q": "濃度が10%の食塩水が400gあります。ここから何gかの食塩水を捨て、捨てた食塩水と同じ重さの水を加えると、濃度が7%の食塩水ができました。捨てた食塩水の重さは何gですか。",
+    "a": "120g\n（7÷10＝0.7倍 → 捨てたのは 1−0.7＝0.3倍 → 400×0.3＝120g。てんびん図なら、距離が7と3なので水：残り＝3：7、水は 400×3/10＝120g）",
+    "src": "浜学園 第644回 公開学力テスト 小6算数（2026/11/8） 大問2(6)の類題（自作）"
+   },
+   {
+    "id": 6,
+    "q": "濃度が20%の食塩水が200gあります。ここから100gの食塩水を捨て、同じ100gの水を加えて、よくまぜた。濃度は何%になった？\n（そのあと、もう一度、100gを捨てて、100gの水を加えると、何%になる？）",
+    "a": "1回目＝10%、2回目＝5%\n（捨てた食塩水は半分。残りは 100g で20%、水100gを足すと全体は200g。食塩の量は半分になるので、濃度も半分になる。入れかえるたびに、同じ倍率になる）",
+    "src": "浜学園 第644回 公開学力テスト 小6算数（2026/11/8） 大問2(6)の発展（自作）"
+   }
+  ]
+ }
+};
+
+const store = {
+  async get(k){ try{ const v = localStorage.getItem(k); return v ? {value:v} : null; }catch(e){ return (store._m||{})[k] ? {value:store._m[k]} : null; } },
+  async set(k,v){ try{ localStorage.setItem(k,v); }catch(e){ store._m = store._m||{}; store._m[k]=v; } }
+};
+
+const TOTAL_LAPS = 3;
+let currentDeckKey = null;
+let state = null;
+
+
+/* ---- 次にやる日（当日・翌日・1週間後） ---- */
+const WD = ['日','月','火','水','木','金','土'];
+function ymd(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function fromYmd(t){ const [y,m,d]=t.split('-').map(Number); return new Date(y,m-1,d); }
+function addDays(t,n){ const d=fromYmd(t); d.setDate(d.getDate()+n); return ymd(d); }
+function fmtMD(t){ const d=fromYmd(t); return (d.getMonth()+1)+'/'+d.getDate()+'('+WD[d.getDay()]+')'; }
+function schedKey(key){ return DECKS[key].storageKey+'-sched'; }
+async function loadSched(key){
+  try{ const r = await store.get(schedKey(key)); return r ? (JSON.parse(r.value).dates||[]) : []; }
+  catch(e){ return []; }
+}
+async function recordSitting(){
+  const dates = await loadSched(currentDeckKey);
+  dates.push(ymd(new Date()));
+  try{ await store.set(schedKey(currentDeckKey), JSON.stringify({dates})); }catch(e){}
+  return dates;
+}
+function nextInfo(dates){
+  if(!dates.length) return null;
+  const offs = [0,1,7];
+  if(dates.length >= 3) return {done:true};
+  const due = addDays(dates[0], offs[dates.length]);
+  const today = ymd(new Date());
+  return {done:false, n:dates.length+1, due, status: due<today ? 'over' : (due===today ? 'today' : 'later')};
+}
+function schedHTML(dates){
+  const offs = [0,1,7], names=['1回目（当日）','2回目（翌日）','3回目（1週間後）'];
+  if(!dates.length) return '';
+  const rows = names.map((nm,i)=>{
+    const done = i < dates.length;
+    const when = done ? dates[i] : addDays(dates[0], offs[i]);
+    return `<div class="stat-row"><span class="label" style="width:120px">${nm}</span><span style="flex:1">${fmtMD(when)}</span><span class="pct">${done?'✓ おわり':'これから'}</span></div>`;
+  }).join('');
+  return `<div class="stat-bars" style="margin-bottom:18px"><div style="font-weight:700;margin-bottom:6px">次にやる日</div>${rows}</div>`;
+}
+function nextText(info){
+  if(!info) return '';
+  if(info.done) return '3回おわり';
+  const lab = info.status==='over' ? '（すぎてる！）' : info.status==='today' ? '（きょう！）' : '';
+  return `${info.n}回目は ${fmtMD(info.due)}${lab}`;
+}
+
+function deck(){ return DECKS[currentDeckKey]; }
+function TOTAL(){ return deck().questions.length; }
+function freshRoundQueue(){ return deck().questions.map(q=>q.id); }
+
+function defaultState(){
+  return {
+    round: 1,
+    queue: freshRoundQueue(),
+    seenFirstTry: {},
+    firstTryCorrectCount: 0,
+    roundHistory: [],
+    finished: false,
+    currentId: null,
+    revealed: false
+  };
+}
+
+async function loadDeckSummary(key){
+  try{
+    const res = await store.get(DECKS[key].storageKey);
+    if(!res) return null;
+    return JSON.parse(res.value);
+  }catch(e){ return null; }
+}
+
+async function renderPicker(){
+  document.getElementById('lapTicket').innerHTML = '';
+  const sheet = document.getElementById('sheet');
+  sheet.className = 'picker-sheet';
+  sheet.innerHTML = `
+    <div class="picker-title">四天王寺2022 社会 添削の直し 3周ドリル</div>
+    <div class="picker-sub">やる回を選んでください。まちがえた問題はその周のうちに出し直され、3周やりきると正解率の伸びが見られます。</div>
+    <div id="deckList"></div>
+  `;
+  const list = document.getElementById('deckList');
+  for(const key of Object.keys(DECKS)){
+    const d = DECKS[key];
+    const st = await loadDeckSummary(key);
+    let meta = "まだ未着手";
+    if(st){
+      if(st.finished && st.round > TOTAL_LAPS) meta = "3周コンプリート済み";
+      else meta = `${st.round}周目 ・ ${Object.keys(st.seenFirstTry).length}/${d.questions.length}問クリア中`;
+    }
+    const nx = nextText(nextInfo(await loadSched(key)));
+    if(nx) meta += ' ・ ' + nx;
+    const card = document.createElement('div');
+    card.className = 'deck-card';
+    card.onclick = () => enterDeck(key);
+    card.innerHTML = `
+      <div class="deck-num">${d.no}</div>
+      <div class="deck-info">
+        <div class="deck-name">${d.title}</div>
+        <div class="deck-meta">${meta}</div>
+      </div>
+      <div class="deck-arrow">→</div>
+    `;
+    list.appendChild(card);
+  }
+}
+
+async function enterDeck(key){
+  currentDeckKey = key;
+  document.getElementById('sheet').className = 'sheet';
+  try{
+    const res = await store.get(deck().storageKey);
+    state = res ? JSON.parse(res.value) : defaultState();
+  }catch(e){
+    state = defaultState();
+  }
+  if(!state.currentId && state.queue.length){ state.currentId = state.queue[0]; }
+  render();
+}
+
+async function saveState(){
+  try{ await store.set(deck().storageKey, JSON.stringify(state)); }
+  catch(e){ console.error("save failed", e); }
+}
+
+function getQuestion(id){ return deck().questions.find(q=>q.id===id); }
+
+function renderLapTicket(){
+  const wrap = document.getElementById('lapTicket');
+  wrap.innerHTML = '';
+  for(let i=1;i<=TOTAL_LAPS;i++){
+    const div = document.createElement('div');
+    let cls = 'lap-punch';
+    if(i < state.round || (i===state.round && state.finished)) cls += ' done';
+    else if(i === state.round) cls += ' active';
+    div.className = cls;
+    div.innerHTML = `${i}周目<span class="num">${i}</span>`;
+    wrap.appendChild(div);
+  }
+}
+
+function uniqueSeenCount(){ return Object.keys(state.seenFirstTry).length; }
+
+function render(){
+  renderLapTicket();
+  const sheet = document.getElementById('sheet');
+
+  if(state.finished && state.round > TOTAL_LAPS){ renderFinal(sheet); return; }
+  if(state.queue.length === 0){ renderRoundComplete(sheet); return; }
+
+  const qid = state.currentId || state.queue[0];
+  const item = getQuestion(qid);
+  const doneCount = uniqueSeenCount();
+  const total = TOTAL();
+
+  sheet.innerHTML = `
+    <div class="head-row">
+      <span class="eyebrow">${deck().no} ${deck().title} ／ 一問一答ドリル ・ ${state.round}周目</span>
+      <span class="qcount"><b>${doneCount}</b> / ${total} 問クリア</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" style="width:${(doneCount/total*100).toFixed(1)}%"></div></div>
+
+    <div class="qnum"><span class="box">問</span>${String(item.id).padStart(2,'0')}</div>
+    <div class="qtext">${escapeHtml(item.q)}</div>
+    ${(()=>{const m = state.revealed ? (item.aimg||item.img) : item.img; return m ? `<div class="qmap" style="margin:10px 0">${m}</div>` : '';})()}
+
+    <div class="answer-zone" id="answerZone"></div>
+
+    <div class="footer-row">
+      <button class="reset-link" onclick="backToPicker()">← ほかの回へ</button>
+      <button class="reset-link" onclick="resetCurrentDeck()">この回をはじめからやり直す</button>
+    </div>
+  `;
+
+  const az = document.getElementById('answerZone');
+  if(!state.revealed){
+    az.innerHTML = `<button class="btn btn-reveal" style="width:100%" onclick="reveal()">こたえを見る</button>`;
+  }else{
+    const badge2026 = item.src ? `<span class="badge-2026">📌 ${escapeHtml(item.src)}</span>` : '';
+    az.innerHTML = `
+      <div class="answer-label">✎ 正解</div>
+      <div class="answer-text">${escapeHtml(item.a)}</div>
+      ${badge2026}
+      <div class="btn-row">
+        <button class="btn btn-correct" onclick="mark(true)">◯ わかった</button>
+        <button class="btn btn-wrong" onclick="mark(false)">✕ まちがえた</button>
+      </div>
+    `;
+  }
+}
+
+function escapeHtml(str){
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+}
+
+function reveal(){ state.revealed = true; render(); }
+
+function mark(correct){
+  const qid = state.currentId;
+  const firstTime = !(qid in state.seenFirstTry);
+  if(firstTime){
+    state.seenFirstTry[qid] = correct;
+    if(correct) state.firstTryCorrectCount++;
+  }
+  state.queue.shift();
+  if(!correct){ state.queue.push(qid); }
+
+  state.revealed = false;
+  state.currentId = state.queue.length ? state.queue[0] : null;
+
+  saveState();
+  render();
+  showStamp(correct);
+}
+
+function showStamp(correct){
+  const sheet = document.getElementById('sheet');
+  const wrap = document.createElement('div');
+  wrap.className = 'stamp-wrap show';
+  wrap.innerHTML = correct ? stampCircleSVG() : stampCrossSVG();
+  sheet.appendChild(wrap);
+
+  const note = document.createElement('div');
+  note.className = 'stamp-note show';
+  note.textContent = correct ? "せいかい！" : "つぎ、がんばろう";
+  sheet.appendChild(note);
+
+  setTimeout(()=>{ wrap.remove(); note.remove(); }, 900);
+}
+
+function stampCircleSVG(){
+  return `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="38" fill="none" stroke="#B8262E" stroke-width="7" stroke-linecap="round"/></svg>`;
+}
+function stampCrossSVG(){
+  return `<svg viewBox="0 0 100 100">
+    <line x1="24" y1="24" x2="76" y2="76" stroke="#B8262E" stroke-width="7" stroke-linecap="round"/>
+    <line x1="76" y1="24" x2="24" y2="76" stroke="#B8262E" stroke-width="7" stroke-linecap="round"/>
+  </svg>`;
+}
+
+function sealSVG(label){
+  const t = (typeof label === 'number') ? label + '周' : String(label);
+  const fs = t.length > 2 ? 28 : 36;
+  return `<svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" fill="none" stroke="#B8262E" stroke-width="5"/><circle cx="60" cy="60" r="44" fill="none" stroke="#B8262E" stroke-width="1.5"/><text x="60" y="${60+fs*0.36}" text-anchor="middle" font-family="Shippori Mincho, serif" font-weight="800" font-size="${fs}" fill="#B8262E">${t}</text></svg>`;
+}
+
+function renderRoundComplete(sheet){
+  const total = TOTAL();
+  const accuracy = Math.round((state.firstTryCorrectCount / total) * 100);
+  sheet.innerHTML = `
+    <div class="round-complete">
+      <div class="seal">${sealSVG(state.round)}</div>
+      <div class="rc-title">${state.round}周目、クリア！</div>
+      <div class="rc-sub">1回目で正解できたのは ${state.firstTryCorrectCount} / ${total} 問（${accuracy}%）でした。<br>まちがえた問題は、この周の中で正解するまで出題されました。</div>
+      <button class="btn-next" onclick="nextRound()">${state.round < TOTAL_LAPS ? (state.round+1)+'周目へ進む' : '結果を見る'}</button>
+    </div>
+  `;
+}
+
+async function nextRound(){
+  const total = TOTAL();
+  state.roundHistory.push({round: state.round, accuracy: Math.round((state.firstTryCorrectCount/total)*100)});
+  if(state.round >= TOTAL_LAPS){
+    state.finished = true;
+    state.round = TOTAL_LAPS + 1;
+    state.sched = await recordSitting();
+  }else{
+    state.round += 1;
+    state.queue = freshRoundQueue();
+    state.seenFirstTry = {};
+    state.firstTryCorrectCount = 0;
+    state.currentId = state.queue[0];
+    state.revealed = false;
+  }
+  saveState();
+  render();
+}
+
+function renderFinal(sheet){
+  const bars = state.roundHistory.map(r=>`
+    <div class="stat-row">
+      <span class="label">${r.round}周目</span>
+      <div class="stat-bar-track"><div class="stat-bar-fill" style="width:${r.accuracy}%"></div></div>
+      <span class="pct">${r.accuracy}%</span>
+    </div>
+  `).join('');
+  sheet.innerHTML = `
+    <div class="final-complete">
+      <div class="seal">${sealSVG('合格')}</div>
+      <div class="rc-title">3周、コンプリート！</div>
+      <div class="rc-sub">「${deck().title}」を3周やりきりました。回を重ねるごとの正解率と、次にやる日はこちら。</div>
+      <div class="stat-bars">${bars}</div>
+      ${schedHTML(state.sched||[])}
+      <div class="footer-row" style="justify-content:center; gap:14px;">
+        <button class="reset-link" onclick="backToPicker()">← ほかの回へ</button>
+        <button class="btn-next" onclick="resetCurrentDeck()">もう一度さいしょから</button>
+      </div>
+    </div>
+  `;
+}
+
+async function resetCurrentDeck(){
+  state = defaultState();
+  state.currentId = state.queue[0];
+  await saveState();
+  render();
+}
+
+function backToPicker(){
+  currentDeckKey = null;
+  state = null;
+  renderPicker();
+}
+
+renderPicker();
+</script>
+</body>
+</html>
