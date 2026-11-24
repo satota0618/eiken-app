@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>社会 歴史年表と場所 一問一答</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Yomogi&display=swap');
+
+:root{
+  --paper:#F0EAD9;
+  --paper-deep:#E5DCC4;
+  --rule:#C9BFA0;
+  --margin-line:#c98a8a;
+  --ink:#22303F;
+  --ink-soft:#5b6b78;
+  --akapen:#B8262E;
+  --akapen-dark:#7e1a20;
+  --gold:#A9822F;
+  --card-shadow: 0 18px 40px rgba(34,48,63,0.18), 0 2px 6px rgba(34,48,63,0.12);
+}
+*{box-sizing:border-box;}
+html,body{height:100%;}
+body{
+  margin:0;
+  min-height:100vh;
+  background: radial-gradient(ellipse at top left, rgba(255,255,255,0.5), transparent 60%), var(--paper);
+  font-family:'Zen Kaku Gothic New', sans-serif;
+  color:var(--ink);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:28px 14px;
+  position:relative;
+  overflow-x:hidden;
+}
+body::before{
+  content:"";
+  position:fixed; inset:0;
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 27px, var(--rule) 28px),
+    repeating-linear-gradient(90deg, transparent 0 55px, var(--margin-line) 55px 56px, transparent 56px 3000px);
+  opacity:0.28;
+  pointer-events:none;
+}
+.stage{ position:relative; width:100%; max-width:560px; }
+
+/* ---------- deck picker ---------- */
+.picker-sheet{
+  background:linear-gradient(180deg, #FBF8EF, #F3EDDC 70%);
+  border-radius:6px;
+  box-shadow:var(--card-shadow);
+  padding:30px 28px;
+  border:1px solid rgba(0,0,0,0.06);
+}
+.picker-title{
+  font-family:'Shippori Mincho', serif;
+  font-weight:800;
+  font-size:20px;
+  color:var(--ink);
+  margin-bottom:2px;
+}
+.picker-sub{
+  font-size:12.5px;
+  color:var(--ink-soft);
+  margin-bottom:22px;
+}
+.deck-card{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:16px 16px;
+  border:1.5px solid var(--rule);
+  border-radius:9px;
+  background:#fff;
+  cursor:pointer;
+  margin-bottom:12px;
+  transition:transform .12s ease, box-shadow .12s ease, border-color .2s ease;
+}
+.deck-card:hover{
+  border-color:var(--akapen);
+  transform:translateY(-2px);
+  box-shadow:0 8px 18px rgba(184,38,46,0.15);
+}
+.deck-num{
+  font-family:'Shippori Mincho', serif;
+  font-weight:800;
+  font-size:13px;
+  color:#fff;
+  background:var(--ink);
+  border-radius:6px;
+  padding:6px 9px;
+  flex-shrink:0;
+}
+.deck-info{ flex:1; }
+.deck-name{
+  font-family:'Shippori Mincho', serif;
+  font-weight:800;
+  font-size:17px;
+  color:var(--ink);
+}
+.deck-meta{
+  font-size:12px;
+  color:var(--ink-soft);
+  margin-top:3px;
+}
+.deck-arrow{ color:var(--akapen); font-size:20px; }
+
+/* ---------- Ticket / lap indicator ---------- */
+.lap-ticket{ display:flex; gap:8px; justify-content:center; margin-bottom:14px; }
+.lap-punch{
+  position:relative;
+  width:96px;
+  padding:8px 6px 9px;
+  text-align:center;
+  background:#fff;
+  border:1.5px dashed var(--rule);
+  border-radius:8px;
+  font-family:'Shippori Mincho', serif;
+  font-weight:700;
+  font-size:12.5px;
+  color:var(--ink-soft);
+  transition:all .35s ease;
+}
+.lap-punch .num{ display:block; font-size:20px; font-weight:800; color:var(--ink-soft); line-height:1.3; }
+.lap-punch.active{ border-style:solid; border-color:var(--akapen); color:var(--akapen-dark); box-shadow:0 4px 10px rgba(184,38,46,0.18); }
+.lap-punch.active .num{ color:var(--akapen); }
+.lap-punch.done{ background:var(--ink); border-color:var(--ink); color:#f0ead9; }
+.lap-punch.done .num{ color:#f0ead9; }
+.lap-punch.done::after{
+  content:"済"; position:absolute; top:-9px; right:-7px;
+  width:22px;height:22px;border-radius:50%; background:var(--akapen); color:#fff;
+  font-size:11px; display:flex; align-items:center; justify-content:center;
+  font-family:'Shippori Mincho',serif; box-shadow:0 2px 4px rgba(0,0,0,.25);
+}
+
+/* ---------- Main sheet ---------- */
+.sheet{
+  position:relative;
+  background:linear-gradient(180deg, #FBF8EF, #F3EDDC 70%);
+  border-radius:6px;
+  box-shadow:var(--card-shadow);
+  padding:30px 28px 26px 40px;
+  border:1px solid rgba(0,0,0,0.06);
+}
+.sheet::before{ content:""; position:absolute; top:0; bottom:0; left:26px; width:1.5px; background:var(--margin-line); opacity:.55; }
+.head-row{ display:flex; align-items:baseline; justify-content:space-between; margin-bottom:6px; }
+.eyebrow{ font-family:'Shippori Mincho',serif; font-weight:700; font-size:13px; letter-spacing:.14em; color:var(--ink-soft); }
+.qcount{ font-family:'Shippori Mincho',serif; font-size:13px; color:var(--ink-soft); font-weight:700; }
+.qcount b{ color:var(--akapen); font-size:16px; }
+.progress-track{ height:6px; background:var(--paper-deep); border-radius:3px; overflow:hidden; margin:10px 0 22px; border:1px solid rgba(0,0,0,0.05); }
+.progress-fill{ height:100%; background:linear-gradient(90deg, var(--akapen), #d9564d); width:0%; transition:width .5s cubic-bezier(.4,0,.2,1); }
+.qnum{ display:inline-flex; align-items:center; gap:6px; font-family:'Shippori Mincho',serif; font-weight:800; font-size:15px; color:var(--akapen-dark); margin-bottom:10px; }
+.qnum .box{ width:26px;height:26px;border:2px solid var(--akapen-dark); display:flex;align-items:center;justify-content:center; border-radius:3px; font-size:13px; }
+.qtext{ font-size:17px; line-height:1.85; font-weight:500; color:var(--ink); min-height:70px; white-space:pre-wrap; }
+.answer-zone{ margin-top:18px; padding-top:16px; border-top:1.5px dashed var(--rule); min-height:64px; }
+.answer-label{ font-family:'Yomogi', cursive; color:var(--akapen); font-size:15px; margin-bottom:4px; display:flex; align-items:center; gap:6px; }
+.answer-text{ font-family:'Shippori Mincho', serif; font-weight:700; font-size:21px; color:var(--ink); animation:reveal .35s ease; }
+@keyframes reveal{ from{ opacity:0; transform:translateY(4px); } to{ opacity:1; transform:translateY(0); } }
+.badge-2026{
+  display:inline-flex; align-items:center; gap:5px;
+  margin-top:10px;
+  padding:5px 10px;
+  border-radius:20px;
+  font-size:12px; font-weight:700;
+  font-family:'Zen Kaku Gothic New', sans-serif;
+  background:#e8f4e8; color:#2a6b35;
+  border:1.5px solid #2a6b35;
+}
+.badge-2026.changed{
+  background:#fff4e0; color:#8a5a00;
+  border-color:#c98000;
+}
+.badge-2026-note{
+  display:block;
+  margin-top:5px;
+  font-size:13px;
+  color:#8a5a00;
+  font-family:'Yomogi', cursive;
+  animation:reveal .35s ease;
+}
+.btn-row{ margin-top:22px; display:flex; gap:10px; }
+.btn{ flex:1; border:none; cursor:pointer; font-family:'Zen Kaku Gothic New', sans-serif; font-weight:700; font-size:15px; padding:14px 10px; border-radius:8px; transition:transform .12s ease, box-shadow .12s ease, background .2s ease; letter-spacing:.02em; }
+.btn:active{ transform:translateY(1px) scale(0.98); }
+.btn-reveal{ background:var(--ink); color:#F0EAD9; box-shadow:0 6px 14px rgba(34,48,63,0.25); }
+.btn-reveal:hover{ background:#31435a; }
+.btn-correct{ background:#e7f0e6; color:#2f6b3a; border:1.5px solid #2f6b3a; }
+.btn-correct:hover{ background:#d9ecd8; }
+.btn-wrong{ background:#fbe9e8; color:var(--akapen-dark); border:1.5px solid var(--akapen); }
+.btn-wrong:hover{ background:#f7d9d7; }
+.stamp-wrap{ position:absolute; top:14px; right:18px; width:88px; height:88px; pointer-events:none; opacity:0; }
+.stamp-wrap.show{ animation:stampIn .5s cubic-bezier(.2,1.4,.5,1) forwards; }
+@keyframes stampIn{ 0%{ opacity:0; transform:scale(2.4) rotate(-18deg); } 60%{ opacity:1; } 100%{ opacity:.92; transform:scale(1) rotate(-10deg); } }
+.stamp-wrap svg{ width:100%; height:100%; overflow:visible; }
+.stamp-note{ position:absolute; top:60px; right:10px; font-family:'Yomogi', cursive; font-size:14px; color:var(--akapen); opacity:0; white-space:nowrap; }
+.stamp-note.show{ animation:noteIn .45s ease .25s forwards; }
+@keyframes noteIn{ from{ opacity:0; transform:translateX(6px); } to{ opacity:1; transform:translateX(0); } }
+.footer-row{ margin-top:20px; display:flex; justify-content:space-between; align-items:center; font-size:12px; color:var(--ink-soft); gap:10px; }
+.reset-link{ background:none;border:none;cursor:pointer; color:var(--ink-soft); text-decoration:underline; font-size:12px; font-family:'Zen Kaku Gothic New', sans-serif; white-space:nowrap; }
+.reset-link:hover{ color:var(--akapen); }
+.round-complete, .final-complete{ text-align:center; padding:20px 6px 6px; }
+.seal{ width:120px; height:120px; margin:0 auto 18px; }
+.rc-title{ font-family:'Shippori Mincho', serif; font-weight:800; font-size:24px; color:var(--akapen-dark); margin-bottom:6px; }
+.rc-sub{ font-size:14px; color:var(--ink-soft); margin-bottom:22px; line-height:1.7; }
+.stat-bars{ display:flex; flex-direction:column; gap:10px; margin:0 auto 24px; max-width:380px; text-align:left; }
+.stat-row{ display:flex; align-items:center; gap:10px; font-size:13px; font-weight:700; color:var(--ink-soft); }
+.stat-row .label{ width:56px; flex-shrink:0; font-family:'Shippori Mincho',serif;}
+.stat-bar-track{ flex:1;height:14px;background:var(--paper-deep);border-radius:7px;overflow:hidden; border:1px solid rgba(0,0,0,0.06); }
+.stat-bar-fill{ height:100%;border-radius:7px; background:linear-gradient(90deg,#8a9a3f,#adbf55); transition:width .8s ease; }
+.stat-row .pct{ width:44px; text-align:right; color:var(--ink); }
+.btn-next{ background:var(--akapen); color:#fff; border:none; padding:15px 30px; font-size:15px; font-weight:700; border-radius:9px; cursor:pointer; box-shadow:0 8px 18px rgba(184,38,46,0.3); font-family:'Zen Kaku Gothic New', sans-serif; }
+.btn-next:hover{ background:#9c1f26; }
+
+@media (max-width:480px){
+  .sheet{ padding:24px 16px 22px 30px; }
+  .lap-punch{ width:80px; }
+  .qtext{ font-size:15.5px; }
+}
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div class="lap-ticket" id="lapTicket"></div>
+  <div class="sheet" id="sheet"></div>
+</div>
+
+<script>
+const DECKS = {
+ "1": {
+  "no": "① 縄文〜古墳",
+  "title": "縄文〜古墳（7問）",
+  "storageKey": "nenpyo-1-v1",
+  "questions": [
+   {
+    "id": 1,
+    "q": "約1万年前、日本はどうなった？（縄文時代のはじまり）",
+    "a": "日本が大陸から切りはなされた。",
+    "src": "マスター社会 No.1（縄文）"
+   },
+   {
+    "id": 2,
+    "q": "縄文時代の人びとが使った土器は？",
+    "a": "縄文土器。",
+    "src": "マスター社会 No.1（縄文）"
+   },
+   {
+    "id": 3,
+    "q": "弥生時代に、大陸から伝わったものは？",
+    "a": "稲作と金属器。",
+    "src": "マスター社会 No.1〜2（弥生）"
+   },
+   {
+    "id": 4,
+    "q": "弥生時代、邪馬台国の女王は？",
+    "a": "卑弥呼。",
+    "src": "マスター社会 No.1〜2（弥生）"
+   },
+   {
+    "id": 5,
+    "q": "3世紀後半、日本の各地の豪族を従えてできた政権は？",
+    "a": "大和政権（大和朝廷）。",
+    "src": "マスター社会 No.2（古墳）"
+   },
+   {
+    "id": 6,
+    "q": "古墳時代に、大和政権の王の名で「ワカタケル大王」と呼ばれたのは、どの時代？",
+    "a": "古墳時代。",
+    "src": "マスター社会 No.2（古墳）"
+   },
+   {
+    "id": 7,
+    "q": "次の3つを、古い順に並べよう。\nア 稲作が伝わる　イ 大和政権が生まれる　ウ 聖徳太子が摂政になる",
+    "a": "ア → イ → ウ",
+    "src": "マスター社会 No.1〜3"
+   }
+  ]
+ },
+ "2": {
+  "no": "② 飛鳥・奈良",
+  "title": "飛鳥・奈良（8問）",
+  "storageKey": "nenpyo-2-v1",
+  "questions": [
+   {
+    "id": 1,
+    "q": "593年、聖徳太子（厩戸皇子）は、何になった？",
+    "a": "摂政（推古天皇を助けた）。",
+    "src": "マスター社会 No.3（飛鳥）"
+   },
+   {
+    "id": 2,
+    "q": "聖徳太子が、遣隋使として隋に送った人物は？",
+    "a": "小野妹子。",
+    "src": "マスター社会 No.3（飛鳥）"
+   },
+   {
+    "id": 3,
+    "q": "飛鳥文化の、おもな寺は？",
+    "a": "法隆寺（奈良県）。",
+    "src": "マスター社会 No.3（飛鳥）"
+   },
+   {
+    "id": 4,
+    "q": "645年、大化の改新をはじめた中心人物は？（2人）",
+    "a": "中大兄皇子（のちの天智天皇）と中臣鎌足。",
+    "src": "マスター社会 No.3（飛鳥）"
+   },
+   {
+    "id": 5,
+    "q": "710年、都は、どこに移された？",
+    "a": "平城京（今の奈良県）。",
+    "src": "マスター社会 No.4（奈良）"
+   },
+   {
+    "id": 6,
+    "q": "天平文化のころ、聖武天皇が建てさせたものは？",
+    "a": "東大寺（大仏）。宝物は正倉院におさめられた。",
+    "src": "マスター社会 No.4（奈良）"
+   },
+   {
+    "id": 7,
+    "q": "唐から日本に来て、唐招提寺を開いた僧は？",
+    "a": "鑑真。",
+    "src": "マスター社会 No.4（奈良）"
+   },
+   {
+    "id": 8,
+    "q": "次の3つを、古い順に並べよう。\nア 大化の改新　イ 平城京に都を移す　ウ 聖徳太子が摂政になる",
+    "a": "ウ → ア → イ",
+    "src": "マスター社会 No.3〜4"
+   }
+  ]
+ },
+ "3": {
+  "no": "③ 平安",
+  "title": "平安（8問）",
+  "storageKey": "nenpyo-3-v1",
+  "questions": [
+   {
+    "id": 1,
+    "q": "794年、都は、どこに移された？ 移した天皇は？",
+    "a": "平安京（今の京都府）。桓武天皇。",
+    "src": "マスター社会 No.5〜6（平安）"
+   },
+   {
+    "id": 2,
+    "q": "比叡山延暦寺を開いた僧と、宗派は？",
+    "a": "最澄。天台宗。",
+    "src": "マスター社会 No.5〜6（平安）"
+   },
+   {
+    "id": 3,
+    "q": "高野山金剛峯寺を開いた僧と、宗派は？",
+    "a": "空海。真言宗。",
+    "src": "マスター社会 No.5〜6（平安）"
+   },
+   {
+    "id": 4,
+    "q": "894年、停止された、大陸との使いは？ 停止を提案した人物は？",
+    "a": "遣唐使。菅原道真。",
+    "src": "マスター社会 No.5〜6（平安）"
+   },
+   {
+    "id": 5,
+    "q": "894年の後、日本風の文化が栄えた。この文化の名前と、発達した文字は？",
+    "a": "国風文化。かな文字。",
+    "src": "マスター社会 No.5〜6（平安）"
+   },
+   {
+    "id": 6,
+    "q": "1016年、藤原道長がなった役職は？ このころの政治は？",
+    "a": "摂政。摂関政治。",
+    "src": "マスター社会 No.5〜6（平安）"
+   },
+   {
+    "id": 7,
+    "q": "1086年、白河上皇がはじめた政治は？",
+    "a": "院政。",
+    "src": "マスター社会 No.5〜6（平安）"
+   },
+   {
+    "id": 8,
+    "q": "1167年、平清盛がなった役職は？ 清盛が信仰した、広島県の神社は？",
+    "a": "太政大臣。厳島神社。",
+    "src": "マスター社会 No.5〜6（平安）"
+   }
+  ]
+ },
+ "4": {
+  "no": "④ 鎌倉・室町",
+  "title": "鎌倉・室町（9問）",
+  "storageKey": "nenpyo-4-v1",
+  "questions": [
+   {
+    "id": 1,
+    "q": "1185年、源頼朝が朝廷に認めさせたものは？",
+    "a": "守護・地頭の設置。",
+    "src": "マスター社会 No.7〜8（鎌倉）"
+   },
+   {
+    "id": 2,
+    "q": "1192年、源頼朝がなった役職は？",
+    "a": "征夷大将軍。",
+    "src": "マスター社会 No.7〜8（鎌倉）"
+   },
+   {
+    "id": 3,
+    "q": "1274年・1281年、元が日本にせめてきた。この出来事と、元と戦った執権は？",
+    "a": "蒙古襲来（元寇）。北条時宗。",
+    "src": "マスター社会 No.7〜8（鎌倉）"
+   },
+   {
+    "id": 4,
+    "q": "1333年、ほろびた幕府は？ ほろぼそうとした天皇は？",
+    "a": "鎌倉幕府。後醍醐天皇。",
+    "src": "マスター社会 No.7〜8（鎌倉）"
+   },
+   {
+    "id": 5,
+    "q": "1338年、征夷大将軍になって室町幕府を開いたのは？",
+    "a": "足利尊氏。",
+    "src": "マスター社会 No.8〜9（室町）"
+   },
+   {
+    "id": 6,
+    "q": "足利義満が建てたものは？ このころの文化の名前は？",
+    "a": "金閣。北山文化。",
+    "src": "マスター社会 No.8〜9（室町）"
+   },
+   {
+    "id": 7,
+    "q": "足利義政が建てたものは？ このころの文化の名前は？",
+    "a": "銀閣。東山文化。",
+    "src": "マスター社会 No.8〜9（室町）"
+   },
+   {
+    "id": 8,
+    "q": "1467年にはじまり、戦国時代のきっかけとなった戦いは？",
+    "a": "応仁の乱。",
+    "src": "マスター社会 No.8〜9（室町）"
+   },
+   {
+    "id": 9,
+    "q": "次の3つを、古い順に並べよう。\nア 応仁の乱　イ 元寇（蒙古襲来）　ウ 鎌倉幕府がほろびる",
+    "a": "イ → ウ → ア",
+    "src": "マスター社会 No.7〜9"
+   }
+  ]
+ },
+ "5": {
+  "no": "⑤ 安土桃山・江戸",
+  "title": "安土桃山・江戸（10問）",
+  "storageKey": "nenpyo-5-v1",
+  "questions": [
+   {
+    "id": 1,
+    "q": "1543年、鉄砲が日本に伝わった。伝わった島は？",
+    "a": "種子島（鹿児島県）。",
+    "src": "マスター社会 No.10（安土桃山）"
+   },
+   {
+    "id": 2,
+    "q": "1549年、キリスト教を日本に伝えた人物は？",
+    "a": "フランシスコ・ザビエル。",
+    "src": "マスター社会 No.10（安土桃山）"
+   },
+   {
+    "id": 3,
+    "q": "1590年、全国を統一したのは？",
+    "a": "豊臣秀吉。",
+    "src": "マスター社会 No.10（安土桃山）"
+   },
+   {
+    "id": 4,
+    "q": "1600年、徳川家康が勝った戦いは？ どこ（県）？",
+    "a": "関ヶ原の戦い。岐阜県。",
+    "src": "マスター社会 No.10（安土桃山）"
+   },
+   {
+    "id": 5,
+    "q": "1603年、徳川家康がなった役職は？",
+    "a": "征夷大将軍（江戸幕府を開いた）。",
+    "src": "マスター社会 No.11〜14（江戸）"
+   },
+   {
+    "id": 6,
+    "q": "1641年、鎖国の体制が固まった。外国との貿易が許された、長崎の場所は？",
+    "a": "出島（オランダ・中国と貿易）。",
+    "src": "マスター社会 No.11〜14（江戸）"
+   },
+   {
+    "id": 7,
+    "q": "1716年からの改革は？ 行った将軍は？",
+    "a": "享保の改革。徳川吉宗。",
+    "src": "マスター社会 No.11〜14（江戸）"
+   },
+   {
+    "id": 8,
+    "q": "1787年からの改革は？ 行った老中は？",
+    "a": "寛政の改革。松平定信。",
+    "src": "マスター社会 No.11〜14（江戸）"
+   },
+   {
+    "id": 9,
+    "q": "1841年からの改革は？ 行った老中は？",
+    "a": "天保の改革。水野忠邦。",
+    "src": "マスター社会 No.11〜14（江戸）"
+   },
+   {
+    "id": 10,
+    "q": "次の3つを、古い順に並べよう。\nア 天保の改革　イ 享保の改革　ウ 寛政の改革",
+    "a": "イ → ウ → ア",
+    "src": "マスター社会 No.13〜14"
+   }
+  ]
+ },
+ "6": {
+  "no": "⑥ 幕末・明治",
+  "title": "幕末・明治（9問）",
+  "storageKey": "nenpyo-6-v1",
+  "questions": [
+   {
+    "id": 1,
+    "q": "1853年、日本に来たアメリカの人物は？",
+    "a": "ペリー（浦賀に来た）。",
+    "src": "マスター社会 No.11〜14（江戸）・幕末"
+   },
+   {
+    "id": 2,
+    "q": "1854年、結んだ条約は？ このとき開いた港は？（2つ）",
+    "a": "日米和親条約。下田と函館。",
+    "src": "マスター社会 No.11〜14（江戸）・幕末"
+   },
+   {
+    "id": 3,
+    "q": "1858年、結んだ条約は？ 結んだ大老は？",
+    "a": "日米修好通商条約。井伊直弼。",
+    "src": "マスター社会 No.11〜14（江戸）・幕末"
+   },
+   {
+    "id": 4,
+    "q": "1867年、15代将軍の徳川慶喜が、政権を朝廷に返したことを何という？",
+    "a": "大政奉還。",
+    "src": "マスター社会 No.11〜14（江戸）・幕末"
+   },
+   {
+    "id": 5,
+    "q": "1868年、新政府が出した、政治の方針は？",
+    "a": "五箇条の御誓文。",
+    "src": "マスター社会 No.15〜18（明治）"
+   },
+   {
+    "id": 6,
+    "q": "明治の初め、西洋の文化が入ってきた変化を何という？",
+    "a": "文明開化。",
+    "src": "マスター社会 No.15〜18（明治）"
+   },
+   {
+    "id": 7,
+    "q": "1889年、発布された憲法は？ つくる中心になった人物は？",
+    "a": "大日本帝国憲法。伊藤博文。",
+    "src": "マスター社会 No.15〜18（明治）"
+   },
+   {
+    "id": 8,
+    "q": "1894年、おこった戦争は？ 1904年は？",
+    "a": "1894年：日清戦争。1904年：日露戦争。",
+    "src": "マスター社会 No.15〜18（明治）"
+   },
+   {
+    "id": 9,
+    "q": "次の3つを、古い順に並べよう。\nア 日露戦争　イ 五箇条の御誓文　ウ 日清戦争",
+    "a": "イ → ウ → ア",
+    "src": "マスター社会 No.15〜18"
+   }
+  ]
+ },
+ "7": {
+  "no": "⑦ 大正〜現代",
+  "title": "大正〜現代（11問）",
+  "storageKey": "nenpyo-7-v1",
+  "questions": [
+   {
+    "id": 1,
+    "q": "1914年、日本が参戦した戦争は？",
+    "a": "第一次世界大戦。",
+    "src": "マスター社会 No.19（大正）"
+   },
+   {
+    "id": 2,
+    "q": "1918年、富山県からおこった、米の値段に対する騒ぎは？",
+    "a": "米騒動。",
+    "src": "マスター社会 No.19（大正）"
+   },
+   {
+    "id": 3,
+    "q": "1931年、中国の東北部でおこった事件は？",
+    "a": "満州事変。",
+    "src": "マスター社会 No.20〜22（昭和）"
+   },
+   {
+    "id": 4,
+    "q": "1937年、おこった戦争は？",
+    "a": "日中戦争。",
+    "src": "マスター社会 No.20〜22（昭和）"
+   },
+   {
+    "id": 5,
+    "q": "1941年、おこった戦争は？",
+    "a": "太平洋戦争。",
+    "src": "マスター社会 No.20〜22（昭和）"
+   },
+   {
+    "id": 6,
+    "q": "1945年、日本が受け入れたものは？",
+    "a": "ポツダム宣言（敗戦）。",
+    "src": "マスター社会 No.20〜22（昭和）"
+   },
+   {
+    "id": 7,
+    "q": "1946年、公布されたものは？",
+    "a": "日本国憲法。",
+    "src": "マスター社会 No.20〜22（昭和）"
+   },
+   {
+    "id": 8,
+    "q": "1951年、結んだ条約は？",
+    "a": "サンフランシスコ平和条約。",
+    "src": "マスター社会 No.20〜22（昭和）"
+   },
+   {
+    "id": 9,
+    "q": "1972年、日本に復帰したのは？",
+    "a": "沖縄。",
+    "src": "マスター社会 No.20〜22（昭和）"
+   },
+   {
+    "id": 10,
+    "q": "1995年、近畿地方でおきた災害は？",
+    "a": "阪神・淡路大震災。",
+    "src": "マスター社会 No.23（平成）"
+   },
+   {
+    "id": 11,
+    "q": "2011年、東北地方でおきた災害は？",
+    "a": "東日本大震災。",
+    "src": "マスター社会 No.23（平成）"
+   }
+  ]
+ },
+ "8": {
+  "no": "⑧ 場所と時代①",
+  "title": "場所と時代①（古代〜鎌倉）（20問）",
+  "storageKey": "nenpyo-8-v1",
+  "questions": [
+   {
+    "id": 1,
+    "q": "三内丸山遺跡は、どの都道府県？ どの時代？",
+    "a": "青森県・縄文時代",
+    "src": "マスター社会 No.1（縄文）　歴史の舞台"
+   },
+   {
+    "id": 2,
+    "q": "大森貝塚は、どの都道府県？ どの時代？",
+    "a": "東京都・縄文時代",
+    "src": "マスター社会 No.1（縄文）　歴史の舞台"
+   },
+   {
+    "id": 3,
+    "q": "野尻湖遺跡は、どの都道府県？ どの時代？",
+    "a": "長野県・旧石器時代",
+    "src": "マスター社会 No.1（旧石器）　歴史の舞台"
+   },
+   {
+    "id": 4,
+    "q": "岩宿遺跡は、どの都道府県？ どの時代？",
+    "a": "群馬県・旧石器時代",
+    "src": "マスター社会 No.1（旧石器）　歴史の舞台"
+   },
+   {
+    "id": 5,
+    "q": "吉野ヶ里遺跡は、どの都道府県？ どの時代？",
+    "a": "佐賀県・弥生時代",
+    "src": "マスター社会 No.2（弥生）　歴史の舞台"
+   },
+   {
+    "id": 6,
+    "q": "稲荷山古墳は、どの都道府県？ どの時代？",
+    "a": "埼玉県・古墳時代",
+    "src": "マスター社会 No.2（古墳）　歴史の舞台"
+   },
+   {
+    "id": 7,
+    "q": "江田船山古墳は、どの都道府県？ どの時代？",
+    "a": "熊本県・古墳時代",
+    "src": "マスター社会 No.2（古墳）　歴史の舞台"
+   },
+   {
+    "id": 8,
+    "q": "大仙古墳は、どの都道府県？ どの時代？",
+    "a": "大阪府（堺市）・古墳時代",
+    "src": "マスター社会 No.2（古墳）　歴史の舞台"
+   },
+   {
+    "id": 9,
+    "q": "法隆寺は、どの都道府県？ どの時代？",
+    "a": "奈良県・飛鳥時代",
+    "src": "マスター社会 No.3（飛鳥）　歴史の舞台"
+   },
+   {
+    "id": 10,
+    "q": "大宰府は、どの都道府県？ どの時代？",
+    "a": "福岡県・飛鳥時代",
+    "src": "マスター社会 No.3（飛鳥）　歴史の舞台"
+   },
+   {
+    "id": 11,
+    "q": "大津宮は、どの都道府県？ どの時代？",
+    "a": "滋賀県・飛鳥時代",
+    "src": "マスター社会 No.3（飛鳥）　歴史の舞台"
+   },
+   {
+    "id": 12,
+    "q": "平城京・正倉院・東大寺は、どの都道府県？ どの時代？",
+    "a": "奈良県・奈良時代",
+    "src": "マスター社会 No.4（奈良）　歴史の舞台"
+   },
+   {
+    "id": 13,
+    "q": "長岡京は、どの都道府県？ どの時代？",
+    "a": "京都府・奈良時代",
+    "src": "マスター社会 No.5（奈良）　歴史の舞台"
+   },
+   {
+    "id": 14,
+    "q": "平安京は、どの都道府県？ どの時代？",
+    "a": "京都府・平安時代",
+    "src": "マスター社会 No.5（平安）　歴史の舞台"
+   },
+   {
+    "id": 15,
+    "q": "中尊寺金色堂は、どの都道府県？ どの時代？",
+    "a": "岩手県・平安時代",
+    "src": "マスター社会 No.5（平安）　歴史の舞台"
+   },
+   {
+    "id": 16,
+    "q": "比叡山延暦寺は、どの都道府県？ どの時代？",
+    "a": "滋賀県・平安時代",
+    "src": "マスター社会 No.5（平安）　歴史の舞台"
+   },
+   {
+    "id": 17,
+    "q": "高野山金剛峯寺は、どの都道府県？ どの時代？",
+    "a": "和歌山県・平安時代",
+    "src": "マスター社会 No.5（平安）　歴史の舞台"
+   },
+   {
+    "id": 18,
+    "q": "厳島神社は、どの都道府県？ どの時代？",
+    "a": "広島県・平安時代",
+    "src": "マスター社会 No.6（平安）　歴史の舞台"
+   },
+   {
+    "id": 19,
+    "q": "大輪田泊（日宋貿易の港）は、どの都道府県？ どの時代？",
+    "a": "兵庫県・平安時代",
+    "src": "マスター社会 No.6（平安）　歴史の舞台"
+   },
+   {
+    "id": 20,
+    "q": "壇ノ浦の戦いは、どの都道府県？ どの時代？",
+    "a": "山口県・平安時代",
+    "src": "マスター社会 No.7（平安）　歴史の舞台"
+   }
+  ]
+ },
+ "9": {
+  "no": "⑨ 場所と時代②",
+  "title": "場所と時代②（鎌倉〜明治）（24問）",
+  "storageKey": "nenpyo-9-v1",
+  "questions": [
+   {
+    "id": 1,
+    "q": "鎌倉は、どの都道府県？ どの時代？",
+    "a": "神奈川県・鎌倉時代",
+    "src": "マスター社会 No.7（鎌倉）　歴史の舞台"
+   },
+   {
+    "id": 2,
+    "q": "東大寺南大門は、どの都道府県？ どの時代？",
+    "a": "奈良県・鎌倉時代",
+    "src": "マスター社会 No.7（鎌倉）　歴史の舞台"
+   },
+   {
+    "id": 3,
+    "q": "六波羅探題は、どの都道府県？ どの時代？",
+    "a": "京都府・鎌倉時代",
+    "src": "マスター社会 No.7（鎌倉）　歴史の舞台"
+   },
+   {
+    "id": 4,
+    "q": "防塁（石塁）は、どの都道府県？ どの時代？",
+    "a": "福岡県・鎌倉時代",
+    "src": "マスター社会 No.8（鎌倉）　歴史の舞台"
+   },
+   {
+    "id": 5,
+    "q": "花の御所は、どの都道府県？ どの時代？",
+    "a": "京都府・室町時代",
+    "src": "マスター社会 No.8（室町）　歴史の舞台"
+   },
+   {
+    "id": 6,
+    "q": "金閣・銀閣は、どの都道府県？ どの時代？",
+    "a": "京都府・室町時代",
+    "src": "マスター社会 No.9（室町）　歴史の舞台"
+   },
+   {
+    "id": 7,
+    "q": "足利学校は、どの都道府県？ どの時代？",
+    "a": "栃木県・室町時代",
+    "src": "マスター社会 No.9（室町）　歴史の舞台"
+   },
+   {
+    "id": 8,
+    "q": "堺は、どの都道府県？ どの時代？",
+    "a": "大阪府・室町時代",
+    "src": "マスター社会 No.9（室町）　歴史の舞台"
+   },
+   {
+    "id": 9,
+    "q": "博多は、どの都道府県？ どの時代？",
+    "a": "福岡県・室町時代",
+    "src": "マスター社会 No.9（室町）　歴史の舞台"
+   },
+   {
+    "id": 10,
+    "q": "琉球王国は、どの都道府県？ どの時代？",
+    "a": "沖縄県・室町時代",
+    "src": "マスター社会 No.9（室町）　歴史の舞台"
+   },
+   {
+    "id": 11,
+    "q": "種子島は、どの都道府県？ どの時代？",
+    "a": "鹿児島県・鉄砲伝来（戦国〜安土桃山）",
+    "src": "マスター社会 No.10（安土桃山）　歴史の舞台"
+   },
+   {
+    "id": 12,
+    "q": "桶狭間の戦い・長篠の戦いは、どの都道府県？ どの時代？",
+    "a": "愛知県・安土桃山時代",
+    "src": "マスター社会 No.10（安土桃山）　歴史の舞台"
+   },
+   {
+    "id": 13,
+    "q": "関ヶ原の戦いは、どの都道府県？ どの時代？",
+    "a": "岐阜県・安土桃山時代",
+    "src": "マスター社会 No.11（安土桃山）　歴史の舞台"
+   },
+   {
+    "id": 14,
+    "q": "安土城は、どの都道府県？ どの時代？",
+    "a": "滋賀県・安土桃山時代",
+    "src": "マスター社会 No.10（安土桃山）　歴史の舞台"
+   },
+   {
+    "id": 15,
+    "q": "石見銀山は、どの都道府県？ どの時代？",
+    "a": "島根県・安土桃山時代",
+    "src": "マスター社会 No.10（安土桃山）　歴史の舞台"
+   },
+   {
+    "id": 16,
+    "q": "佐渡金山は、どの都道府県？ どの時代？",
+    "a": "新潟県・安土桃山時代",
+    "src": "マスター社会 No.10（安土桃山）　歴史の舞台"
+   },
+   {
+    "id": 17,
+    "q": "出島は、どの都道府県？ どの時代？",
+    "a": "長崎県・江戸時代",
+    "src": "マスター社会 No.12（江戸）　歴史の舞台"
+   },
+   {
+    "id": 18,
+    "q": "松前藩は、どの都道府県？ どの時代？",
+    "a": "北海道・江戸時代",
+    "src": "マスター社会 No.12（江戸）　歴史の舞台"
+   },
+   {
+    "id": 19,
+    "q": "下田は、どの都道府県？ どの時代？",
+    "a": "静岡県・江戸時代（幕末）",
+    "src": "マスター社会 No.14（江戸）　歴史の舞台"
+   },
+   {
+    "id": 20,
+    "q": "富岡製糸場は、どの都道府県？ どの時代？",
+    "a": "群馬県・明治時代",
+    "src": "マスター社会 No.15（明治）　歴史の舞台"
+   },
+   {
+    "id": 21,
+    "q": "八幡製鉄所は、どの都道府県？ どの時代？",
+    "a": "福岡県・明治時代",
+    "src": "マスター社会 No.17（明治）　歴史の舞台"
+   },
+   {
+    "id": 22,
+    "q": "足尾鉱山は、どの都道府県？ どの時代？",
+    "a": "栃木県・明治時代",
+    "src": "マスター社会 No.17（明治）　歴史の舞台"
+   },
+   {
+    "id": 23,
+    "q": "鹿鳴館は、どの都道府県？ どの時代？",
+    "a": "東京都・明治時代",
+    "src": "マスター社会 No.17（明治）　歴史の舞台"
+   },
+   {
+    "id": 24,
+    "q": "五稜郭は、どの都道府県？ どの時代？",
+    "a": "北海道・明治時代（箱館戦争）",
+    "src": "マスター社会 No.15（明治）　歴史の舞台"
+   }
+  ]
+ }
+};
+
+const store = {
+  async get(k){ try{ const v = localStorage.getItem(k); return v ? {value:v} : null; }catch(e){ return (store._m||{})[k] ? {value:store._m[k]} : null; } },
+  async set(k,v){ try{ localStorage.setItem(k,v); }catch(e){ store._m = store._m||{}; store._m[k]=v; } }
+};
+
+const TOTAL_LAPS = 3;
+let currentDeckKey = null;
+let state = null;
+
+
+/* ---- 次にやる日（当日・翌日・1週間後） ---- */
+const WD = ['日','月','火','水','木','金','土'];
+function ymd(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function fromYmd(t){ const [y,m,d]=t.split('-').map(Number); return new Date(y,m-1,d); }
+function addDays(t,n){ const d=fromYmd(t); d.setDate(d.getDate()+n); return ymd(d); }
+function fmtMD(t){ const d=fromYmd(t); return (d.getMonth()+1)+'/'+d.getDate()+'('+WD[d.getDay()]+')'; }
+function schedKey(key){ return DECKS[key].storageKey+'-sched'; }
+async function loadSched(key){
+  try{ const r = await store.get(schedKey(key)); return r ? (JSON.parse(r.value).dates||[]) : []; }
+  catch(e){ return []; }
+}
+async function recordSitting(){
+  const dates = await loadSched(currentDeckKey);
+  dates.push(ymd(new Date()));
+  try{ await store.set(schedKey(currentDeckKey), JSON.stringify({dates})); }catch(e){}
+  return dates;
+}
+function nextInfo(dates){
+  if(!dates.length) return null;
+  const offs = [0,1,7];
+  if(dates.length >= 3) return {done:true};
+  const due = addDays(dates[0], offs[dates.length]);
+  const today = ymd(new Date());
+  return {done:false, n:dates.length+1, due, status: due<today ? 'over' : (due===today ? 'today' : 'later')};
+}
+function schedHTML(dates){
+  const offs = [0,1,7], names=['1回目（当日）','2回目（翌日）','3回目（1週間後）'];
+  if(!dates.length) return '';
+  const rows = names.map((nm,i)=>{
+    const done = i < dates.length;
+    const when = done ? dates[i] : addDays(dates[0], offs[i]);
+    return `<div class="stat-row"><span class="label" style="width:120px">${nm}</span><span style="flex:1">${fmtMD(when)}</span><span class="pct">${done?'✓ おわり':'これから'}</span></div>`;
+  }).join('');
+  return `<div class="stat-bars" style="margin-bottom:18px"><div style="font-weight:700;margin-bottom:6px">次にやる日</div>${rows}</div>`;
+}
+function nextText(info){
+  if(!info) return '';
+  if(info.done) return '3回おわり';
+  const lab = info.status==='over' ? '（すぎてる！）' : info.status==='today' ? '（きょう！）' : '';
+  return `${info.n}回目は ${fmtMD(info.due)}${lab}`;
+}
+
+function deck(){ return DECKS[currentDeckKey]; }
+function TOTAL(){ return deck().questions.length; }
+function freshRoundQueue(){ return deck().questions.map(q=>q.id); }
+
+function defaultState(){
+  return {
+    round: 1,
+    queue: freshRoundQueue(),
+    seenFirstTry: {},
+    firstTryCorrectCount: 0,
+    roundHistory: [],
+    finished: false,
+    currentId: null,
+    revealed: false
+  };
+}
+
+async function loadDeckSummary(key){
+  try{
+    const res = await store.get(DECKS[key].storageKey);
+    if(!res) return null;
+    return JSON.parse(res.value);
+  }catch(e){ return null; }
+}
+
+async function renderPicker(){
+  document.getElementById('lapTicket').innerHTML = '';
+  const sheet = document.getElementById('sheet');
+  sheet.className = 'picker-sheet';
+  sheet.innerHTML = `
+    <div class="picker-title">社会 歴史年表と場所 一問一答</div>
+    <div class="picker-sub">やる回を選んでください。まちがえた問題はその周のうちに出し直され、3周やりきると正解率の伸びが見られます。</div>
+    <div id="deckList"></div>
+  `;
+  const list = document.getElementById('deckList');
+  for(const key of Object.keys(DECKS)){
+    const d = DECKS[key];
+    const st = await loadDeckSummary(key);
+    let meta = "まだ未着手";
+    if(st){
+      if(st.finished && st.round > TOTAL_LAPS) meta = "3周コンプリート済み";
+      else meta = `${st.round}周目 ・ ${Object.keys(st.seenFirstTry).length}/${d.questions.length}問クリア中`;
+    }
+    const nx = nextText(nextInfo(await loadSched(key)));
+    if(nx) meta += ' ・ ' + nx;
+    const card = document.createElement('div');
+    card.className = 'deck-card';
+    card.onclick = () => enterDeck(key);
+    card.innerHTML = `
+      <div class="deck-num">${d.no}</div>
+      <div class="deck-info">
+        <div class="deck-name">${d.title}</div>
+        <div class="deck-meta">${meta}</div>
+      </div>
+      <div class="deck-arrow">→</div>
+    `;
+    list.appendChild(card);
+  }
+}
+
+async function enterDeck(key){
+  currentDeckKey = key;
+  document.getElementById('sheet').className = 'sheet';
+  try{
+    const res = await store.get(deck().storageKey);
+    state = res ? JSON.parse(res.value) : defaultState();
+  }catch(e){
+    state = defaultState();
+  }
+  if(!state.currentId && state.queue.length){ state.currentId = state.queue[0]; }
+  render();
+}
+
+async function saveState(){
+  try{ await store.set(deck().storageKey, JSON.stringify(state)); }
+  catch(e){ console.error("save failed", e); }
+}
+
+function getQuestion(id){ return deck().questions.find(q=>q.id===id); }
+
+function renderLapTicket(){
+  const wrap = document.getElementById('lapTicket');
+  wrap.innerHTML = '';
+  for(let i=1;i<=TOTAL_LAPS;i++){
+    const div = document.createElement('div');
+    let cls = 'lap-punch';
+    if(i < state.round || (i===state.round && state.finished)) cls += ' done';
+    else if(i === state.round) cls += ' active';
+    div.className = cls;
+    div.innerHTML = `${i}周目<span class="num">${i}</span>`;
+    wrap.appendChild(div);
+  }
+}
+
+function uniqueSeenCount(){ return Object.keys(state.seenFirstTry).length; }
+
+function render(){
+  renderLapTicket();
+  const sheet = document.getElementById('sheet');
+
+  if(state.finished && state.round > TOTAL_LAPS){ renderFinal(sheet); return; }
+  if(state.queue.length === 0){ renderRoundComplete(sheet); return; }
+
+  const qid = state.currentId || state.queue[0];
+  const item = getQuestion(qid);
+  const doneCount = uniqueSeenCount();
+  const total = TOTAL();
+
+  sheet.innerHTML = `
+    <div class="head-row">
+      <span class="eyebrow">${deck().no} ${deck().title} ／ 一問一答ドリル ・ ${state.round}周目</span>
+      <span class="qcount"><b>${doneCount}</b> / ${total} 問クリア</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" style="width:${(doneCount/total*100).toFixed(1)}%"></div></div>
+
+    <div class="qnum"><span class="box">問</span>${String(item.id).padStart(2,'0')}</div>
+    <div class="qtext">${escapeHtml(item.q)}</div>
+    ${(()=>{const m = state.revealed ? (item.aimg||item.img) : item.img; return m ? `<div class="qmap" style="margin:10px 0">${m}</div>` : '';})()}
+
+    <div class="answer-zone" id="answerZone"></div>
+
+    <div class="footer-row">
+      <button class="reset-link" onclick="backToPicker()">← ほかの回へ</button>
+      <button class="reset-link" onclick="resetCurrentDeck()">この回をはじめからやり直す</button>
+    </div>
+  `;
+
+  const az = document.getElementById('answerZone');
+  if(!state.revealed){
+    az.innerHTML = `<button class="btn btn-reveal" style="width:100%" onclick="reveal()">こたえを見る</button>`;
+  }else{
+    const badge2026 = item.src ? `<span class="badge-2026">📌 ${escapeHtml(item.src)}</span>` : '';
+    az.innerHTML = `
+      <div class="answer-label">✎ 正解</div>
+      <div class="answer-text">${escapeHtml(item.a)}</div>
+      ${badge2026}
+      <div class="btn-row">
+        <button class="btn btn-correct" onclick="mark(true)">◯ わかった</button>
+        <button class="btn btn-wrong" onclick="mark(false)">✕ まちがえた</button>
+      </div>
+    `;
+  }
+}
+
+function escapeHtml(str){
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+}
+
+function reveal(){ state.revealed = true; render(); }
+
+function mark(correct){
+  const qid = state.currentId;
+  const firstTime = !(qid in state.seenFirstTry);
+  if(firstTime){
+    state.seenFirstTry[qid] = correct;
+    if(correct) state.firstTryCorrectCount++;
+  }
+  state.queue.shift();
+  if(!correct){ state.queue.push(qid); }
+
+  state.revealed = false;
+  state.currentId = state.queue.length ? state.queue[0] : null;
+
+  saveState();
+  render();
+  showStamp(correct);
+}
+
+function showStamp(correct){
+  const sheet = document.getElementById('sheet');
+  const wrap = document.createElement('div');
+  wrap.className = 'stamp-wrap show';
+  wrap.innerHTML = correct ? stampCircleSVG() : stampCrossSVG();
+  sheet.appendChild(wrap);
+
+  const note = document.createElement('div');
+  note.className = 'stamp-note show';
+  note.textContent = correct ? "せいかい！" : "つぎ、がんばろう";
+  sheet.appendChild(note);
+
+  setTimeout(()=>{ wrap.remove(); note.remove(); }, 900);
+}
+
+function stampCircleSVG(){
+  return `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="38" fill="none" stroke="#B8262E" stroke-width="7" stroke-linecap="round"/></svg>`;
+}
+function stampCrossSVG(){
+  return `<svg viewBox="0 0 100 100">
+    <line x1="24" y1="24" x2="76" y2="76" stroke="#B8262E" stroke-width="7" stroke-linecap="round"/>
+    <line x1="76" y1="24" x2="24" y2="76" stroke="#B8262E" stroke-width="7" stroke-linecap="round"/>
+  </svg>`;
+}
+
+function sealSVG(label){
+  const t = (typeof label === 'number') ? label + '周' : String(label);
+  const fs = t.length > 2 ? 28 : 36;
+  return `<svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" fill="none" stroke="#B8262E" stroke-width="5"/><circle cx="60" cy="60" r="44" fill="none" stroke="#B8262E" stroke-width="1.5"/><text x="60" y="${60+fs*0.36}" text-anchor="middle" font-family="Shippori Mincho, serif" font-weight="800" font-size="${fs}" fill="#B8262E">${t}</text></svg>`;
+}
+
+function renderRoundComplete(sheet){
+  const total = TOTAL();
+  const accuracy = Math.round((state.firstTryCorrectCount / total) * 100);
+  sheet.innerHTML = `
+    <div class="round-complete">
+      <div class="seal">${sealSVG(state.round)}</div>
+      <div class="rc-title">${state.round}周目、クリア！</div>
+      <div class="rc-sub">1回目で正解できたのは ${state.firstTryCorrectCount} / ${total} 問（${accuracy}%）でした。<br>まちがえた問題は、この周の中で正解するまで出題されました。</div>
+      <button class="btn-next" onclick="nextRound()">${state.round < TOTAL_LAPS ? (state.round+1)+'周目へ進む' : '結果を見る'}</button>
+    </div>
+  `;
+}
+
+async function nextRound(){
+  const total = TOTAL();
+  state.roundHistory.push({round: state.round, accuracy: Math.round((state.firstTryCorrectCount/total)*100)});
+  if(state.round >= TOTAL_LAPS){
+    state.finished = true;
+    state.round = TOTAL_LAPS + 1;
+    state.sched = await recordSitting();
+  }else{
+    state.round += 1;
+    state.queue = freshRoundQueue();
+    state.seenFirstTry = {};
+    state.firstTryCorrectCount = 0;
+    state.currentId = state.queue[0];
+    state.revealed = false;
+  }
+  saveState();
+  render();
+}
+
+function renderFinal(sheet){
+  const bars = state.roundHistory.map(r=>`
+    <div class="stat-row">
+      <span class="label">${r.round}周目</span>
+      <div class="stat-bar-track"><div class="stat-bar-fill" style="width:${r.accuracy}%"></div></div>
+      <span class="pct">${r.accuracy}%</span>
+    </div>
+  `).join('');
+  sheet.innerHTML = `
+    <div class="final-complete">
+      <div class="seal">${sealSVG('合格')}</div>
+      <div class="rc-title">3周、コンプリート！</div>
+      <div class="rc-sub">「${deck().title}」を3周やりきりました。回を重ねるごとの正解率と、次にやる日はこちら。</div>
+      <div class="stat-bars">${bars}</div>
+      ${schedHTML(state.sched||[])}
+      <div class="footer-row" style="justify-content:center; gap:14px;">
+        <button class="reset-link" onclick="backToPicker()">← ほかの回へ</button>
+        <button class="btn-next" onclick="resetCurrentDeck()">もう一度さいしょから</button>
+      </div>
+    </div>
+  `;
+}
+
+async function resetCurrentDeck(){
+  state = defaultState();
+  state.currentId = state.queue[0];
+  await saveState();
+  render();
+}
+
+function backToPicker(){
+  currentDeckKey = null;
+  state = null;
+  renderPicker();
+}
+
+renderPicker();
+</script>
+</body>
+</html>
